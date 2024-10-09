@@ -18,7 +18,7 @@ public interface IPlayer
     /// <summary>
     /// ©•ª‚Ìƒ`[ƒ€
     /// </summary>
-    public ETeam Team { get; }
+    public ETeam Team { set; get; }
 
     /// <summary>
     /// ‰Šú‰»ˆ—‚Æ‚©

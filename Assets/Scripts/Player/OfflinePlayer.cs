@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 {
     [SerializeField]
     private ETeam _team;
-    public ETeam Team { get => _team; }
+    public ETeam Team { set => _team = value; get => _team; }
 
     [SerializeField]
     private GameObject stone;
@@ -24,6 +25,7 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
     async public Task<TurnInfo> DoTurn()
     {
+
         turnInfo = new TurnInfo();
         turnInfo.X = -1;
         isInTurn = true;
@@ -60,7 +62,20 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
                 GameObject.Destroy(item);
             }
         }
-        
+
+        if(Data.Instance.IsOnline)
+        {
+            var hashTable1 = new ExitGames.Client.Photon.Hashtable();
+            hashTable1[$"{Team.ToString()}_IsPutted"] = 1;
+            hashTable1[$"{Team.ToString()}_TurnInfo_X"] = turnInfo.X;
+            hashTable1[$"{Team.ToString()}_TurnInfo_Y"] = turnInfo.Y;
+
+            hashTable1[$"{(Team == ETeam.BLACK ? ETeam.WHITE : ETeam.BLACK).ToString()}_IsPutted"] = 0;
+            hashTable1[$"{(Team == ETeam.BLACK ? ETeam.WHITE : ETeam.BLACK).ToString()}_TurnInfo_X"] = 0;
+            hashTable1[$"{(Team == ETeam.BLACK ? ETeam.WHITE : ETeam.BLACK).ToString()}_TurnInfo_Y"] = 0;
+
+            PhotonNetwork.CurrentRoom.SetCustomProperties(hashTable1);
+        }
 
         return turnInfo;
     }
@@ -73,8 +88,6 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     // Start is called before the first frame update
     void Start()
     {
-        //selectCell = GameObject.Instantiate(selectCell);
-        //selectCell.transform.position = Vector3.down * 10;
     }
 
     // Update is called once per frame

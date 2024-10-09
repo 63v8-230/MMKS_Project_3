@@ -11,13 +11,13 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
     [SerializeField]
     private GameObject stone;
 
-    public ETeam Team { get => _team; }
+    public ETeam Team { set => _team = value; get => _team; }
 
     private GameManager gameManager;
 
     async public Task<TurnInfo> DoTurn()
     {
-        await Task.Delay(500);
+        await Task.Delay(1);
         var puttablePosition = gameManager.StoneManagerRef.GetPuttablePosition(Team);
 
         PuttableCellInfo p = new PuttableCellInfo();

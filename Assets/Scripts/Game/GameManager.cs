@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -33,7 +34,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     public GameObject SelectedCellPrefab;
-
 
     [HideInInspector]
     public StoneManager StoneManagerRef;
@@ -77,6 +77,19 @@ public class GameManager : MonoBehaviour
     {
         StoneManagerRef = gameObject.GetComponent<StoneManager>();
 
+        tmPro.text = "Waiting for Player";
+
+        if (Data.Instance.IsOnline)
+            return;
+
+        LunchGame();
+    }
+
+    /// <summary>
+    /// ÉQÅ[ÉÄÇénÇﬂÇÈ
+    /// </summary>
+    public void LunchGame()
+    {
         StoneManagerRef.Init(Data.Instance.BOARD_X, Data.Instance.BOARD_Y);
 
         GameStart(p1.GetComponent<IPlayer>(), p2.GetComponent<IPlayer>());

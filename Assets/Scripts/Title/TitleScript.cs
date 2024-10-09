@@ -11,6 +11,9 @@ public class Data
 
     public int BOARD_X = 8;
     public int BOARD_Y = 8;
+
+    public bool IsOnline = false;
+    public string RoomName = "room1";
 }
 
 public class TitleScript : MonoBehaviour
@@ -21,10 +24,30 @@ public class TitleScript : MonoBehaviour
     [SerializeField]
     TMP_InputField y;
 
+    [SerializeField]
+    TMP_InputField roomName;
+
+    [SerializeField]
+    Button join;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        join.onClick.AddListener(() =>
+        {
+            Data.Instance.IsOnline = true;
+            if(string.IsNullOrEmpty(roomName.text))
+            {
+                roomName.text = "room1";
+            }
+
+            Data.Instance.RoomName = roomName.text;
+
+            Data.Instance.BOARD_X = int.Parse(x.text);
+            Data.Instance.BOARD_Y = int.Parse(y.text);
+
+            SceneManager.LoadScene("OnlineGame");
+        });
     }
 
     // Update is called once per frame
@@ -34,6 +57,7 @@ public class TitleScript : MonoBehaviour
         {
             Data.Instance.BOARD_X = int.Parse(x.text);
             Data.Instance.BOARD_Y = int.Parse(y.text);
+            Data.Instance.IsOnline = false;
 
             SceneManager.LoadScene("Game");
         }
