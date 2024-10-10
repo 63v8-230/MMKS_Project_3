@@ -25,6 +25,9 @@ public class TitleScript : MonoBehaviour
     TMP_InputField y;
 
     [SerializeField]
+    Button offlineStart;
+
+    [SerializeField]
     TMP_InputField roomName;
 
     [SerializeField]
@@ -48,18 +51,19 @@ public class TitleScript : MonoBehaviour
 
             SceneManager.LoadScene("OnlineGame");
         });
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
+        offlineStart.onClick.AddListener(() =>
         {
             Data.Instance.BOARD_X = int.Parse(x.text);
             Data.Instance.BOARD_Y = int.Parse(y.text);
             Data.Instance.IsOnline = false;
 
             SceneManager.LoadScene("Game");
-        }
+        });
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
     }
 }

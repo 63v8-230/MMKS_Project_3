@@ -114,7 +114,7 @@ public class StoneManager : MonoBehaviour
         var cam = Camera.main.gameObject;
         int largeSize = xSize;
         if(ySize > xSize) largeSize = ySize;
-        cam.transform.position = new Vector3(0, largeSize * 2, largeSize * -1);
+        cam.transform.position = new Vector3(0, largeSize * 1.8f, largeSize * -0.4f);
 
 
         Stones[xSize / 2 - 1, ySize / 2 - 1] = GameObject.Instantiate(
