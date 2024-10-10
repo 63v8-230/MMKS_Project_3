@@ -17,7 +17,7 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
 
     async public Task<TurnInfo> DoTurn()
     {
-        await Task.Delay(1);
+        await Task.Delay(500);
         var puttablePosition = gameManager.StoneManagerRef.GetPuttablePosition(Team);
 
         PuttableCellInfo p = new PuttableCellInfo();
