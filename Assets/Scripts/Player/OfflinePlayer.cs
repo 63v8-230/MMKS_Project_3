@@ -95,9 +95,18 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     {
         if (isInTurn)
         {
-            if (Input.GetMouseButtonDown(0))
+            //WebGL用 PCとスマホのクリックとタッチ感知
+            if (Input.GetMouseButtonDown(0) ||
+                (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
             {
-                var sPos = Input.mousePosition;
+                Vector3 sPos;
+                if (Input.touchCount > 0)
+                    sPos = Input.GetTouch(0).position;
+                else
+                    sPos = Input.mousePosition;
+
+                //sPos = new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0);
+
                 sPos.z = Camera.main.transform.position.y * 1.5f;
                 Ray ray = new Ray(Camera.main.transform.position,
                     Camera.main.ScreenToWorldPoint(sPos) - Camera.main.transform.position);
