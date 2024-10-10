@@ -9,7 +9,7 @@ public class SelectedCell : MonoBehaviour
 
     private Renderer rend;
 
-    private float changeValue = 0.3922f;
+    private float changeValue = 0.2922f;
 
     // Start is called before the first frame update
     void Start()
@@ -22,12 +22,12 @@ public class SelectedCell : MonoBehaviour
     {
         var c = rend.material.color;
         c.a += changeValue * Time.deltaTime;
-        if(c.a >= 0.39f)
+        if(c.a >= 0.2f)
         {
-            changeValue = -0.3922f;
+            changeValue = -0.2922f;
         }else if(c.a <= 0)
         {
-            changeValue = 0.3922f;
+            changeValue = 0.2922f;
         }
         rend.material.color = c;
     }
