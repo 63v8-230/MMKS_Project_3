@@ -25,7 +25,7 @@ public class Stone : MonoBehaviour , IStone
     }
 
 
-    public void SetTeam(ETeam team)
+    public void SetTeam(ETeam team, StoneManager stoneManager = null, int x = -1, int y = -1)
     {
         Team = team;
         Quaternion rot;
@@ -33,15 +33,15 @@ public class Stone : MonoBehaviour , IStone
         {
             default:
             case ETeam.BLACK:
-                rot = gameObject.transform.rotation;
+                rot = gameObject.transform.Find("Model").localRotation;
                 rot.eulerAngles = new Vector3(180, 0, 0);
-                gameObject.transform.rotation = rot;
+                gameObject.transform.Find("Model").localRotation = rot;
                 break;
 
             case ETeam.WHITE:
-                rot = gameObject.transform.rotation;
+                rot = gameObject.transform.Find("Model").localRotation;
                 rot.eulerAngles = new Vector3(0, 0, 0);
-                gameObject.transform.rotation = rot;
+                gameObject.transform.Find("Model").localRotation = rot;
                 break;
         }
     }
@@ -50,6 +50,11 @@ public class Stone : MonoBehaviour , IStone
     {
         yield return new WaitForSeconds(0.1f);
 
+        yield break;
+    }
+
+    public IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
+    {
         yield break;
     }
 }

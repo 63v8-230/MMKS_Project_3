@@ -23,6 +23,8 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
     private PuttableCellInfo[] puttablePosition;
 
+    private EStone selectedStone = 0;
+
     async public Task<TurnInfo> DoTurn()
     {
 
@@ -66,7 +68,7 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         if(Data.Instance.IsOnline)
         {
             var hashTable1 = new ExitGames.Client.Photon.Hashtable();
-            hashTable1[$"{Team.ToString()}_IsPutted"] = 1;
+            hashTable1[$"{Team.ToString()}_IsPutted"] = (int)selectedStone;
             hashTable1[$"{Team.ToString()}_TurnInfo_X"] = turnInfo.X;
             hashTable1[$"{Team.ToString()}_TurnInfo_Y"] = turnInfo.Y;
 
@@ -95,15 +97,10 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     {
         if (isInTurn)
         {
-            //WebGL用 PCとスマホのクリックとタッチ感知
-            if (Input.GetMouseButtonDown(0) ||
-                (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
+            if (Input.GetMouseButtonDown(0))
             {
                 Vector3 sPos;
-                if (Input.touchCount > 0)
-                    sPos = Input.GetTouch(0).position;
-                else
-                    sPos = Input.mousePosition;
+                sPos = Input.mousePosition;
 
                 //sPos = new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0);
 
@@ -150,7 +147,8 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
                     turnInfo = new TurnInfo();
                     turnInfo.X = x;
                     turnInfo.Y = y;
-                    turnInfo.PutStone = GameObject.Instantiate(stone,new Vector3(0,-10,0),Quaternion.identity).GetComponent<Stone>();
+
+                    turnInfo.PutStone = SelectStone();
                     turnInfo.PutStone.SetTeam(Team);
 
                     isInTurn = false;
@@ -159,5 +157,65 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
             }
         }
+    }
+
+
+    private IStone SelectStone()
+    {
+        IStone s;
+
+        selectedStone = (EStone)
+            (gameManager.StoneManagerRef.StoneOption.value+1);
+
+        Debug.Log(selectedStone.ToString());
+
+        switch (selectedStone)
+        {
+            case EStone.DEFAULT:
+                s = 
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<Stone>();
+                break;
+
+            case EStone.SUN:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<SunStone>();
+                break;
+
+            case EStone.CROSS:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<CrossStone>();
+                break;
+
+            case EStone.X:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<XStone>();
+                break;
+
+            case EStone.CIRCLE:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<CircleStone>();
+                break;
+            case EStone.ARROW:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<ArrowStone>();
+                break;
+
+            default:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<CircleStone>();
+                Debug.LogError("EStone None");
+                break;
+        }
+
+        Debug.Log(s);
+
+        return s;
     }
 }

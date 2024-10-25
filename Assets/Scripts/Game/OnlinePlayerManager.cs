@@ -43,7 +43,9 @@ public class OnlinePlayerManager : MonoBehaviourPunCallbacks
     /// </summary>
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.JoinOrCreateRoom(Data.Instance.RoomName, new RoomOptions(), TypedLobby.Default);
+        var opt = new RoomOptions();
+        opt.MaxPlayers = 2;
+        PhotonNetwork.JoinOrCreateRoom(Data.Instance.RoomName, opt, TypedLobby.Default);
     }
 
     /// <summary>

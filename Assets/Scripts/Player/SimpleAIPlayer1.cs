@@ -47,7 +47,7 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
 
         t.X = p.X;
         t.Y = p.Y;
-        t.PutStone = GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity).GetComponent<Stone>();
+        t.PutStone = GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity).AddComponent<Stone>();
         t.PutStone.SetTeam(Team);
 
         return t;

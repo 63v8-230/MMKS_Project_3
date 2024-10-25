@@ -34,7 +34,7 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
 
 
 
-            if (b == 1) 
+            if (b > 0) 
             {
                 Debug.Log("Online Put");
 
@@ -46,10 +46,56 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
 
                 turnInfo.X = (int)x;
                 turnInfo.Y = (int)y;
+                Debug.Log(b);
+
+                switch ((EStone)b)
+                {
+                    case EStone.DEFAULT:
+                        turnInfo.PutStone = GameObject.Instantiate
+                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
+                            .AddComponent<Stone>();
+                        break;
+
+                    case EStone.SUN:
+                        turnInfo.PutStone = GameObject.Instantiate
+                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
+                            .AddComponent<SunStone>();
+                        break;
+
+                    case EStone.CROSS:
+                        turnInfo.PutStone = GameObject.Instantiate
+                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
+                            .AddComponent<CrossStone>();
+                        break;
+
+                    case EStone.X:
+                        turnInfo.PutStone = GameObject.Instantiate
+                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
+                            .AddComponent<XStone>();
+                        break;
+
+                    case EStone.CIRCLE:
+                        turnInfo.PutStone = GameObject.Instantiate
+                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
+                            .AddComponent<CircleStone>();
+                        break;
+                    case EStone.ARROW:
+                        turnInfo.PutStone = GameObject.Instantiate
+                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
+                            .AddComponent<ArrowStone>();
+                        break;
+
+                    default:
+                        Debug.LogError("EStone None");
+                        break;
+                }
+
+                turnInfo.PutStone.SetTeam(Team);
+
                 break;
             }
         }
-        
+
 
         return turnInfo;
     }
@@ -70,11 +116,6 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
     // Update is called once per frame
     void Update()
     {
-        if (turnInfo.PutStone == null) 
-        {
-            turnInfo.PutStone = GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity).GetComponent<Stone>();
-            turnInfo.PutStone.SetTeam(Team);
-        }
     }
 }
 

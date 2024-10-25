@@ -1,15 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TMPro;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
 
 public enum ETeam
 {
+    NONE,
     BLACK,
     WHITE,
+    WALL,
 }
 
 public struct PuttableCellInfo
@@ -17,6 +22,12 @@ public struct PuttableCellInfo
     public int X;
     public int Y;
     public int Count;
+}
+
+public struct SkillAction
+{
+    public System.Func<StoneManager, Vector2, IEnumerator> Action;
+    public Vector2 Position;
 }
 
 
@@ -66,13 +77,25 @@ public class StoneManager : MonoBehaviour
     [SerializeField]
     private GameObject basicStone;
 
+    [SerializeField]
+    public TMP_Dropdown StoneOption;
+
+    [SerializeField]
+    public GameObject HighlightCellObject;
+
     /// <summary>
     /// 盤面上の石。何もないときはNullになる。
     /// </summary>
     public IStone[,] Stones;
 
+    /// <summary>
+    /// <para>特殊能力</para>
+    /// <para>ここに特殊能力を実行するメソッドを入れる</para>
+    /// </summary>
+    private List<SkillAction> skillMethod = new List<SkillAction>();
 
-    Vector2[] directions = new Vector2[]
+    [NonSerialized]
+    public Vector2[] directions = new Vector2[]
         {
             new Vector2(0, -1),  //T
             new Vector2(1, -1),  //RT
@@ -83,6 +106,22 @@ public class StoneManager : MonoBehaviour
             new Vector2(-1, 0),  //L
             new Vector2(-1, -1), //LT
         };
+
+    public void Start()
+    {
+        List<string> op = new List<string>();
+        for(int i = 1; i<(int)EStone.MAX; i++)
+        {
+            op.Add(((EStone)i).ToString());
+        }
+        StoneOption.AddOptions(op);
+    }
+
+    public void AddSkillMethod(SkillAction action)
+    {
+        Debug.Log("SkillAdd");
+        skillMethod.Add(action);
+    }
 
 
     /// <summary>
@@ -120,26 +159,33 @@ public class StoneManager : MonoBehaviour
         Stones[xSize / 2 - 1, ySize / 2 - 1] = GameObject.Instantiate(
             basicStone,
             CellPosition2Vector3(xSize / 2 - 1, ySize / 2 - 1),
-            Quaternion.identity).GetComponent<IStone>();
+            Quaternion.identity).AddComponent<Stone>();
         Stones[xSize / 2 - 1, ySize / 2 - 1].SetTeam(ETeam.BLACK);
 
         Stones[xSize / 2, ySize / 2 - 1] = GameObject.Instantiate(
             basicStone,
             CellPosition2Vector3(xSize / 2, ySize / 2 - 1),
-            Quaternion.identity).GetComponent<IStone>();
+            Quaternion.identity).AddComponent<Stone>();
         Stones[xSize / 2, ySize / 2 - 1].SetTeam(ETeam.WHITE);
 
         Stones[xSize / 2 - 1, ySize / 2] = GameObject.Instantiate(
             basicStone,
             CellPosition2Vector3(xSize / 2 - 1, ySize / 2),
-            Quaternion.identity).GetComponent<IStone>();
+            Quaternion.identity).AddComponent<Stone>();
         Stones[xSize / 2 - 1, ySize / 2].SetTeam(ETeam.WHITE);
 
         Stones[xSize / 2, ySize / 2] = GameObject.Instantiate(
             basicStone,
             CellPosition2Vector3(xSize / 2, ySize / 2),
-            Quaternion.identity).GetComponent<IStone>();
+            Quaternion.identity).AddComponent<Stone>();
         Stones[xSize / 2, ySize / 2].SetTeam(ETeam.BLACK);
+    }
+
+    private IEnumerator SetTransform(GameObject gObject, Vector3 value)
+    {
+        gObject.transform.position = value;
+
+        yield break;
     }
 
     async public Task PutStone(TurnInfo info)
@@ -149,11 +195,13 @@ public class StoneManager : MonoBehaviour
 
         Stones[info.X,info.Y] = info.PutStone;
 
-        info.PutStone.GameObjectRef.transform.position =
+        var e = SetTransform(info.PutStone.GameObjectRef,
             new Vector3(
                 (-Stones.GetLength(0) + 1) + (info.X * 2),
                 0.15f,
-                (-Stones.GetLength(1) + 1) + (info.Y * 2));
+                (-Stones.GetLength(1) + 1) + (info.Y * 2)));
+        StartCoroutine(e);
+
         info.PutStone.GameObjectRef.name = $"Stone {info.X}-{info.Y}";
 
 
@@ -170,7 +218,44 @@ public class StoneManager : MonoBehaviour
         }
 
         //flipTasksのタスクが全て完了するまで待つ
-        await Task.WhenAll(flipTasks);
+        var t = Task.WhenAll(flipTasks);
+
+        while (!t.IsCompleted)
+        {
+            await Task.Delay(1);
+        }
+
+        Debug.Log(skillMethod.Count);
+
+        foreach (var m in skillMethod.ToArray())
+        {
+            Debug.Log("SkillDo");
+            var skillCoroutine = new ExEnumerator(m.Action.Invoke(this, m.Position));
+            StartCoroutine(skillCoroutine);
+
+            while (!skillCoroutine.IsEnd)
+            {
+                await Task.Delay(1);
+            }
+        }
+        skillMethod.Clear();
+    }
+
+    public void FlipStone(int x, int y, ETeam team)
+    {
+        var s = Stones[x, y];
+        if(s != null)
+        {
+            Debug.Log($"origin {s}\nTeam: {s.Team}");
+            if(s.Team != team)
+            {
+                s.SetTeam(team, this, x, y);
+                var e = s.OnFlip();
+                StartCoroutine(e);
+                Debug.Log($"flip {s}\nTeam: {s.Team}");
+            }
+                
+        } 
     }
 
     /// <summary>
@@ -213,7 +298,7 @@ public class StoneManager : MonoBehaviour
     /// <returns></returns>
     public Vector3 CellPosition2Vector3(int x, int y)
     {
-        var startPosition = new Vector3(-Stones.GetLength(0) + 1, 0, -Stones.GetLength(1) + 1);
+        var startPosition = new Vector3(-Stones.GetLength(0) + 1, 0.15f , -Stones.GetLength(1) + 1);
         return startPosition + new Vector3(x * 2, 0, y * 2);
 
     }
@@ -223,8 +308,8 @@ public class StoneManager : MonoBehaviour
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
-    /// <returns></returns>
-    private bool CheckOutOfBoard(int x, int y)
+    /// <returns>範囲外ならTrue</returns>
+    public bool CheckOutOfBoard(int x, int y)
     {
         if (x < 0 || y < 0) return true;
         if (x >= Stones.GetLength(0) || y >= Stones.GetLength(1)) return true;
@@ -379,7 +464,7 @@ public class StoneManager : MonoBehaviour
 
         while (true)
         {
-            Stones[x, y].SetTeam(myTeam);
+            Stones[x, y].SetTeam(myTeam, this, x, y);
             var flipCoroutine = new ExEnumerator(Stones[x, y].OnFlip());
             StartCoroutine(flipCoroutine);
 
