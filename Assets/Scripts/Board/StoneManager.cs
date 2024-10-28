@@ -227,7 +227,7 @@ public class StoneManager : MonoBehaviour
 
         Debug.Log(skillMethod.Count);
 
-        foreach (var m in skillMethod.ToArray())
+        foreach (var m in skillMethod)
         {
             Debug.Log("SkillDo");
             var skillCoroutine = new ExEnumerator(m.Action.Invoke(this, m.Position));
