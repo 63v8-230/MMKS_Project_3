@@ -20,7 +20,7 @@ public class CircleStone : SkillStoneBase
         {
             if (!stoneManager.CheckOutOfBoard((int)(position.x + dir.x), (int)(position.y + dir.y)))
                 stoneManager.FlipStone((int)(position.x + dir.x), (int)(position.y + dir.y),
-                    Team != ETeam.BLACK ? ETeam.BLACK : ETeam.WHITE);
+                    baseTeam);
 
             SetHighLight(stoneManager, position + dir,new Color(0.569f, 0.812f, 0.314f));
         }

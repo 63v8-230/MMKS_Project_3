@@ -25,7 +25,7 @@ public class ArrowStone : SkillStoneBase
                 break;
 
             stoneManager.FlipStone((int)(position.x), (int)(position.y),
-                Team != ETeam.BLACK ? ETeam.BLACK : ETeam.WHITE);
+                baseTeam);
 
             SetHighLight(stoneManager, position, new Color(0.847f, 0.431f, 0.8f));
 

@@ -26,7 +26,7 @@ public class CrossStone : SkillStoneBase
                     break;
 
                 stoneManager.FlipStone((int)(flipPosition.x), (int)(flipPosition.y),
-                    Team != ETeam.BLACK ? ETeam.BLACK : ETeam.WHITE);
+                    baseTeam);
 
                 SetHighLight(stoneManager, flipPosition, new Color(0, 0.439f, 0.753f));
 

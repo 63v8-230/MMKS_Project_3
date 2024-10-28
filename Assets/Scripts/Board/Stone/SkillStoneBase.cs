@@ -12,7 +12,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
     [SerializeField]
     private Texture tex;
 
-    private ETeam baseTeam = ETeam.NONE;
+    protected ETeam baseTeam = ETeam.NONE;
 
     // Start is called before the first frame update
     void Start()
@@ -101,7 +101,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
         {
             if (!stoneManager.CheckOutOfBoard((int)(position.x + dir.x), (int)(position.y + dir.y)))
                 stoneManager.FlipStone((int)(position.x + dir.x), (int)(position.y + dir.y),
-                    Team != ETeam.BLACK ? ETeam.BLACK : ETeam.WHITE);
+                    baseTeam);
         }
 
         yield break;
