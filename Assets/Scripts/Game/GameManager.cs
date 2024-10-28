@@ -50,6 +50,8 @@ public class GameManager : MonoBehaviour
 
     private EGameState currentGameState;
 
+    bool isSkipped = false;
+
     public async void GameStart(IPlayer player1, IPlayer player2)
     {
         players = new IPlayer[2];
@@ -121,6 +123,17 @@ public class GameManager : MonoBehaviour
                         {
                             Debug.Log(players[currentPlayerIndex].Team + $" is Put {turnTask.Result.X}-{turnTask.Result.Y}");
                             flipTask = StoneManagerRef.PutStone(turnTask.Result);
+                            if(turnTask.Result.X == -1)
+                            {
+                                if (isSkipped)
+                                    OnEndOfGame();
+                                else
+                                    isSkipped = true;
+                            }
+                            else
+                            {
+                                isSkipped = false;
+                            }
                             currentGameState = EGameState.FLIP;
                         }
                     }
@@ -148,5 +161,19 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
+    }
+
+    private void OnEndOfGame()
+    {
+        isPlay = false;
+        int b, w;
+        StoneManagerRef.GetStoneCounts(out b, out w);
+        string winTeam = "Draw...";
+        if (b != w)
+            if (b > w)
+                winTeam = "Black Win!";
+            else
+                winTeam = "White Win!";
+        tmPro.text = $"{winTeam}\nBlack: {b}\nWhite: {w}";
     }
 }
