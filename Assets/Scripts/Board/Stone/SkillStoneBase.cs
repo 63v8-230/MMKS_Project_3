@@ -34,7 +34,9 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
     public void SetTeam(ETeam team, StoneManager stoneManager = null, int x = -1, int y = -1)
     {
-        //Debug.Log(team.ToString());
+        Team = team;
+
+        Debug.Log("fTeam: "+team.ToString());
         if (baseTeam == ETeam.NONE)
         {
             baseTeam = Team;
@@ -42,15 +44,17 @@ public class SkillStoneBase : MonoBehaviour, IStone
         }
         //Debug.Log(team.ToString());
 
-        if (baseTeam == Team && team != baseTeam && stoneManager != null)
+        Debug.Log($"baseTeam: {baseTeam}\nteam: {team}\nStoneManager: {stoneManager}");
+        if (/*baseTeam == Team && */team != baseTeam && stoneManager != null)
         {
             SkillAction action = new SkillAction();
             action.Action = OnSKill;
             action.Position = new Vector2(x, y);
             stoneManager.AddSkillMethod(action);
+            Debug.Log("ÀsÏ‚İ");
         }
 
-        Team = team;
+        
         Quaternion rot;
         switch (team)
         {
@@ -68,7 +72,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
                 break;
         }
 
-        Debug.Log("TeamChanged");
+        Debug.Log($"TeamChanged: {baseTeam}->{team}");
 
         if (baseTeam == Team)
         {

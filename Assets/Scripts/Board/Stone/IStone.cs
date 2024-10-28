@@ -6,10 +6,10 @@ public enum EStone
 {
     NONE,
     DEFAULT,
-    SUN,//
-    CROSS,//
-    X,//
-    CIRCLE,//
+    SUN,
+    CROSS,
+    X,
+    CIRCLE,
     ARROW,
     MAX,
 }

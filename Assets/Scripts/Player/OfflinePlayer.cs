@@ -149,6 +149,7 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
                     turnInfo.Y = y;
 
                     turnInfo.PutStone = SelectStone();
+                    turnInfo.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
                     turnInfo.PutStone.SetTeam(Team);
 
                     isInTurn = false;
