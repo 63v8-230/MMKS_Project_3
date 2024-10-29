@@ -15,6 +15,8 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     [SerializeField]
     private GameObject stone;
 
+    public OnlineScript OnlineScriptRef { set; get; }
+
     private bool isInTurn = false;
 
     private TurnInfo turnInfo;
@@ -67,16 +69,12 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
         if(Data.Instance.IsOnline)
         {
-            var hashTable1 = new ExitGames.Client.Photon.Hashtable();
-            hashTable1[$"{Team.ToString()}_IsPutted"] = (int)selectedStone;
-            hashTable1[$"{Team.ToString()}_TurnInfo_X"] = turnInfo.X;
-            hashTable1[$"{Team.ToString()}_TurnInfo_Y"] = turnInfo.Y;
+            OnlineScriptRef.gameObject.GetComponent<PhotonView>().RPC(
+                nameof(OnlineScriptRef.SetTurn),
+                RpcTarget.AllViaServer,
+                (int)turnInfo.PutStone.GetStone(), turnInfo.X, turnInfo.Y);
 
-            hashTable1[$"{(Team == ETeam.BLACK ? ETeam.WHITE : ETeam.BLACK).ToString()}_IsPutted"] = 0;
-            hashTable1[$"{(Team == ETeam.BLACK ? ETeam.WHITE : ETeam.BLACK).ToString()}_TurnInfo_X"] = 0;
-            hashTable1[$"{(Team == ETeam.BLACK ? ETeam.WHITE : ETeam.BLACK).ToString()}_TurnInfo_Y"] = 0;
-
-            PhotonNetwork.CurrentRoom.SetCustomProperties(hashTable1);
+            OnlineScriptRef.SetTurn((int)turnInfo.PutStone.GetStone(), turnInfo.X, turnInfo.Y);
         }
 
         return turnInfo;

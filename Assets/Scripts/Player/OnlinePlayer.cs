@@ -15,9 +15,13 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
     [SerializeField]
     private GameObject stone;
 
+    public OnlineScript OnlineScriptRef { set; get; }
+
     private TurnInfo turnInfo;
 
     private GameManager gameManager;
+
+    private bool isTurned = false;
 
     async public Task<TurnInfo> DoTurn()
     {
@@ -29,69 +33,10 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
         while (true)
         {
             await Task.Delay(100);
-
-            var b = (PhotonNetwork.CurrentRoom.CustomProperties[$"{Team.ToString()}_IsPutted"] is int vb) ? vb : -1;
-
-
-
-            if (b > 0) 
+            
+            if(isTurned)
             {
-                Debug.Log("Online Put");
-
-                var x = PhotonNetwork.CurrentRoom.CustomProperties[$"{Team.ToString()}_TurnInfo_X"];
-                var y = PhotonNetwork.CurrentRoom.CustomProperties[$"{Team.ToString()}_TurnInfo_Y"];
-
-                if (x == null || y == null)
-                    continue;
-
-                turnInfo.X = (int)x;
-                turnInfo.Y = (int)y;
-                Debug.Log(b);
-
-                switch ((EStone)b)
-                {
-                    case EStone.DEFAULT:
-                        turnInfo.PutStone = GameObject.Instantiate
-                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
-                            .AddComponent<Stone>();
-                        break;
-
-                    case EStone.SUN:
-                        turnInfo.PutStone = GameObject.Instantiate
-                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
-                            .AddComponent<SunStone>();
-                        break;
-
-                    case EStone.CROSS:
-                        turnInfo.PutStone = GameObject.Instantiate
-                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
-                            .AddComponent<CrossStone>();
-                        break;
-
-                    case EStone.X:
-                        turnInfo.PutStone = GameObject.Instantiate
-                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
-                            .AddComponent<XStone>();
-                        break;
-
-                    case EStone.CIRCLE:
-                        turnInfo.PutStone = GameObject.Instantiate
-                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
-                            .AddComponent<CircleStone>();
-                        break;
-                    case EStone.ARROW:
-                        turnInfo.PutStone = GameObject.Instantiate
-                            (stone, new Vector3(0, -10, 0), Quaternion.identity)
-                            .AddComponent<ArrowStone>();
-                        break;
-
-                    default:
-                        Debug.LogError("EStone None");
-                        break;
-                }
-
-                turnInfo.PutStone.SetTeam(Team);
-
+                isTurned = false;
                 break;
             }
         }
@@ -100,15 +45,27 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
         return turnInfo;
     }
 
+    private void OnAction(int kind, int x, int y)
+    {
+        turnInfo = new TurnInfo();
+        turnInfo.PutStone = SelectStone((EStone)kind);
+        turnInfo.PutStone.SetTeam(Team);
+        turnInfo.X = x;
+        turnInfo.Y = y;
+        isTurned = true;
+    }
+
     public void Init(GameManager gManager)
     {
         gameManager = gManager;
 
+        OnlineScriptRef.OnValueSet += OnAction;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+
     }
 
     
@@ -116,6 +73,58 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
     // Update is called once per frame
     void Update()
     {
+    }
+
+    private IStone SelectStone(EStone selectedStone)
+    {
+        IStone s;
+
+        switch (selectedStone)
+        {
+            case EStone.DEFAULT:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<Stone>();
+                break;
+
+            case EStone.SUN:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<SunStone>();
+                break;
+
+            case EStone.CROSS:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<CrossStone>();
+                break;
+
+            case EStone.X:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<XStone>();
+                break;
+
+            case EStone.CIRCLE:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<CircleStone>();
+                break;
+            case EStone.ARROW:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<ArrowStone>();
+                break;
+
+            default:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<CircleStone>();
+                Debug.LogError("EStone None");
+                break;
+        }
+
+        return s;
     }
 }
 

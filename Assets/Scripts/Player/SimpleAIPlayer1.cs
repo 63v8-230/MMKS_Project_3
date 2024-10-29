@@ -13,6 +13,8 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
 
     public ETeam Team { set => _team = value; get => _team; }
 
+    public OnlineScript OnlineScriptRef { get; set; }
+
     private GameManager gameManager;
 
     async public Task<TurnInfo> DoTurn()

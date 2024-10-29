@@ -22,6 +22,10 @@ public class OnlinePlayerManager : MonoBehaviourPunCallbacks
 
     private bool isStarted = false;
 
+    private float t = 0;
+
+    private bool isReadyToStart = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -67,6 +71,7 @@ public class OnlinePlayerManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("ルームへ参加しました");
+        PhotonNetwork.Instantiate("OnlineObject", Vector3.zero, Quaternion.identity);
     }
 
 
@@ -84,56 +89,92 @@ public class OnlinePlayerManager : MonoBehaviourPunCallbacks
         if (isStarted || PhotonNetwork.CurrentRoom == null) 
             return;
 
-        if (PhotonNetwork.CurrentRoom.CustomProperties["Data_X"] != null)
-            Data.Instance.BOARD_X = (int)PhotonNetwork.CurrentRoom.CustomProperties["Data_X"];
-
-        if (PhotonNetwork.CurrentRoom.CustomProperties["Data_Y"] != null)
-            Data.Instance.BOARD_Y = (int)PhotonNetwork.CurrentRoom.CustomProperties["Data_Y"];
-
-
-        //プレイヤーが2人そろえば
-        if (PhotonNetwork.PlayerList.Length == 2) 
+        t += Time.deltaTime;
+        if(t>5)
         {
+            t = 0;
 
-            Debug.Log("Ready");
-            if(PhotonNetwork.IsMasterClient)
+
+            if (isReadyToStart)
             {
-                Debug.Log("Host");
-                var hashTable1 = new ExitGames.Client.Photon.Hashtable();
+                var l = GameObject.FindObjectsByType<PhotonView>(FindObjectsSortMode.None);
 
-                hashTable1[$"{ETeam.BLACK.ToString()}_IsPutted"] = 0;
-                hashTable1[$"{ETeam.BLACK.ToString()}_TurnInfo_X"] = 0;
-                hashTable1[$"{ETeam.BLACK.ToString()}_TurnInfo_Y"] = 0;
+                Debug.Log($"p1:{l[0].gameObject.GetComponent<OnlineScript>().IsLoad}\np2:{l[1].gameObject.GetComponent<OnlineScript>().IsLoad}");
 
-                hashTable1[$"{ETeam.WHITE.ToString()}_IsPutted"] = 0;
-                hashTable1[$"{ETeam.WHITE.ToString()}_TurnInfo_X"] = 0;
-                hashTable1[$"{ETeam.WHITE.ToString()}_TurnInfo_Y"] = 0;
-
-                PhotonNetwork.CurrentRoom.SetCustomProperties(hashTable1);
+                if (l[0].gameObject.GetComponent<OnlineScript>().IsLoad &&
+                    l[1].gameObject.GetComponent<OnlineScript>().IsLoad)
+                {
+                    gameManagerRef.LunchGame();
+                    isStarted = true;
+                    return;
+                }
+                return;
             }
 
 
-            if(PhotonNetwork.IsMasterClient)
+            //プレイヤーが2人そろえば
+            if (GameObject.FindObjectsByType<PhotonView>(FindObjectsSortMode.None).Length == 2)
             {
-                gameManagerRef.p1 = GameObject.Instantiate(offlinePlayerPrefab,Vector3.zero, Quaternion.identity);
-                gameManagerRef.p1.GetComponent<IPlayer>().Team = ETeam.BLACK;
+                Debug.Log("Ready");
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    Debug.Log("Host");
+                    var hashTable1 = new ExitGames.Client.Photon.Hashtable();
 
-                gameManagerRef.p2 = GameObject.Instantiate(onlinePlayerPrefab, Vector3.zero, Quaternion.identity);
-                gameManagerRef.p2.GetComponent<IPlayer>().Team = ETeam.WHITE;
+                    hashTable1[$"{ETeam.BLACK.ToString()}_IsPutted"] = 0;
+                    hashTable1[$"{ETeam.BLACK.ToString()}_TurnInfo_X"] = 0;
+                    hashTable1[$"{ETeam.BLACK.ToString()}_TurnInfo_Y"] = 0;
+
+                    hashTable1[$"{ETeam.WHITE.ToString()}_IsPutted"] = 0;
+                    hashTable1[$"{ETeam.WHITE.ToString()}_TurnInfo_X"] = 0;
+                    hashTable1[$"{ETeam.WHITE.ToString()}_TurnInfo_Y"] = 0;
+
+                    PhotonNetwork.CurrentRoom.SetCustomProperties(hashTable1);
+                }
+
+                IPlayer pRef1, pRef2;
+                OnlineScript mine = null;
+
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    gameManagerRef.p1 = GameObject.Instantiate(offlinePlayerPrefab, Vector3.zero, Quaternion.identity);
+                    pRef1 = gameManagerRef.p1.GetComponent<IPlayer>();
+                    pRef1.Team = ETeam.BLACK;
+
+                    gameManagerRef.p2 = GameObject.Instantiate(onlinePlayerPrefab, Vector3.zero, Quaternion.identity);
+                    pRef2 = gameManagerRef.p2.GetComponent<IPlayer>();
+                    pRef2.Team = ETeam.WHITE;
+                }
+                else
+                {
+                    gameManagerRef.p2 = GameObject.Instantiate(offlinePlayerPrefab, Vector3.zero, Quaternion.identity);
+                    pRef1 = gameManagerRef.p2.GetComponent<IPlayer>();
+                    pRef1.Team = ETeam.WHITE;
+
+                    gameManagerRef.p1 = GameObject.Instantiate(onlinePlayerPrefab, Vector3.zero, Quaternion.identity);
+                    pRef2 = gameManagerRef.p1.GetComponent<IPlayer>();
+                    pRef2.Team = ETeam.BLACK;
+                }
+
+
+                foreach (var item in GameObject.FindObjectsByType<PhotonView>(FindObjectsSortMode.None))
+                {
+                    if (item.IsMine)
+                    {
+                        mine = pRef1.OnlineScriptRef = item.gameObject.GetComponent<OnlineScript>();
+                    }
+                    else
+                    {
+                        pRef2.OnlineScriptRef = item.gameObject.GetComponent<OnlineScript>();
+                    }
+                }
+
+                GameObject.Destroy(messageObject);
+                mine.IsLoad = true;
+
+                isReadyToStart = true;
             }
-            else
-            {
-                gameManagerRef.p2 = GameObject.Instantiate(offlinePlayerPrefab, Vector3.zero, Quaternion.identity);
-                gameManagerRef.p2.GetComponent<IPlayer>().Team = ETeam.WHITE;
 
-                gameManagerRef.p1 = GameObject.Instantiate(onlinePlayerPrefab, Vector3.zero, Quaternion.identity);
-                gameManagerRef.p1.GetComponent<IPlayer>().Team = ETeam.BLACK;
-            }
-
-            GameObject.Destroy(messageObject);
-
-            gameManagerRef.LunchGame();
-            isStarted = true;
         }
     }
 }

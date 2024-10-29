@@ -20,6 +20,8 @@ public interface IPlayer
     /// </summary>
     public ETeam Team { set; get; }
 
+    public OnlineScript OnlineScriptRef { set; get; }
+
     /// <summary>
     /// ‰Šú‰»ˆ—‚Æ‚©
     /// </summary>

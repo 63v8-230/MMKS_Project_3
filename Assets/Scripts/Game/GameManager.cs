@@ -22,7 +22,7 @@ public enum EGameState
 }
 
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     public GameObject p1;
@@ -51,6 +51,9 @@ public class GameManager : MonoBehaviour
     private EGameState currentGameState;
 
     bool isSkipped = false;
+
+    private float gameEndCheckCounter = 0;
+    private const float GAME_END_CHECK_TIME = 5;
 
     public async void GameStart(IPlayer player1, IPlayer player2)
     {
@@ -112,6 +115,15 @@ public class GameManager : MonoBehaviour
 
         if (isPlay)
         {
+            gameEndCheckCounter += Time.deltaTime;
+            if(gameEndCheckCounter > GAME_END_CHECK_TIME)
+            {
+                if(PhotonNetwork.CurrentRoom.PlayerCount < 2)
+                {
+                    OnEndOfGame("Rival Player is leave.");
+                }
+            }
+
             switch (currentGameState)
             {
                 case EGameState.PUT:
@@ -163,7 +175,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void OnEndOfGame()
+    private void OnEndOfGame(string additionalMessage = "")
     {
         isPlay = false;
         int b, w;
@@ -174,6 +186,6 @@ public class GameManager : MonoBehaviour
                 winTeam = "Black Win!";
             else
                 winTeam = "White Win!";
-        tmPro.text = $"{winTeam}\nBlack: {b}\nWhite: {w}";
+        tmPro.text = $"{winTeam}\nBlack: {b}\nWhite: {w}\n{additionalMessage}";
     }
 }
