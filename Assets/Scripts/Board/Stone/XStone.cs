@@ -15,6 +15,7 @@ public class XStone : SkillStoneBase
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
         Debug.Log("X Skill Start!");
+        yield return new WaitForSeconds(0.1f);
 
         for (int i = 1; i < stoneManager.directions.Length; i += 2)
         {
@@ -34,6 +35,7 @@ public class XStone : SkillStoneBase
             }
         }
 
+        yield return new WaitForSeconds(1);
         yield break;
     }
 

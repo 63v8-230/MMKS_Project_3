@@ -15,6 +15,7 @@ public class CrossStone : SkillStoneBase
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
         Debug.Log("Cross Skill Start!");
+        yield return new WaitForSeconds(0.1f);
 
         for (int i = 0; i < stoneManager.directions.Length; i += 2) 
         {
@@ -34,6 +35,7 @@ public class CrossStone : SkillStoneBase
             }
         }
 
+        yield return new WaitForSeconds(1);
         yield break;
     }
 

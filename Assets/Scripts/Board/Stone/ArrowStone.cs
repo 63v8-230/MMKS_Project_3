@@ -15,6 +15,7 @@ public class ArrowStone : SkillStoneBase
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
         Debug.Log("Arrow Skill Start!");
+        yield return new WaitForSeconds(0.1f);
 
         //TODO ‚Æ‚è‚ ‚¦‚¸ã•ûŒüBŒü‚«‚Ç‚¤‚·‚é–â‘è
         var dir = stoneManager.directions[0];
@@ -32,6 +33,7 @@ public class ArrowStone : SkillStoneBase
             position += dir;
         }
 
+        yield return new WaitForSeconds(1);
         yield break;
     }
 

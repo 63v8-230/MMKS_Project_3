@@ -15,6 +15,7 @@ public class CircleStone : SkillStoneBase
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
         Debug.Log("Circle Skill Start!");
+        yield return new WaitForSeconds(0.1f);
 
         foreach (var dir in stoneManager.directions)
         {
@@ -24,6 +25,8 @@ public class CircleStone : SkillStoneBase
 
             SetHighLight(stoneManager, position + dir,new Color(0.569f, 0.812f, 0.314f));
         }
+
+        yield return new WaitForSeconds(1);
 
         yield break;
     }

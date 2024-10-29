@@ -15,6 +15,7 @@ public class SunStone : SkillStoneBase
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
         Debug.Log("Sun Skill Start!");
+        yield return new WaitForSeconds(0.1f);
 
         for (int i = 0; i < stoneManager.directions.Length; i += 1)
         {
@@ -34,6 +35,7 @@ public class SunStone : SkillStoneBase
             }
         }
 
+        yield return new WaitForSeconds(1);
         yield break;
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StoneLight : MonoBehaviour
 {
-    float t = 1;
+    float t = 0.5f;
     Material m;
     Color cl;
 
@@ -16,7 +16,7 @@ public class StoneLight : MonoBehaviour
         t -= Time.deltaTime;
         var c = m.color;
         c -= cl * Time.deltaTime * f;
-        //c.a -= Time.deltaTime;
+        //c.a -= Time.deltaTime * 2;
         m.color = c;
 
         if (t <= 0)
@@ -34,7 +34,7 @@ public class StoneLight : MonoBehaviour
 
         cl = Color.white;
 
-        f = 1;
+        f = 2;
         Debug.Log(f);
     }
 
@@ -44,7 +44,7 @@ public class StoneLight : MonoBehaviour
         cl = new Color(0.529f, 0, 0.875f);
         m.color = cl * 2;
 
-        f = 2;
+        f = 4;
         Debug.Log(f);
     }
 }
