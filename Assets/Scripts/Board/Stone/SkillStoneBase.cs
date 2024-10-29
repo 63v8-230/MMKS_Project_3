@@ -14,11 +14,18 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
     protected ETeam baseTeam = ETeam.NONE;
 
+    protected float hideAlpha = 0.1f;
+
     // Start is called before the first frame update
     void Start()
     {
         tex = GetTexture();
-        GameObjectRef.transform.Find("Plane").gameObject.GetComponent<Renderer>().material.mainTexture = tex;
+        
+        var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
+        r.material.mainTexture = tex;
+        var c = r.material.color;
+        c.a = hideAlpha;
+        r.material.color = c;
     }
 
     protected void SetHighLight(StoneManager stoneManager, Vector2 position, Color highlightColor)
@@ -33,8 +40,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
 
     public void SetTeam(ETeam team, StoneManager stoneManager = null, int x = -1, int y = -1)
-    {
-        Team = team;
+    {    
 
         Debug.Log("fTeam: "+team.ToString());
         if (baseTeam == ETeam.NONE)
@@ -45,7 +51,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
         //Debug.Log(team.ToString());
 
         Debug.Log($"baseTeam: {baseTeam}\nteam: {team}\nStoneManager: {stoneManager}");
-        if (/*baseTeam == Team && */team != baseTeam && stoneManager != null)
+        if (baseTeam != Team && team == baseTeam && stoneManager != null)
         {
             SkillAction action = new SkillAction();
             action.Action = OnSKill;
@@ -54,7 +60,8 @@ public class SkillStoneBase : MonoBehaviour, IStone
             Debug.Log("ŽÀsÏ‚Ý");
         }
 
-        
+        Team = team;
+
         Quaternion rot;
         switch (team)
         {
@@ -74,7 +81,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
         Debug.Log($"TeamChanged: {baseTeam}->{team}");
 
-        if (baseTeam == Team)
+        if (baseTeam != Team)
         {
             var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
             var c = r.material.color;
@@ -85,7 +92,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
         {
             var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
             var c = r.material.color;
-            c.a = 0.4f;
+            c.a = hideAlpha;
             r.material.color = c;
         }
     }
