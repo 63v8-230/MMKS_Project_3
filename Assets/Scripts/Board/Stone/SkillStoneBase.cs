@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 public class SkillStoneBase : MonoBehaviour, IStone
@@ -121,5 +122,10 @@ public class SkillStoneBase : MonoBehaviour, IStone
     protected virtual Texture GetTexture()
     {
         return (Texture)Resources.Load("Pictures/Circle");
+    }
+
+    public virtual EStone GetStone()
+    {
+        return EStone.NONE;
     }
 }

@@ -43,4 +43,9 @@ public class XStone : SkillStoneBase
     {
         return (Texture)Resources.Load("Pictures/X");
     }
+
+    public override EStone GetStone()
+    {
+        return EStone.X;
+    }
 }

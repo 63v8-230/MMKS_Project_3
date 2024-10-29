@@ -41,4 +41,9 @@ public class ArrowStone : SkillStoneBase
     {
         return (Texture)Resources.Load("Pictures/Arrow");
     }
+
+    public override EStone GetStone()
+    {
+        return EStone.ARROW;
+    }
 }

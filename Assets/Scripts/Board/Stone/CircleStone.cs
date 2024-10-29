@@ -35,4 +35,9 @@ public class CircleStone : SkillStoneBase
     {
         return (Texture)Resources.Load("Pictures/Circle");
     }
+
+    public override EStone GetStone()
+    {
+        return EStone.CIRCLE;
+    }
 }

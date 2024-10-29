@@ -43,4 +43,9 @@ public class CrossStone : SkillStoneBase
     {
         return (Texture)Resources.Load("Pictures/Cross");
     }
+
+    public override EStone GetStone()
+    {
+        return EStone.CROSS;
+    }
 }

@@ -43,4 +43,9 @@ public class SunStone : SkillStoneBase
     {
         return (Texture)Resources.Load("Pictures/Sun");
     }
+
+    public override EStone GetStone()
+    {
+        return EStone.SUN;
+    }
 }

@@ -40,4 +40,6 @@ public interface IStone
     /// </summary>
     /// <returns></returns>
     public IEnumerator OnSKill(StoneManager stoneManager, Vector2 position);
+
+    public EStone GetStone();
 }

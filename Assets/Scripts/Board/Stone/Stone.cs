@@ -66,4 +66,9 @@ public class Stone : MonoBehaviour , IStone
     {
         yield break;
     }
+
+    public EStone GetStone()
+    {
+        return EStone.DEFAULT;
+    }
 }
