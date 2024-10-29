@@ -2265,6 +2265,8 @@ MonoBehaviour:
   StoneOption: {fileID: 2125615718}
   HighlightCellObject: {fileID: 155860953808322523, guid: f8c6c1fd81f5f394695cc7a97323d811,
     type: 3}
+  LightStoneObject: {fileID: 105967316902566852, guid: 82b278fd372eee44e88d787ccc05642b,
+    type: 3}
 --- !u!4 &2052147944
 Transform:
   m_ObjectHideFlags: 0

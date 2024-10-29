@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -48,6 +49,14 @@ public class Stone : MonoBehaviour , IStone
 
     public IEnumerator OnFlip()
     {
+        var c = GameObject.Instantiate(Resources.Load("Models/StoneLight"), gameObject.transform)
+            .GetComponent<StoneLight>();
+
+        if (Team == ETeam.BLACK)
+            c.InitB();
+        else
+            c.InitW();
+
         yield return new WaitForSeconds(0.1f);
 
         yield break;

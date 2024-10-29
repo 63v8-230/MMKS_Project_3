@@ -83,6 +83,9 @@ public class StoneManager : MonoBehaviour
     [SerializeField]
     public GameObject HighlightCellObject;
 
+    [SerializeField]
+    public GameObject LightStoneObject;
+
     /// <summary>
     /// î’ñ è„ÇÃêŒÅBâΩÇ‡Ç»Ç¢Ç∆Ç´ÇÕNullÇ…Ç»ÇÈÅB
     /// </summary>
@@ -460,7 +463,10 @@ public class StoneManager : MonoBehaviour
         x += (int)direction.x;
         y += (int)direction.y;
 
-        
+        //if (myTeam == ETeam.BLACK)
+        //    myTeam = ETeam.WHITE;
+        //else
+        //    myTeam = ETeam.BLACK;
 
         while (true)
         {
