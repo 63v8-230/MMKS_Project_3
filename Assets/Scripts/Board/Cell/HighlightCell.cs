@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HighlightCell : MonoBehaviour
 {
-    float t = 2;
+    float t = 1;
     Material m;
     Color c;
     float d;
