@@ -17,6 +17,18 @@ public enum ETeam
     WALL,
 }
 
+public enum EDirection
+{
+    TOP,
+    TOP_RIGHT,
+    RIGHT,
+    DOWN_RIGHT,
+    DOWN,
+    DOWN_LEFT,
+    LEFT,
+    TOP_LEFT,
+}
+
 public struct PuttableCellInfo
 {
     public int X;
