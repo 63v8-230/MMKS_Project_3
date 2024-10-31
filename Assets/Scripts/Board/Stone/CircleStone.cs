@@ -23,7 +23,7 @@ public class CircleStone : SkillStoneBase
                 stoneManager.FlipStone((int)(position.x + dir.x), (int)(position.y + dir.y),
                     baseTeam);
 
-            SetHighLight(stoneManager, position + dir,new Color(0.569f, 0.812f, 0.314f));
+            SetHighLight(stoneManager, position + dir,Å@GetColor());
         }
 
         yield return new WaitForSeconds(1);
@@ -39,5 +39,10 @@ public class CircleStone : SkillStoneBase
     public override EStone GetStone()
     {
         return EStone.CIRCLE;
+    }
+
+    protected override Color GetColor()
+    {
+        return new Color(0.569f, 0.812f, 0.314f);
     }
 }

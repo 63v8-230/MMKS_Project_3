@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ArrowStone : SkillStoneBase
 {
+    public EDirection StoneDirection = EDirection.TOP;
 
     public override IEnumerator OnFlip()
     {
@@ -18,7 +19,7 @@ public class ArrowStone : SkillStoneBase
         yield return new WaitForSeconds(0.1f);
 
         //TODO Ç∆ÇËÇ†Ç¶Ç∏è„ï˚å¸ÅBå¸Ç´Ç«Ç§Ç∑ÇÈñ‚ëË
-        var dir = stoneManager.directions[0];
+        var dir = stoneManager.directions[(int)StoneDirection];
         position += dir;
         while (true)
         {
@@ -28,7 +29,7 @@ public class ArrowStone : SkillStoneBase
             stoneManager.FlipStone((int)(position.x), (int)(position.y),
                 baseTeam);
 
-            SetHighLight(stoneManager, position, new Color(0.847f, 0.431f, 0.8f));
+            SetHighLight(stoneManager, position, GetColor());
 
             position += dir;
         }
@@ -45,5 +46,10 @@ public class ArrowStone : SkillStoneBase
     public override EStone GetStone()
     {
         return EStone.ARROW;
+    }
+
+    protected override Color GetColor()
+    {
+        return new Color(0.847f, 0.431f, 0.8f);
     }
 }

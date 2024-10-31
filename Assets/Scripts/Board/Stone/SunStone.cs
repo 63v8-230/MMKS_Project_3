@@ -29,7 +29,7 @@ public class SunStone : SkillStoneBase
                 stoneManager.FlipStone((int)(flipPosition.x), (int)(flipPosition.y),
                     baseTeam);
 
-                SetHighLight(stoneManager, flipPosition, new Color(1, 0, 0));
+                SetHighLight(stoneManager, flipPosition, GetColor());
 
                 flipPosition += dir;
             }
@@ -47,5 +47,10 @@ public class SunStone : SkillStoneBase
     public override EStone GetStone()
     {
         return EStone.SUN;
+    }
+
+    protected override Color GetColor()
+    {
+        return new Color(1, 0, 0);
     }
 }

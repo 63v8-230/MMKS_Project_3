@@ -29,7 +29,7 @@ public class CrossStone : SkillStoneBase
                 stoneManager.FlipStone((int)(flipPosition.x), (int)(flipPosition.y),
                     baseTeam);
 
-                SetHighLight(stoneManager, flipPosition, new Color(0, 0.439f, 0.753f));
+                SetHighLight(stoneManager, flipPosition, GetColor());
 
                 flipPosition += dir;
             }
@@ -47,5 +47,10 @@ public class CrossStone : SkillStoneBase
     public override EStone GetStone()
     {
         return EStone.CROSS;
+    }
+
+    protected override Color GetColor()
+    {
+        return new Color(0, 0.439f, 0.753f);
     }
 }

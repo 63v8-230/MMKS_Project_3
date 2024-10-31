@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
@@ -15,7 +16,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
     protected ETeam baseTeam = ETeam.NONE;
 
-    protected float hideAlpha = 0.1f;
+    protected float hideAlpha = 0.4f;
 
     // Start is called before the first frame update
     void Start()
@@ -25,8 +26,10 @@ public class SkillStoneBase : MonoBehaviour, IStone
         var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
         r.material.mainTexture = tex;
         var c = r.material.color;
-        c.a = hideAlpha;
+        c.a = 1;
+        r.material.EnableKeyword("_EMISSION");
         r.material.color = c;
+        r.material.SetColor("_EmissionColor", GetColor() * 1.5f);
     }
 
     protected void SetHighLight(StoneManager stoneManager, Vector2 position, Color highlightColor)
@@ -52,7 +55,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
         //Debug.Log(team.ToString());
 
         Debug.Log($"baseTeam: {baseTeam}\nteam: {team}\nStoneManager: {stoneManager}");
-        if (baseTeam != Team && team == baseTeam && stoneManager != null)
+        if (baseTeam == Team && team != baseTeam && stoneManager != null)
         {
             SkillAction action = new SkillAction();
             action.Action = OnSKill;
@@ -82,19 +85,23 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
         Debug.Log($"TeamChanged: {baseTeam}->{team}");
 
-        if (baseTeam != Team)
+        if (baseTeam == Team)
         {
             var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
             var c = r.material.color;
             c.a = 1;
+            r.material.EnableKeyword("_EMISSION");
             r.material.color = c;
+            r.material.SetColor("_EmissionColor", GetColor() * 1.5f);
         }
         else
         {
             var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
             var c = r.material.color;
             c.a = hideAlpha;
+            r.material.EnableKeyword("_EMISSION");
             r.material.color = c;
+            r.material.SetColor("_EmissionColor", Color.black);
         }
     }
 
@@ -127,5 +134,10 @@ public class SkillStoneBase : MonoBehaviour, IStone
     public virtual EStone GetStone()
     {
         return EStone.NONE;
+    }
+
+    protected virtual Color GetColor()
+    {
+        return Color.white;
     }
 }
