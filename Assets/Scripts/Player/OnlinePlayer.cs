@@ -49,7 +49,10 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
     {
         turnInfo = new TurnInfo();
         turnInfo.PutStone = SelectStone((EStone)kind);
+        turnInfo.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
         turnInfo.PutStone.SetTeam(Team);
+        if(kind > 1)
+            (turnInfo.PutStone as SkillStoneBase).IsOwnerOnline = true;
         turnInfo.X = x;
         turnInfo.Y = y;
         isTurned = true;
