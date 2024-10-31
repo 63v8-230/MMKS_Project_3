@@ -115,14 +115,20 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (isPlay)
         {
-            gameEndCheckCounter += Time.deltaTime;
-            if(gameEndCheckCounter > GAME_END_CHECK_TIME)
+            if(Data.Instance.IsOnline)
             {
-                if(PhotonNetwork.CurrentRoom.PlayerCount < 2)
+                gameEndCheckCounter += Time.deltaTime;
+                if (gameEndCheckCounter > GAME_END_CHECK_TIME)
                 {
-                    OnEndOfGame("Rival Player is leave.");
+                    gameEndCheckCounter = 0;
+
+                    if (PhotonNetwork.CurrentRoom.PlayerCount < 2)
+                    {
+                        OnEndOfGame("Rival Player is leave.");
+                    }
                 }
             }
+            
 
             switch (currentGameState)
             {
