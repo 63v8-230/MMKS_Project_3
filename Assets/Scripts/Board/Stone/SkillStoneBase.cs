@@ -18,6 +18,10 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
     protected float hideAlpha = 0.4f;
 
+    protected bool isOwnerOnline = false;
+
+    public bool IsOwnerOnline { private get { return isOwnerOnline; } set { isOwnerOnline = value; } }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,11 +29,14 @@ public class SkillStoneBase : MonoBehaviour, IStone
         
         var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
         r.material.mainTexture = tex;
-        var c = r.material.color;
-        c.a = 1;
-        r.material.EnableKeyword("_EMISSION");
-        r.material.color = c;
-        r.material.SetColor("_EmissionColor", GetColor() * 1.5f);
+
+        if(!IsOwnerOnline)
+            SetStoneLogo(true);
+        else
+        {
+            hideAlpha = 0;
+            SetStoneLogo(false);
+        }
     }
 
     protected void SetHighLight(StoneManager stoneManager, Vector2 position, Color highlightColor)
@@ -84,8 +91,15 @@ public class SkillStoneBase : MonoBehaviour, IStone
         }
 
         Debug.Log($"TeamChanged: {baseTeam}->{team}");
+        SetStoneLogo(baseTeam == team);
 
-        if (baseTeam == Team)
+
+    }
+
+    protected void SetStoneLogo(bool isView)
+    {
+
+        if (isView)
         {
             var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
             var c = r.material.color;

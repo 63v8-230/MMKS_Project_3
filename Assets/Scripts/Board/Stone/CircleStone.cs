@@ -17,6 +17,7 @@ public class CircleStone : SkillStoneBase
         Debug.Log("Circle Skill Start!");
         yield return new WaitForSeconds(0.1f);
 
+        SetHighLight(stoneManager, position, GetColor() * 2);
         foreach (var dir in stoneManager.directions)
         {
             if (!stoneManager.CheckOutOfBoard((int)(position.x + dir.x), (int)(position.y + dir.y)))

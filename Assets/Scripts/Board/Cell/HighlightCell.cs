@@ -14,7 +14,10 @@ public class HighlightCell : MonoBehaviour
     {
         m = gameObject.transform.Find("Model").gameObject.GetComponent<Renderer>().material;
         c = m.color;
-        d = 1 / t;
+        if (c.r > 1 || c.g > 1 || c.b > 1)
+            d = (1 / t) * 2;
+        else
+            d = 1 / t;
     }
 
     // Update is called once per frame

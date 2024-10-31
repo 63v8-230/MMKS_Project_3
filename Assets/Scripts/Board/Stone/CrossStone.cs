@@ -17,6 +17,7 @@ public class CrossStone : SkillStoneBase
         Debug.Log("Cross Skill Start!");
         yield return new WaitForSeconds(0.1f);
 
+        SetHighLight(stoneManager, position, GetColor() * 2);
         for (int i = 0; i < stoneManager.directions.Length; i += 2) 
         {
             var dir = stoneManager.directions[i];

@@ -18,7 +18,7 @@ public class ArrowStone : SkillStoneBase
         Debug.Log("Arrow Skill Start!");
         yield return new WaitForSeconds(0.1f);
 
-        //TODO ‚Æ‚è‚ ‚¦‚¸ã•ûŒüBŒü‚«‚Ç‚¤‚·‚é–â‘è
+        SetHighLight(stoneManager, position, GetColor() * 2);
         var dir = stoneManager.directions[(int)StoneDirection];
         position += dir;
         while (true)

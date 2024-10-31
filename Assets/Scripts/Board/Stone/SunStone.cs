@@ -17,6 +17,7 @@ public class SunStone : SkillStoneBase
         Debug.Log("Sun Skill Start!");
         yield return new WaitForSeconds(0.1f);
 
+        SetHighLight(stoneManager, position, GetColor() * 2);
         for (int i = 0; i < stoneManager.directions.Length; i += 1)
         {
             var dir = stoneManager.directions[i];
