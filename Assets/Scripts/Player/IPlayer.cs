@@ -3,6 +3,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
+public struct Deck
+{
+    List<OwnStone> stones;
+}
+
+public struct OwnStone
+{
+    EStone Stone;
+    int Amount;
+}
+
 /// <summary>
 /// ターン終了後にマネージャーに渡す情報
 /// </summary>
