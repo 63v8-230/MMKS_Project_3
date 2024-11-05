@@ -23,6 +23,8 @@ public interface IStone
 
     public GameObject GameObjectRef { get; }
 
+    public Animator AnimatorComponent { get; }
+
     /// <summary>
     /// Î‚ÌF‚ğ•ÏX
     /// </summary>

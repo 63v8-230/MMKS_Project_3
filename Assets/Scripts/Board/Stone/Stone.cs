@@ -13,10 +13,14 @@ public class Stone : MonoBehaviour , IStone
 
     public GameObject GameObjectRef { get => gameObject; }
 
+    private Animator animCom;
+    public Animator AnimatorComponent { get => animCom; }
+
 
     // Start is called before the first frame update
     void Start()
     {
+        animCom = transform.Find("Model").GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -30,19 +34,42 @@ public class Stone : MonoBehaviour , IStone
     {
         Team = team;
         Quaternion rot;
+
+        if(animCom == null || true)
+        {
+            switch (team)
+            {
+                default:
+                case ETeam.BLACK:
+                    rot = gameObject.transform.Find("Model").localRotation;
+                    rot.eulerAngles = new Vector3(180, 0, 0);
+                    gameObject.transform.Find("Model").localRotation = rot;
+                    break;
+
+                case ETeam.WHITE:
+                    rot = gameObject.transform.Find("Model").localRotation;
+                    rot.eulerAngles = new Vector3(0, 0, 0);
+                    gameObject.transform.Find("Model").localRotation = rot;
+                    break;
+            }
+            return;
+        }
+
         switch (team)
         {
             default:
             case ETeam.BLACK:
-                rot = gameObject.transform.Find("Model").localRotation;
-                rot.eulerAngles = new Vector3(180, 0, 0);
-                gameObject.transform.Find("Model").localRotation = rot;
+                //rot = gameObject.transform.Find("Model").localRotation;
+                //rot.eulerAngles = new Vector3(180, 0, 0);
+                //gameObject.transform.Find("Model").localRotation = rot;
+                AnimatorComponent.SetTrigger("W2B");
                 break;
 
             case ETeam.WHITE:
-                rot = gameObject.transform.Find("Model").localRotation;
-                rot.eulerAngles = new Vector3(0, 0, 0);
-                gameObject.transform.Find("Model").localRotation = rot;
+                //rot = gameObject.transform.Find("Model").localRotation;
+                //rot.eulerAngles = new Vector3(0, 0, 0);
+                //gameObject.transform.Find("Model").localRotation = rot;
+                AnimatorComponent.SetTrigger("B2W");
                 break;
         }
     }

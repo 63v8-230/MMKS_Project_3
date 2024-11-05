@@ -11,6 +11,10 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
     public GameObject GameObjectRef { get => gameObject; }
 
+
+    private Animator animCom;
+    public Animator AnimatorComponent { get => animCom; }
+
     [SerializeField]
     private Texture tex;
 
@@ -25,18 +29,17 @@ public class SkillStoneBase : MonoBehaviour, IStone
     // Start is called before the first frame update
     void Start()
     {
+        animCom = GetComponent<Animator>();
+
         tex = GetTexture();
         
         var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
         r.material.mainTexture = tex;
 
-        if(!IsOwnerOnline)
-            SetStoneLogo(true);
-        else
-        {
+        if(IsOwnerOnline)
             hideAlpha = 0;
-            SetStoneLogo(false);
-        }
+
+        SetStoneLogo(true);
     }
 
     protected void SetHighLight(StoneManager stoneManager, Vector2 position, Color highlightColor)
