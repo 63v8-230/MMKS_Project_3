@@ -21,26 +21,14 @@ public class ShieldStone : SkillStoneBase
         Debug.Log("fTeam: " + team.ToString());
         if (baseTeam == ETeam.NONE)
         {
-            baseTeam = Team;
-
-            Quaternion rot;
-            switch (team)
-            {
-                default:
-                case ETeam.BLACK:
-                    rot = gameObject.transform.Find("Model").localRotation;
-                    rot.eulerAngles = new Vector3(180, 0, 0);
-                    gameObject.transform.Find("Model").localRotation = rot;
-                    break;
-
-                case ETeam.WHITE:
-                    rot = gameObject.transform.Find("Model").localRotation;
-                    rot.eulerAngles = new Vector3(0, 0, 0);
-                    gameObject.transform.Find("Model").localRotation = rot;
-                    break;
-            }
+            baseTeam = team;
+            //Debug.Log(team.ToString());
         }
-        //Debug.Log(team.ToString());
+        else
+        {
+            return;
+        }
+        
 
         Debug.Log($"baseTeam: {baseTeam}\nteam: {team}\nStoneManager: {stoneManager}");
         if (baseTeam == Team && team != baseTeam && stoneManager != null)
@@ -52,10 +40,27 @@ public class ShieldStone : SkillStoneBase
             Debug.Log("ŽÀsÏ‚Ý");
         }
 
+        Team = team;
 
-        return;
+        Quaternion rot;
+        switch (team)
+        {
+            default:
+            case ETeam.BLACK:
+                rot = gameObject.transform.Find("Model").localRotation;
+                rot.eulerAngles = new Vector3(180, 0, 0);
+                gameObject.transform.Find("Model").localRotation = rot;
+                break;
 
+            case ETeam.WHITE:
+                rot = gameObject.transform.Find("Model").localRotation;
+                rot.eulerAngles = new Vector3(0, 0, 0);
+                gameObject.transform.Find("Model").localRotation = rot;
+                break;
+        }
 
+        Debug.Log($"TeamChanged: {baseTeam}->{team}");
+        SetStoneLogo(baseTeam == team);
     }
 
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
@@ -79,6 +84,6 @@ public class ShieldStone : SkillStoneBase
 
     protected override Color GetColor()
     {
-        return new Color(1, 0.753f, 0);
+        return new Color(0.439f, 0.188f, 0.627f);
     }
 }
