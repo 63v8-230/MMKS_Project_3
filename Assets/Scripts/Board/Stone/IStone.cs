@@ -12,6 +12,7 @@ public enum EStone
     CIRCLE,
     ARROW,
     SHIELD,
+    CRYSTAL,
     MAX,
 }
 
