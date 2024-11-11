@@ -79,7 +79,7 @@ public class ShieldStone : SkillStoneBase
 
     public override EStone GetStone()
     {
-        return EStone.X;
+        return EStone.SHIELD;
     }
 
     protected override Color GetColor()
