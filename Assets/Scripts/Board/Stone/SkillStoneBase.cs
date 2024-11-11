@@ -72,7 +72,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
         Debug.Log("fTeam: "+team.ToString());
         if (baseTeam == ETeam.NONE)
         {
-            baseTeam = Team;
+            baseTeam = team;
             //Debug.Log(team.ToString());
         }
         //Debug.Log(team.ToString());
