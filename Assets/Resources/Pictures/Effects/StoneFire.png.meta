@@ -1,0 +1,787 @@
+fileFormatVersion: 2
+guid: 5bd8acba8e3669641ba59c8a3dbc0b1c
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: StoneFire_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1707
+        width: 341
+        height: 341
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14d9d4093d11bc342947d60a1d6ceca4
+      internalID: 1774371797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_1
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 1706.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 108f7dd9760b0fd40b2c068cbff1142a
+      internalID: -82638895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_2
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 1706.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a53d9278ddba59347a0ce746aa32e9c3
+      internalID: 399890814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_3
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 1706.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f997ede23940514a9f55d9b0907a73e
+      internalID: 1182247780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_4
+      rect:
+        serializedVersion: 2
+        x: 1364
+        y: 1706.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f64c34d3bdb49340b860306521bfffe
+      internalID: 1287077940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_5
+      rect:
+        serializedVersion: 2
+        x: 1705
+        y: 1706.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f895c53106a9dd429acb4b0b5635f7e
+      internalID: -1692564432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1365.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f202433b652b8c42b3ac930168407b8
+      internalID: 844164683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_7
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 1365.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 456adbcebcb693d4c86aa71ba1867e0a
+      internalID: 1991124121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_8
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 1365.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a07d973b9056dc144b77e20353b39874
+      internalID: -1168773302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_9
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 1365.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: babe206ed29ce5a4f8983574776e8ce8
+      internalID: -2000012698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_10
+      rect:
+        serializedVersion: 2
+        x: 1364
+        y: 1365.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b679e68418aaac4e918b509c43f1795
+      internalID: 570597748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_11
+      rect:
+        serializedVersion: 2
+        x: 1705
+        y: 1365.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af616561961b2f649bbee94cd6a70027
+      internalID: 1826166915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa6bc0338a9eeeb4aabfce9460b8d890
+      internalID: -319584601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_13
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 1024.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f401e42c8d5ac345bb49769f3db41a1
+      internalID: -1108099433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_14
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 1024.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee1a13a143ffd284d907f23461848f8d
+      internalID: -227372691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_15
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 1024.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5776ccd00ead3bf4eb8c3406310719fb
+      internalID: 805972884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_16
+      rect:
+        serializedVersion: 2
+        x: 1364
+        y: 1024.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b3ab5e86a3dc5794b8f97ac73c6a429a
+      internalID: -2046387007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_17
+      rect:
+        serializedVersion: 2
+        x: 1705
+        y: 1024.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c654d640dc3301c4288cf502fa48190c
+      internalID: 1361310940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 683.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb0f63f0c624d844b99c40bb9da27952
+      internalID: -1566119706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_19
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 683.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fc602809b18e2e48b3051e75d602232
+      internalID: -798703726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_20
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 683.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 657843b588ba1fb4c96066ed48375608
+      internalID: 1695556062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_21
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 683.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0f9c2f15aab1f14a99b9d63dadcfc10
+      internalID: -84739874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_22
+      rect:
+        serializedVersion: 2
+        x: 1364
+        y: 683.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34b4be7dfe14b3240896920f1c49f554
+      internalID: 718625033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_23
+      rect:
+        serializedVersion: 2
+        x: 1705
+        y: 683.6666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ce0022fe3f1f474db7eb17004bade3d
+      internalID: 1678780807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 342.66666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2a8c0c7eaeb1174b843c83c2d9292de
+      internalID: 752816633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_25
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 342.66666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a73534bb2f335da4392b471e5027ccd7
+      internalID: -1232761678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_26
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 342.66666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5aed40dd547dcac42ac693fde2e73b64
+      internalID: 1143983952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_27
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 342.66666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c851f3db2cd7e904c90bf3fa019bf9f0
+      internalID: 277958658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_28
+      rect:
+        serializedVersion: 2
+        x: 1364
+        y: 342.66666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d99ef9eab3c7c8543bdd476b277ec6b4
+      internalID: -110349529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFire_29
+      rect:
+        serializedVersion: 2
+        x: 1705
+        y: 342.66666
+        width: 341.33334
+        height: 341.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9969c9da4b77f7a4d9557910436ec7c2
+      internalID: 1816449940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 8d74cd7e9fee3c04b85728a9d9ff2305
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      StoneFire_0: 1774371797
+      StoneFire_1: -82638895
+      StoneFire_10: 570597748
+      StoneFire_11: 1826166915
+      StoneFire_12: -319584601
+      StoneFire_13: -1108099433
+      StoneFire_14: -227372691
+      StoneFire_15: 805972884
+      StoneFire_16: -2046387007
+      StoneFire_17: 1361310940
+      StoneFire_18: -1566119706
+      StoneFire_19: -798703726
+      StoneFire_2: 399890814
+      StoneFire_20: 1695556062
+      StoneFire_21: -84739874
+      StoneFire_22: 718625033
+      StoneFire_23: 1678780807
+      StoneFire_24: 752816633
+      StoneFire_25: -1232761678
+      StoneFire_26: 1143983952
+      StoneFire_27: 277958658
+      StoneFire_28: -110349529
+      StoneFire_29: 1816449940
+      StoneFire_3: 1182247780
+      StoneFire_4: 1287077940
+      StoneFire_5: -1692564432
+      StoneFire_6: 844164683
+      StoneFire_7: 1991124121
+      StoneFire_8: -1168773302
+      StoneFire_9: -2000012698
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
