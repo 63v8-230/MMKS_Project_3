@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class SunStone : SkillStoneBase
 {
-
+    protected override int SetCost()
+    {
+        return 20;
+    }
     public override IEnumerator OnFlip()
     {
         yield return new WaitForSeconds(0.1f);

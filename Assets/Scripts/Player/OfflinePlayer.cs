@@ -46,7 +46,11 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
                     gameManager.StoneManagerRef.CellPosition2Vector3((int)item.X, (int)item.Y),
                     Quaternion.identity));
 
-                puttableCell[puttableCell.Count-1].transform.Find("tx").GetComponent<TextMeshPro>().text = item.Count.ToString();
+                var txObj = puttableCell[puttableCell.Count - 1].transform.Find("tx");
+                txObj.GetComponent<TextMeshPro>().text = item.Count.ToString();
+
+                if (Data.Instance.IsOnline && Data.Instance.IsWhite)
+                    txObj.localEulerAngles += Vector3.up * 180;
             }
         }
         
@@ -83,6 +87,17 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     public void Init(GameManager gManager)
     {
         gameManager = gManager;
+
+        if(Data.Instance.IsOnline && Team==ETeam.WHITE)
+        {
+            Data.Instance.IsWhite = true;
+            Camera.main.transform.localEulerAngles += (Vector3.up * 180);
+            Camera.main.transform.localPosition =
+                new Vector3(
+                    Camera.main.transform.localPosition.x,
+                    Camera.main.transform.localPosition.y,
+                    Camera.main.transform.localPosition.z * -1);
+        }
     }
 
     // Start is called before the first frame update
@@ -203,6 +218,12 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
                 s =
                     GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<ArrowStone>();
+                break;
+
+            case EStone.SHIELD:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<ShieldStone>();
                 break;
 
             default:

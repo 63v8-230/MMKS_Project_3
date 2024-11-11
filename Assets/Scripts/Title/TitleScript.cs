@@ -14,6 +14,8 @@ public class Data
 
     public bool IsOnline = false;
     public string RoomName = "room1";
+
+    public bool IsWhite = false;
 }
 
 public class TitleScript : MonoBehaviour

@@ -119,6 +119,12 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
                     .AddComponent<ArrowStone>();
                 break;
 
+            case EStone.SHIELD:
+                s =
+                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<ShieldStone>();
+                break;
+
             default:
                 s =
                     GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)

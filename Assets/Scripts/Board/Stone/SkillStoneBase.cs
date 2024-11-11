@@ -15,6 +15,9 @@ public class SkillStoneBase : MonoBehaviour, IStone
     private Animator animCom;
     public Animator AnimatorComponent { get => animCom; }
 
+    protected int cost;
+    public int Cost { get => cost; }
+
     [SerializeField]
     private Texture tex;
 
@@ -29,17 +32,27 @@ public class SkillStoneBase : MonoBehaviour, IStone
     // Start is called before the first frame update
     void Start()
     {
+        cost = SetCost();
+
         animCom = GetComponent<Animator>();
 
         tex = GetTexture();
-        
-        var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
+
+        var ob = gameObject.transform.Find("Plane");
+        var r = ob.GetComponent<Renderer>();
         r.material.mainTexture = tex;
+        if(Data.Instance.IsOnline && Data.Instance.IsWhite)
+        ob.localEulerAngles += (Vector3.up * 180);
 
         if(IsOwnerOnline)
             hideAlpha = 0;
 
         SetStoneLogo(true);
+    }
+
+    protected virtual int SetCost()
+    {
+        return 1;
     }
 
     protected void SetHighLight(StoneManager stoneManager, Vector2 position, Color highlightColor)
@@ -53,7 +66,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
     }
 
 
-    public void SetTeam(ETeam team, StoneManager stoneManager = null, int x = -1, int y = -1)
+    public virtual void SetTeam(ETeam team, StoneManager stoneManager = null, int x = -1, int y = -1)
     {    
 
         Debug.Log("fTeam: "+team.ToString());

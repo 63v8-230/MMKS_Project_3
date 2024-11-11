@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class ArrowStone : SkillStoneBase
 {
+    protected override int SetCost()
+    {
+        return 5;
+    }
+
     public EDirection StoneDirection = EDirection.TOP;
 
     public override IEnumerator OnFlip()
@@ -15,6 +20,9 @@ public class ArrowStone : SkillStoneBase
 
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
+        if (baseTeam == ETeam.BLACK)
+            StoneDirection = EDirection.DOWN;
+
         Debug.Log("Arrow Skill Start!");
         yield return new WaitForSeconds(0.1f);
 
@@ -40,7 +48,14 @@ public class ArrowStone : SkillStoneBase
 
     protected override Texture GetTexture()
     {
+        if (Team == ETeam.WHITE)
+        {
+            var ob = gameObject.transform.Find("Plane");
+            ob.localEulerAngles -= (Vector3.up * 180);
+        }
+
         return (Texture)Resources.Load("Pictures/Arrow");
+        
     }
 
     public override EStone GetStone()
