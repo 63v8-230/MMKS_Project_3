@@ -26,10 +26,13 @@ public class CircleStone : SkillStoneBase
         foreach (var dir in stoneManager.directions)
         {
             if (!stoneManager.CheckOutOfBoard((int)(position.x + dir.x), (int)(position.y + dir.y)))
+            {
                 stoneManager.FlipStone((int)(position.x + dir.x), (int)(position.y + dir.y),
                     baseTeam);
 
-            SetHighLight(stoneManager, position + dir,Å@GetColor());
+                SetHighLight(stoneManager, position + dir, GetColor());
+            }
+                
         }
 
         yield return new WaitForSeconds(1);
