@@ -23,7 +23,7 @@ public class ShieldStone : SkillStoneBase
         if (baseTeam == ETeam.NONE)
         {
             baseTeam = team;
-            //Debug.Log(team.ToString());
+            Team = team;
         }
         else if(team != baseTeam)
         {

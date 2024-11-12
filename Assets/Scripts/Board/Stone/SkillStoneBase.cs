@@ -29,6 +29,10 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
     public bool IsOwnerOnline { private get { return isOwnerOnline; } set { isOwnerOnline = value; } }
 
+    private void Update()
+    {
+    }
+
     // Start is called before the first frame update
     void Start()
     {
