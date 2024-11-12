@@ -176,11 +176,11 @@ public class AIPlayerS : AIPlayerBase
     {
         if (Team == ETeam.WHITE)
         {
-            return y < 3;
+            return y < 2;
         }
         else
         {
-            return y >= size.y - 4;
+            return y >= size.y - 3;
         }
     }
 
