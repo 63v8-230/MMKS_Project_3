@@ -5,13 +5,13 @@ using UnityEngine;
 
 public struct Deck
 {
-    List<OwnStone> stones;
+    public List<OwnStone> Stones;
 }
 
 public struct OwnStone
 {
-    EStone Stone;
-    int Amount;
+    public EStone Stone;
+    public int Amount;
 }
 
 /// <summary>
@@ -30,6 +30,8 @@ public interface IPlayer
     /// ©•ª‚Ìƒ`[ƒ€
     /// </summary>
     public ETeam Team { set; get; }
+
+    public Deck MyDeck { set; get; }
 
     public OnlineScript OnlineScriptRef { set; get; }
 
