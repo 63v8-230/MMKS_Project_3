@@ -11,6 +11,8 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
     [SerializeField]
     private GameObject stone;
 
+    public Deck MyDeck { set; get; }
+
     public ETeam Team { set => _team = value; get => _team; }
 
     public OnlineScript OnlineScriptRef { get; set; }
