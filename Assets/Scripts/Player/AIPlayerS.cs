@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.InputManagerEntry;
 
@@ -20,78 +21,97 @@ public class AIPlayerS : AIPlayerBase
         TurnInfo t = new TurnInfo();
         t.X = -1;
 
-        Task<TurnInfo>[] checkTasks =
+        if (currentTurn < 12)
         {
-            Check(IsCorner,puttablePosition),
-            Check(IsArrow,puttablePosition),
-            Check(IsEdge,puttablePosition),
-            Check(IsShield,puttablePosition),
-            Check(IsCircle,puttablePosition),
-            Check(IsCrystal,puttablePosition),
-            Check(IsX,puttablePosition),
-            Check(IsCross,puttablePosition),
-            Check(IsSun,puttablePosition),
-
-        };
-
-        var ts = Task.WhenAll(checkTasks);
-
-        while (!ts.IsCompleted)
-        {
-            await Task.Delay(1);
-        }
-
-        for(int i = 0; i<checkTasks.Length; i++)
-        {
-            if (checkTasks[i].Result.X !=-1)
-            {
-                var kind = GetStone(i);
-                Debug.Log(kind.ToString());
-                bool isEmpty = false;
-                for(int i2 = 0; i2 < MyDeck.Stones.Count; i2++)
+            Task<TurnInfo>[] checkTasks =
                 {
-                    if (MyDeck.Stones[i2].Stone == kind && kind!=EStone.DEFAULT)
+                    Check(IsCorner,puttablePosition),
+                    Check(IsArrow,puttablePosition),
+                    Check(IsEdge,puttablePosition),
+                    Check(IsShield,puttablePosition),
+                    Check(IsCircle,puttablePosition),
+                    Check(IsCrystal,puttablePosition),
+                    Check(IsX,puttablePosition),
+                    Check(IsCross,puttablePosition),
+                    Check(IsSun,puttablePosition),
+
+                };
+
+            var ts = Task.WhenAll(checkTasks);
+
+            while (!ts.IsCompleted)
+            {
+                await Task.Delay(1);
+            }
+
+            for (int i = 0; i < checkTasks.Length; i++)
+            {
+                if (checkTasks[i].Result.X != -1)
+                {
+                    var kind = GetStone(i);
+                    Debug.Log(kind.ToString());
+                    bool isEmpty = false;
+                    for (int i2 = 0; i2 < MyDeck.Stones.Count; i2++)
                     {
-                        if (MyDeck.Stones[i2].Amount > 0)
+                        if (MyDeck.Stones[i2].Stone == kind && kind != EStone.DEFAULT)
                         {
-                            var d = MyDeck.Stones[i2];
-                            d.Amount--;
-                            MyDeck.Stones[i2] = d;
-                            Debug.Log("Used");
-                            break;
+                            if (MyDeck.Stones[i2].Amount > 0)
+                            {
+                                var d = MyDeck.Stones[i2];
+                                d.Amount--;
+                                MyDeck.Stones[i2] = d;
+                                Debug.Log("Used");
+                                break;
+                            }
+                            else
+                            {
+                                Debug.Log("Empty");
+                                isEmpty = true;
+                                break;
+                            }
                         }
-                        else
-                        {
-                            Debug.Log("Empty");
-                            isEmpty = true;
-                            break;
-                        }
+
                     }
-                        
+                    if (isEmpty)
+                        continue;
+
+                    t = checkTasks[i].Result;
+                    t.PutStone = gameManager.StoneManagerRef.SelectStone(GetStone(i));
+                    t.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
+                    if ((int)kind > 1)
+                        (t.PutStone as SkillStoneBase).IsOwnerOnline = true;
+
+                    break;
                 }
-                if (isEmpty)
-                    continue;
+            }
+        }
+        else
+        {
+            for (int i2 = 0; i2 < MyDeck.Stones.Count; i2++)
+            {
+                if (MyDeck.Stones[i2].Amount > 0)
+                {
+                    var d = MyDeck.Stones[i2];
+                    d.Amount--;
+                    MyDeck.Stones[i2] = d;
+                    Debug.Log("Used");
+                    break;
+                }
 
-                t = checkTasks[i].Result;
-                t.PutStone = gameManager.StoneManagerRef.SelectStone(GetStone(i));
-                t.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
-                if ((int)kind > 1)
-                    (t.PutStone as SkillStoneBase).IsOwnerOnline = true;
-
-                break;
             }
         }
 
         Debug.Log("=X: " + t.X);
 
-        if (t.X == -1 && puttablePosition.Length > 0) 
+        if (t.X == -1 && puttablePosition.Length > 0)
         {
 
             var pp = puttablePosition[UnityEngine.Random.Range(0, puttablePosition.Length)];
             t.X = pp.X;
             t.Y = pp.Y;
             t.PutStone = gameManager.StoneManagerRef.SelectStone(EStone.DEFAULT);
-        }else if(puttablePosition.Length == 0)
+        }
+        else if (puttablePosition.Length == 0)
         {
             t.X = -1;
             return t;
@@ -145,7 +165,7 @@ public class AIPlayerS : AIPlayerBase
 
     private EStone GetStone(int index)
     {
-        switch(index)
+        switch (index)
         {
             case 0:
                 return EStone.DEFAULT;
