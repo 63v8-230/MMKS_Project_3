@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ShieldStone : SkillStoneBase
 {
@@ -24,43 +25,11 @@ public class ShieldStone : SkillStoneBase
             baseTeam = team;
             //Debug.Log(team.ToString());
         }
-        else
+        else if(team != baseTeam)
         {
+            SetHighLight(stoneManager, new Vector2(x,y), GetColor() * 2);
             return;
         }
-        
-
-        Debug.Log($"baseTeam: {baseTeam}\nteam: {team}\nStoneManager: {stoneManager}");
-        if (baseTeam == Team && team != baseTeam && stoneManager != null)
-        {
-            SkillAction action = new SkillAction();
-            action.Action = OnSKill;
-            action.Position = new Vector2(x, y);
-            stoneManager.AddSkillMethod(action);
-            Debug.Log("ŽÀsÏ‚Ý");
-        }
-
-        Team = team;
-
-        Quaternion rot;
-        switch (team)
-        {
-            default:
-            case ETeam.BLACK:
-                rot = gameObject.transform.Find("Model").localRotation;
-                rot.eulerAngles = new Vector3(180, 0, 0);
-                gameObject.transform.Find("Model").localRotation = rot;
-                break;
-
-            case ETeam.WHITE:
-                rot = gameObject.transform.Find("Model").localRotation;
-                rot.eulerAngles = new Vector3(0, 0, 0);
-                gameObject.transform.Find("Model").localRotation = rot;
-                break;
-        }
-
-        Debug.Log($"TeamChanged: {baseTeam}->{team}");
-        SetStoneLogo(baseTeam == team);
     }
 
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
