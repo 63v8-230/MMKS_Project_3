@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.InputManagerEntry;
 
 public class AIPlayerS : AIPlayerBase
 {

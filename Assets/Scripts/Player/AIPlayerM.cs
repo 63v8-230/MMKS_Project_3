@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEngine.InputManagerEntry;
 
 public class AIPlayerM : AIPlayerBase
 {
