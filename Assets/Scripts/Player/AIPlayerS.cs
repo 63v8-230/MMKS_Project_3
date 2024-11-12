@@ -145,24 +145,6 @@ public class AIPlayerS : AIPlayerBase
 
     }
 
-    private async Task<TurnInfo> Check(Func<int, int, Vector2, bool> f, PuttableCellInfo[] p)
-    {
-        TurnInfo turn = new TurnInfo();
-        await Task.Delay(1);
-        foreach (var item in p)
-        {
-            if (f(item.X, item.Y, gameManager.StoneManagerRef.GetBoardSize()))
-            {
-
-                turn.X = item.X;
-                turn.Y = item.Y;
-                return turn;
-            }
-        }
-        turn.X = -1;
-        return turn;
-    }
-
     private EStone GetStone(int index)
     {
         switch (index)

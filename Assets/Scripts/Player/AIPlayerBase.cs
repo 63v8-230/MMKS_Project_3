@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,6 +29,24 @@ public class AIPlayerBase : MonoBehaviour, IPlayer //AIのベースクラス
     public virtual void Init(GameManager gManager)
     {
         gameManager = gManager;
+    }
+
+    protected virtual async Task<TurnInfo> Check(Func<int, int, Vector2, bool> f, PuttableCellInfo[] p)
+    {
+        TurnInfo turn = new TurnInfo();
+        await Task.Delay(1);
+        foreach (var item in p)
+        {
+            if (f(item.X, item.Y, gameManager.StoneManagerRef.GetBoardSize()) && item.Count >= 3)
+            {
+
+                turn.X = item.X;
+                turn.Y = item.Y;
+                return turn;
+            }
+        }
+        turn.X = -1;
+        return turn;
     }
 
     protected bool IsCorner(int x, int y, Vector2 size)
