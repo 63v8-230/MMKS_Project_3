@@ -124,6 +124,15 @@ public class AIPlayerM : AIPlayerBase
                     d.Amount--;
                     MyDeck.Stones[i2] = d;
                     Debug.Log("Used");
+
+                    var pp = puttablePosition[UnityEngine.Random.Range(0, puttablePosition.Length)];
+                    t.X = pp.X;
+                    t.Y = pp.Y;
+                    t.PutStone = gameManager.StoneManagerRef.SelectStone(d.Stone);
+                    t.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
+
+
+
                     break;
                 }
 
@@ -224,7 +233,7 @@ public class AIPlayerM : AIPlayerBase
 
     private bool IsArrow(int x, int y, Vector2 size)
     {
-        if (Team == ETeam.WHITE)
+        if (Team != ETeam.WHITE)
         {
             return y < 3;
         }
