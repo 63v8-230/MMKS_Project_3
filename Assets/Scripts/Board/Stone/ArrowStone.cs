@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,6 +50,12 @@ public class ArrowStone : SkillStoneBase
     protected override Texture GetTexture()
     {
         if (Team == ETeam.WHITE)
+        {
+            var ob = gameObject.transform.Find("Plane");
+            ob.localEulerAngles -= (Vector3.up * 180);
+        }
+
+        if (Data.Instance.IsOnline && !PhotonNetwork.IsMasterClient)
         {
             var ob = gameObject.transform.Find("Plane");
             ob.localEulerAngles -= (Vector3.up * 180);
