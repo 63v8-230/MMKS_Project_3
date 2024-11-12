@@ -53,8 +53,16 @@ public class AIPlayerBase : MonoBehaviour, IPlayer //AIのベースクラス
     {
         for (int i = 0; i < gameManager.StoneManagerRef.directions.Length; i++)
         {
+            if (gameManager.StoneManagerRef.CheckOutOfBoard
+                (x + (int)gameManager.StoneManagerRef.directions[i].x, y + (int)gameManager.StoneManagerRef.directions[i].y))
+                continue;
+
             var s = gameManager.StoneManagerRef.Stones
                 [x + (int)gameManager.StoneManagerRef.directions[i].x, y + (int)gameManager.StoneManagerRef.directions[i].y];
+
+            if (s == null)
+                continue;
+
             ETeam r = ETeam.WHITE;
             if(Team==r)
                 r= ETeam.BLACK;
