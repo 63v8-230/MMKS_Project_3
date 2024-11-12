@@ -25,7 +25,6 @@ public class HighlightCell : MonoBehaviour
     {
         t -= Time.deltaTime;
         c.a -= d * Time.deltaTime;
-        Debug.Log(c);
         m.color = c;
         if (t < 0)
             Destroy(gameObject);
