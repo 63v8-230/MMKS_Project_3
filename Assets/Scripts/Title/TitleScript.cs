@@ -16,6 +16,8 @@ public class Data
     public string RoomName = "room1";
 
     public bool IsWhite = false;
+
+    public EAIKind AIKind = EAIKind.SIMPLE;
 }
 
 public class TitleScript : MonoBehaviour
@@ -34,6 +36,9 @@ public class TitleScript : MonoBehaviour
 
     [SerializeField]
     Button join;
+
+    [SerializeField]
+    TMP_Dropdown AiKindDropDown;
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +64,8 @@ public class TitleScript : MonoBehaviour
             Data.Instance.BOARD_X = int.Parse(x.text);
             Data.Instance.BOARD_Y = int.Parse(y.text);
             Data.Instance.IsOnline = false;
+
+            Data.Instance.AIKind = (EAIKind)AiKindDropDown.value;
 
             SceneManager.LoadScene("Game");
         });

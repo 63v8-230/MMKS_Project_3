@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
+public enum EAIKind
+{
+    SIMPLE, // 1番多く取れる場所に通常石のみを置く
+    S, // 特殊石も使う。よわい
+    M, // 特殊石も使う。ふつう
+}
+
 public struct Deck
 {
     public List<OwnStone> Stones;

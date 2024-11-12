@@ -35,6 +35,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField]
     public GameObject SelectedCellPrefab;
 
+    [SerializeField]
+    private List<GameObject> aiPrefabs = new List<GameObject>();
+
     [HideInInspector]
     public StoneManager StoneManagerRef;
 
@@ -86,6 +89,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (Data.Instance.IsOnline)
             return;
+
+        p2 = aiPrefabs[(int)Data.Instance.AIKind];
 
         LunchGame();
     }

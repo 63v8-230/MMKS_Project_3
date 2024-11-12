@@ -2320,6 +2320,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0c5ffce24dad4147ba7d489f69a1115, type: 3}
+--- !u!1 &1722778779 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2660645253137028453, guid: d0c5ffce24dad4147ba7d489f69a1115,
+    type: 3}
+  m_PrefabInstance: {fileID: 1722778778}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2002116474
 GameObject:
   m_ObjectHideFlags: 0
@@ -2547,6 +2553,10 @@ MonoBehaviour:
   tmPro: {fileID: 322917408}
   SelectedCellPrefab: {fileID: 155860953808322523, guid: 731af7e98816a8a489d2c1b95c7622b7,
     type: 3}
+  aiPrefabs:
+  - {fileID: 4420482515725724379}
+  - {fileID: 1722778779}
+  - {fileID: 2026496172}
   StoneManagerRef: {fileID: 0}
 --- !u!114 &2052147946
 MonoBehaviour:
@@ -2633,6 +2643,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49ff362b5d4b9514d80278a2a062dea3, type: 3}
+--- !u!1 &4420482515725724379 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2660645253137028453, guid: 49ff362b5d4b9514d80278a2a062dea3,
+    type: 3}
+  m_PrefabInstance: {fileID: 4420482515725724378}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6658916326534107046
 PrefabInstance:
   m_ObjectHideFlags: 0
