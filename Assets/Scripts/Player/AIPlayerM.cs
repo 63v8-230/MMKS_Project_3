@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.InputManagerEntry;
 
 public class AIPlayerM : AIPlayerBase
 {
@@ -105,10 +106,11 @@ public class AIPlayerM : AIPlayerBase
                         continue;
 
                     t = checkTasks[i].Result;
-                    t.PutStone = gameManager.StoneManagerRef.SelectStone(GetStone(i));
+                    t.PutStone = gameManager.StoneManagerRef.SelectStone(kind);
                     t.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
                     if ((int)kind > 1)
                         (t.PutStone as SkillStoneBase).IsOwnerOnline = true;
+                    Debug.Log($"===A:{t.PutStone.StoneKind}");
 
                     break;
                 }
@@ -130,7 +132,9 @@ public class AIPlayerM : AIPlayerBase
                     t.Y = pp.Y;
                     t.PutStone = gameManager.StoneManagerRef.SelectStone(d.Stone);
                     t.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
-
+                    if ((int)d.Stone > 1)
+                        (t.PutStone as SkillStoneBase).IsOwnerOnline = true;
+                    Debug.Log($"===B:{t.PutStone.StoneKind}");
 
 
                     break;
@@ -156,6 +160,8 @@ public class AIPlayerM : AIPlayerBase
         }
 
         t.PutStone.SetTeam(Team);
+
+        Debug.Log($"Final:{t.PutStone.StoneKind}");
 
         return t;
 

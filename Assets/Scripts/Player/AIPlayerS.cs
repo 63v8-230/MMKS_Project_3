@@ -77,7 +77,7 @@ public class AIPlayerS : AIPlayerBase
                         continue;
 
                     t = checkTasks[i].Result;
-                    t.PutStone = gameManager.StoneManagerRef.SelectStone(GetStone(i));
+                    t.PutStone = gameManager.StoneManagerRef.SelectStone(kind);
                     t.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
                     if ((int)kind > 1)
                         (t.PutStone as SkillStoneBase).IsOwnerOnline = true;
@@ -102,7 +102,8 @@ public class AIPlayerS : AIPlayerBase
                     t.Y = pp.Y;
                     t.PutStone = gameManager.StoneManagerRef.SelectStone(d.Stone);
                     t.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
-
+                    if ((int)d.Stone > 1)
+                        (t.PutStone as SkillStoneBase).IsOwnerOnline = true;
 
 
                     break;

@@ -27,7 +27,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
     protected ETeam baseTeam = ETeam.NONE;
 
-    protected float hideAlpha = 0.4f;
+    protected float hideAlpha = 0.0f;
 
     protected bool isOwnerOnline = false;
 
@@ -54,8 +54,10 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
         if(IsOwnerOnline)
             hideAlpha = 0;
+        else
+            hideAlpha = 0.4f;
 
-        SetStoneLogo(true);
+        //SetStoneLogo(true);
     }
 
     protected virtual int SetCost()
@@ -114,23 +116,33 @@ public class SkillStoneBase : MonoBehaviour, IStone
                 break;
         }
 
-        Debug.Log($"TeamChanged: {baseTeam}->{team}");
-        SetStoneLogo(baseTeam == team);
+        Debug.Log($"TeamChanged: {baseTeam}->{team} | {isOwnerOnline}");
+        if(isOwnerOnline)
+            SetStoneLogo(baseTeam != team);
+        else
+            SetStoneLogo(baseTeam == team);
 
 
     }
 
     protected void SetStoneLogo(bool isView)
     {
-
+        Debug.Log($"SetStoneLogo({isView})|a: {hideAlpha}");
         if (isView)
         {
             var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
             var c = r.material.color;
-            c.a = 1;
+            if(isOwnerOnline)
+                c.a = 0.6f;
+            else
+                c.a = 1;
             r.material.EnableKeyword("_EMISSION");
             r.material.color = c;
-            r.material.SetColor("_EmissionColor", GetColor() * 1.5f);
+            if (!isOwnerOnline)
+            {
+                r.material.SetColor("_EmissionColor", GetColor() * 1.5f);
+            }
+                
         }
         else
         {
