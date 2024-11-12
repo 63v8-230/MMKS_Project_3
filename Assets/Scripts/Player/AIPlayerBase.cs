@@ -49,6 +49,24 @@ public class AIPlayerBase : MonoBehaviour, IPlayer //AIのベースクラス
         return turn;
     }
 
+    protected virtual bool IsEnemySkillStoneAround(int x, int y)
+    {
+        for (int i = 0; i < gameManager.StoneManagerRef.directions.Length; i++)
+        {
+            var s = gameManager.StoneManagerRef.Stones
+                [x + (int)gameManager.StoneManagerRef.directions[i].x, y + (int)gameManager.StoneManagerRef.directions[i].y];
+            ETeam r = ETeam.WHITE;
+            if(Team==r)
+                r= ETeam.BLACK;
+
+            if(s.Team == r && (int)s.StoneKind > 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected bool IsCorner(int x, int y, Vector2 size)
     {
         return (x == 0 || x == (int)size.x) && (y == 0  || y == (int)size.y);
