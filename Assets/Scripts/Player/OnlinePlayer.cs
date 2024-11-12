@@ -15,6 +15,8 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
     [SerializeField]
     private GameObject stone;
 
+    public Deck MyDeck { set; get; }
+
     public OnlineScript OnlineScriptRef { set; get; }
 
     private TurnInfo turnInfo;
@@ -48,7 +50,7 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
     private void OnAction(int kind, int x, int y)
     {
         turnInfo = new TurnInfo();
-        turnInfo.PutStone = SelectStone((EStone)kind);
+        turnInfo.PutStone = gameManager.StoneManagerRef.SelectStone((EStone)kind);
         turnInfo.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
         if(kind > 1)
             (turnInfo.PutStone as SkillStoneBase).IsOwnerOnline = true;
@@ -76,70 +78,6 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
     // Update is called once per frame
     void Update()
     {
-    }
-
-    private IStone SelectStone(EStone selectedStone)
-    {
-        IStone s;
-
-        switch (selectedStone)
-        {
-            case EStone.DEFAULT:
-                s =
-                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
-                    .AddComponent<Stone>();
-                break;
-
-            case EStone.SUN:
-                s =
-                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
-                    .AddComponent<SunStone>();
-                break;
-
-            case EStone.CROSS:
-                s =
-                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
-                    .AddComponent<CrossStone>();
-                break;
-
-            case EStone.X:
-                s =
-                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
-                    .AddComponent<XStone>();
-                break;
-
-            case EStone.CIRCLE:
-                s =
-                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
-                    .AddComponent<CircleStone>();
-                break;
-            case EStone.ARROW:
-                s =
-                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
-                    .AddComponent<ArrowStone>();
-                break;
-
-            case EStone.SHIELD:
-                s =
-                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
-                    .AddComponent<ShieldStone>();
-                break;
-
-            case EStone.CRYSTAL:
-                s =
-                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
-                    .AddComponent<CrystalStone>();
-                break;
-
-            default:
-                s =
-                    GameObject.Instantiate(stone, new Vector3(0, -10, 0), Quaternion.identity)
-                    .AddComponent<CircleStone>();
-                Debug.LogError("EStone None");
-                break;
-        }
-
-        return s;
     }
 }
 

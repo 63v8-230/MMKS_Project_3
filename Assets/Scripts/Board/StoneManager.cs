@@ -1,3 +1,4 @@
+using Photon.Pun.Demo.PunBasics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -332,6 +333,11 @@ public class StoneManager : MonoBehaviour
         return false;
     }
 
+    public Vector2 GetBoardSize()
+    {
+        return new Vector2(Stones.GetLength(0), Stones.GetLength(1));
+    }
+
     /// <summary>
     /// 配置可能なマスを返す
     /// </summary>
@@ -499,5 +505,73 @@ public class StoneManager : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public IStone SelectStone(EStone selectedStone)
+    {
+        IStone s;
+
+        Debug.Log(selectedStone.ToString());
+
+        switch (selectedStone)
+        {
+            case EStone.DEFAULT:
+                s =
+                    GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<Stone>();
+                break;
+
+            case EStone.SUN:
+                s =
+                    GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<SunStone>();
+                break;
+
+            case EStone.CROSS:
+                s =
+                    GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<CrossStone>();
+                break;
+
+            case EStone.X:
+                s =
+                    GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<XStone>();
+                break;
+
+            case EStone.CIRCLE:
+                s =
+                    GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<CircleStone>();
+                break;
+            case EStone.ARROW:
+                s =
+                    GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<ArrowStone>();
+                break;
+
+            case EStone.SHIELD:
+                s =
+                    GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<ShieldStone>();
+                break;
+
+            case EStone.CRYSTAL:
+                s =
+                    GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<CrystalStone>();
+                break;
+
+            default:
+                s =
+                    GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<CircleStone>();
+                Debug.LogError("EStone None");
+                break;
+        }
+
+        Debug.Log(s);
+
+        return s;
     }
 }
