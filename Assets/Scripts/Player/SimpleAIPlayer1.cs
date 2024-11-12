@@ -66,7 +66,6 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame

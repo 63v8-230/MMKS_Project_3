@@ -27,8 +27,6 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
     private PuttableCellInfo[] puttablePosition;
 
-    private EStone selectedStone = 0;
-
     async public Task<TurnInfo> DoTurn()
     {
 
