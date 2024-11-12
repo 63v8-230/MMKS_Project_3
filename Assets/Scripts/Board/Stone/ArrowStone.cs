@@ -7,6 +7,7 @@ public class ArrowStone : SkillStoneBase
 {
     protected override int SetCost()
     {
+        stoneKind = EStone.ARROW;
         return 5;
     }
 

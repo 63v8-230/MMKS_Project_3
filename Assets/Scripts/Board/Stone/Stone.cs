@@ -16,6 +16,8 @@ public class Stone : MonoBehaviour , IStone
     private Animator animCom;
     public Animator AnimatorComponent { get => animCom; }
 
+    public EStone StoneKind { get => EStone.DEFAULT; }
+
 
     // Start is called before the first frame update
     void Start()

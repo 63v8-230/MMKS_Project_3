@@ -27,6 +27,8 @@ public interface IStone
 
     public Animator AnimatorComponent { get; }
 
+    public EStone StoneKind { get;}
+
     /// <summary>
     /// Î‚ÌF‚ğ•ÏX
     /// </summary>

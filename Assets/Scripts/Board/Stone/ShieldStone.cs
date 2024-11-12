@@ -7,6 +7,7 @@ public class ShieldStone : SkillStoneBase
 {
     protected override int SetCost()
     {
+        stoneKind = EStone.SHIELD;
         return 10;
     }
     public override IEnumerator OnFlip()

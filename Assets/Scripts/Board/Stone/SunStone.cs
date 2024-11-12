@@ -6,6 +6,7 @@ public class SunStone : SkillStoneBase
 {
     protected override int SetCost()
     {
+        stoneKind = EStone.SUN;
         return 20;
     }
     public override IEnumerator OnFlip()

@@ -7,6 +7,7 @@ public class CrystalStone : SkillStoneBase
 
     protected override int SetCost()
     {
+        stoneKind = EStone.CRYSTAL;
         return 5;
     }
 

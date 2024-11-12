@@ -6,6 +6,7 @@ public class XStone : SkillStoneBase
 {
     protected override int SetCost()
     {
+        stoneKind = EStone.X;
         return 10;
     }
     public override IEnumerator OnFlip()

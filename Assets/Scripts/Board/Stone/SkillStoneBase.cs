@@ -18,6 +18,10 @@ public class SkillStoneBase : MonoBehaviour, IStone
     protected int cost;
     public int Cost { get => cost; }
 
+
+    protected EStone stoneKind;
+    public EStone StoneKind { get => stoneKind; }
+
     [SerializeField]
     private Texture tex;
 

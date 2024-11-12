@@ -6,6 +6,7 @@ public class CrossStone : SkillStoneBase
 {
     protected override int SetCost()
     {
+        stoneKind = EStone.CROSS;
         return 10;
     }
     public override IEnumerator OnFlip()

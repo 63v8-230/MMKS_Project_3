@@ -7,6 +7,7 @@ public class CircleStone : SkillStoneBase
 
     protected override int SetCost()
     {
+        stoneKind = EStone.CIRCLE;
         return 10;
     }
 
