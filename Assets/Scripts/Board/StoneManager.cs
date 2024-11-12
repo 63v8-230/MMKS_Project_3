@@ -135,7 +135,7 @@ public class StoneManager : MonoBehaviour
 
     public void AddSkillMethod(SkillAction action)
     {
-        Debug.Log("SkillAdd");
+        Debug.Log("==SkillAdd==");
         skillMethod.Add(action);
     }
 
@@ -241,11 +241,11 @@ public class StoneManager : MonoBehaviour
             await Task.Delay(1);
         }
 
-        Debug.Log(skillMethod.Count);
+        Debug.Log("Skill Count: "+skillMethod.Count);
 
         foreach (var m in skillMethod)
         {
-            Debug.Log("SkillDo");
+            Debug.Log("SkillDo");//ìØÇ∂ÉXÉLÉãÇ™ìoò^Ç≥ÇÍÇƒÇƒÇ®Ç©ÇµÇ»Ç±Ç∆Ç…Ç»Ç¡ÇƒÇ¢ÇÈÅH
             var skillCoroutine = new ExEnumerator(m.Action.Invoke(this, m.Position));
             StartCoroutine(skillCoroutine);
 
@@ -255,6 +255,7 @@ public class StoneManager : MonoBehaviour
             }
         }
         skillMethod.Clear();
+        skillMethod = new List<SkillAction>();
     }
 
     public void FlipStone(int x, int y, ETeam team)
