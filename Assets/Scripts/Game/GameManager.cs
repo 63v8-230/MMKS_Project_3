@@ -144,7 +144,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                         if(turnTask.IsCompleted)
                         {
-                            Debug.Log(players[currentPlayerIndex].Team + $" is Put {turnTask.Result.X}-{turnTask.Result.Y}");
                             flipTask = StoneManagerRef.PutStone(turnTask.Result);
                             if(turnTask.Result.X == -1)
                             {
@@ -177,8 +176,8 @@ public class GameManager : MonoBehaviourPunCallbacks
                                 $"{players[currentPlayerIndex].Team.ToString()}\nB:{b} W:{w}";
 
                             turnTask = players[currentPlayerIndex].DoTurn();
-                            Debug.Log(players[currentPlayerIndex].Team + " is Start");
                             currentGameState = EGameState.PUT;
+                            StoneManagerRef.AddTurn();
                         }
                     }
                     break;

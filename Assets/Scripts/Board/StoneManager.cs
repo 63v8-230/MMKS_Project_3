@@ -41,6 +41,7 @@ public struct SkillAction
 {
     public System.Func<StoneManager, Vector2, IEnumerator> Action;
     public Vector2 Position;
+    public String Name;
 }
 
 
@@ -123,19 +124,20 @@ public class StoneManager : MonoBehaviour
             new Vector2(-1, -1), //LT
         };
 
+    public int CurrentTurn = 0;
+
+    public void AddTurn()
+    {
+        CurrentTurn++;
+    }
+
     public void Start()
     {
-        List<string> op = new List<string>();
-        for(int i = 1; i<(int)EStone.MAX; i++)
-        {
-            op.Add(((EStone)i).ToString());
-        }
-        StoneOption.AddOptions(op);
     }
 
     public void AddSkillMethod(SkillAction action)
     {
-        Debug.Log("==SkillAdd==");
+        Debug.Log($"====SkillAdd====\n{action.Name}\n{action.Position}");
         skillMethod.Add(action);
     }
 
@@ -169,7 +171,7 @@ public class StoneManager : MonoBehaviour
         var cam = Camera.main.gameObject;
         int largeSize = xSize;
         if(ySize > xSize) largeSize = ySize;
-        cam.transform.position = new Vector3(0, largeSize * 1.8f, largeSize * -0.4f);
+        cam.transform.position = new Vector3(0, largeSize * 2.3f, largeSize * -0.7f);
 
 
         Stones[xSize / 2 - 1, ySize / 2 - 1] = GameObject.Instantiate(
@@ -243,19 +245,18 @@ public class StoneManager : MonoBehaviour
 
         Debug.Log("Skill Count: "+skillMethod.Count);
 
-        foreach (var m in skillMethod)
+        while(skillMethod.Count!=0)
         {
-            Debug.Log("SkillDo");//ìØÇ∂ÉXÉLÉãÇ™ìoò^Ç≥ÇÍÇƒÇƒÇ®Ç©ÇµÇ»Ç±Ç∆Ç…Ç»Ç¡ÇƒÇ¢ÇÈÅH
-            var skillCoroutine = new ExEnumerator(m.Action.Invoke(this, m.Position));
+            var skillCoroutine = new ExEnumerator(skillMethod[0].Action.Invoke(this, skillMethod[0].Position));
             StartCoroutine(skillCoroutine);
 
             while (!skillCoroutine.IsEnd)
             {
                 await Task.Delay(1);
             }
+            skillMethod.RemoveAt(0);
         }
         skillMethod.Clear();
-        skillMethod = new List<SkillAction>();
     }
 
     public void FlipStone(int x, int y, ETeam team, bool isSkill = false)
@@ -263,13 +264,11 @@ public class StoneManager : MonoBehaviour
         var s = Stones[x, y];
         if(s != null)
         {
-            Debug.Log($"origin {s}\nTeam: {s.Team}");
             if(s.Team != team)
             {
                 s.SetTeam(team, this, x, y);
                 var e = s.OnFlip(isSkill);
                 StartCoroutine(e);
-                Debug.Log($"flip {s}\nTeam: {s.Team}");
             }
                 
         } 
@@ -574,5 +573,35 @@ public class StoneManager : MonoBehaviour
         Debug.Log(s);
 
         return s;
+    }
+
+    public Sprite GetSprite(EStone stone)
+    {
+        switch (stone)
+        {
+            case EStone.SUN:
+                return (Sprite)Resources.Load<Sprite>("Pictures/Sun");
+
+            case EStone.CROSS:
+                return (Sprite)Resources.Load<Sprite>("Pictures/Cross");
+
+            case EStone.X:
+                return (Sprite)Resources.Load<Sprite>("Pictures/X");
+
+            case EStone.CIRCLE:
+                return (Sprite)Resources.Load<Sprite>("Pictures/Circle");
+
+            case EStone.ARROW:
+                return (Sprite)Resources.Load<Sprite>("Pictures/Arrow");
+
+            case EStone.SHIELD:
+                return (Sprite)Resources.Load<Sprite>("Pictures/Shield");
+
+            case EStone.CRYSTAL:
+                return (Sprite)Resources.Load<Sprite>("Pictures/Crystal");
+
+            default:
+                return null;
+        }
     }
 }

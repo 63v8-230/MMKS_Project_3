@@ -34,6 +34,9 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
     public bool IsOwnerOnline { private get { return isOwnerOnline; } set { isOwnerOnline = value; } }
 
+    //最後にスキルを実行したターン。同じターンで2回も実行しない
+    private int prevSkillTurn = -1;
+
     private void Update()
     {
     }
@@ -89,13 +92,14 @@ public class SkillStoneBase : MonoBehaviour, IStone
         //Debug.Log(team.ToString());
 
         Debug.Log($"baseTeam: {baseTeam}\nteam: {team}\nStoneManager: {stoneManager}");
-        if (baseTeam == Team && team != baseTeam && stoneManager != null)
+        if (baseTeam == Team && team != baseTeam && stoneManager != null && prevSkillTurn != stoneManager.CurrentTurn)
         {
             SkillAction action = new SkillAction();
             action.Action = this.OnSKill;
             action.Position = new Vector2(x, y);
+            action.Name = GetStone().ToString() + "-" + Random.Range(0, 100);
             stoneManager.AddSkillMethod(action);
-            Debug.Log("実行済み");
+            prevSkillTurn = stoneManager.CurrentTurn;
         }
 
         Team = team;
