@@ -26,7 +26,7 @@ public class XStone : SkillStoneBase
                     break;
 
                 stoneManager.FlipStone((int)(flipPosition.x), (int)(flipPosition.y),
-                    baseTeam);
+                    baseTeam, true);
 
                 SetHighLight(stoneManager, flipPosition, GetColor());
 

@@ -22,7 +22,7 @@ public class CircleStone : SkillStoneBase
             if (!stoneManager.CheckOutOfBoard((int)(position.x + dir.x), (int)(position.y + dir.y)))
             {
                 stoneManager.FlipStone((int)(position.x + dir.x), (int)(position.y + dir.y),
-                    baseTeam);
+                    baseTeam,true);
 
                 SetHighLight(stoneManager, position + dir, GetColor());
             }

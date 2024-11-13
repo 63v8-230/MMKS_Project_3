@@ -30,7 +30,7 @@ public class ArrowStone : SkillStoneBase
                 break;
 
             stoneManager.FlipStone((int)(position.x), (int)(position.y),
-                baseTeam);
+                baseTeam,true);
 
             SetHighLight(stoneManager, position, GetColor());
 
