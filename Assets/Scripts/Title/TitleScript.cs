@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,6 +21,10 @@ public class Data
     public bool IsWhite = false;
 
     public EAIKind AIKind = EAIKind.SIMPLE;
+
+    public bool IsPadMode = false;
+
+    public Process PadProcess;
 }
 
 public class TitleScript : MonoBehaviour
@@ -39,6 +46,9 @@ public class TitleScript : MonoBehaviour
 
     [SerializeField]
     TMP_Dropdown AiKindDropDown;
+
+    [SerializeField]
+    Button padMode;
 
     // Start is called before the first frame update
     void Start()
@@ -69,10 +79,39 @@ public class TitleScript : MonoBehaviour
 
             SceneManager.LoadScene("Game");
         });
+
+        padMode.onClick.AddListener(StartPadMode);
+
+        Application.quitting += () => { if (Data.Instance.IsPadMode) Data.Instance.PadProcess.Kill(); };
     }
 
     // Update is called once per frame
     void Update()
     {
+    }
+
+    private void StartPadMode()
+    {
+        if (Data.Instance.IsPadMode)
+            return;
+
+        Data.Instance.PadProcess = new Process();
+
+
+        // プロセスを起動するときに使用する値のセットを指定
+        Data.Instance.PadProcess.StartInfo = new ProcessStartInfo
+        {
+            FileName = Path.Combine(Application.streamingAssetsPath, "MouseControllerWithGamePad.exe"),
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+
+        Data.Instance.PadProcess.Start();
+        Data.Instance.IsPadMode = true;
+    }
+
+    private void OnApplicationQuit()
+    {
+        
     }
 }
