@@ -39,7 +39,7 @@ public interface IStone
     /// <para>石がひっくり返されたときに呼ばれる。</para>
     /// <para>これがSetTeam()の後に呼ばれるので、アニメーションなどの都合で待ってほしい場合はCoroutineでなんとかする。</para>
     /// </summary>
-    public IEnumerator OnFlip();
+    public IEnumerator OnFlip(bool isSkill = false);
 
     /// <summary>
     /// 特殊能力発動時に呼ばれる。

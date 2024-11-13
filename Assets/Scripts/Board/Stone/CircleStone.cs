@@ -11,13 +11,6 @@ public class CircleStone : SkillStoneBase
         return 10;
     }
 
-    public override IEnumerator OnFlip()
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        yield break;
-    }
-
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
         Debug.Log("Circle Skill Start!");

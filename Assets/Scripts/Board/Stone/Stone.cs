@@ -76,7 +76,7 @@ public class Stone : MonoBehaviour , IStone
         }
     }
 
-    public IEnumerator OnFlip()
+    public IEnumerator OnFlip(bool isSkill = false)
     {
         var c = GameObject.Instantiate(Resources.Load("Models/StoneLight"), gameObject.transform)
             .GetComponent<StoneLight>();

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Android;
 using UnityEngine.Rendering.Universal;
@@ -91,7 +92,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
         if (baseTeam == Team && team != baseTeam && stoneManager != null)
         {
             SkillAction action = new SkillAction();
-            action.Action = OnSKill;
+            action.Action = this.OnSKill;
             action.Position = new Vector2(x, y);
             stoneManager.AddSkillMethod(action);
             Debug.Log("é¿çsçœÇ›");
@@ -127,7 +128,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
     protected void SetStoneLogo(bool isView)
     {
-        Debug.Log($"SetStoneLogo({isView})|a: {hideAlpha}");
+        Debug.Log($"==SetStoneLogo({isView})|a: {hideAlpha}");
         if (isView)
         {
             var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
@@ -155,8 +156,14 @@ public class SkillStoneBase : MonoBehaviour, IStone
         }
     }
 
-    public virtual IEnumerator OnFlip()
+    public virtual IEnumerator OnFlip(bool isSkill = false)
     {
+        var c = GameObject.Instantiate(Resources.Load("Models/StoneLight"), gameObject.transform)
+            .GetComponent<StoneLight>();
+
+        if (Team == ETeam.BLACK)
+            c.InitS();
+
         yield return new WaitForSeconds(0.1f);
 
         yield break;
@@ -170,7 +177,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
         {
             if (!stoneManager.CheckOutOfBoard((int)(position.x + dir.x), (int)(position.y + dir.y)))
                 stoneManager.FlipStone((int)(position.x + dir.x), (int)(position.y + dir.y),
-                    baseTeam);
+                    baseTeam,true);
         }
 
         yield break;

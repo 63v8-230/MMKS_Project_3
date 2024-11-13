@@ -258,7 +258,7 @@ public class StoneManager : MonoBehaviour
         skillMethod = new List<SkillAction>();
     }
 
-    public void FlipStone(int x, int y, ETeam team)
+    public void FlipStone(int x, int y, ETeam team, bool isSkill = false)
     {
         var s = Stones[x, y];
         if(s != null)
@@ -267,7 +267,7 @@ public class StoneManager : MonoBehaviour
             if(s.Team != team)
             {
                 s.SetTeam(team, this, x, y);
-                var e = s.OnFlip();
+                var e = s.OnFlip(isSkill);
                 StartCoroutine(e);
                 Debug.Log($"flip {s}\nTeam: {s.Team}");
             }

@@ -13,13 +13,6 @@ public class ArrowStone : SkillStoneBase
 
     public EDirection StoneDirection = EDirection.TOP;
 
-    public override IEnumerator OnFlip()
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        yield break;
-    }
-
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
         if (baseTeam == ETeam.BLACK)

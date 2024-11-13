@@ -9,12 +9,6 @@ public class XStone : SkillStoneBase
         stoneKind = EStone.X;
         return 10;
     }
-    public override IEnumerator OnFlip()
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        yield break;
-    }
 
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
