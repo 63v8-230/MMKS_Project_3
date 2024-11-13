@@ -8,13 +8,9 @@ public class ShieldStone : SkillStoneBase
     protected override int SetCost()
     {
         stoneKind = EStone.SHIELD;
+        if(isOwnerOnline)
+            SetStoneLogo(false);
         return 10;
-    }
-    public override IEnumerator OnFlip()
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        yield break;
     }
 
     public override void SetTeam(ETeam team, StoneManager stoneManager = null, int x = -1, int y = -1)
@@ -29,15 +25,42 @@ public class ShieldStone : SkillStoneBase
         else if(team != baseTeam)
         {
             SetHighLight(stoneManager, new Vector2(x,y), GetColor() * 2);
+
+            if(isOwnerOnline)
+                StartCoroutine(OnSKill(null,Vector2.zero));
+
             return;
         }
+
+        Quaternion rot;
+        switch (team)
+        {
+            default:
+            case ETeam.BLACK:
+                rot = gameObject.transform.Find("Model").localRotation;
+                rot.eulerAngles = new Vector3(180, 0, 0);
+                gameObject.transform.Find("Model").localRotation = rot;
+                break;
+
+            case ETeam.WHITE:
+                rot = gameObject.transform.Find("Model").localRotation;
+                rot.eulerAngles = new Vector3(0, 0, 0);
+                gameObject.transform.Find("Model").localRotation = rot;
+                break;
+        }
+
+        SetStoneLogo(!isOwnerOnline);
     }
 
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
         Debug.Log("Shield Skill Start!");
 
-        yield return new WaitForSeconds(0.1f);
+        SetStoneLogo(true);
+
+        yield return new WaitForSeconds(1f);
+
+        SetStoneLogo(false);
 
         yield break;
     }
