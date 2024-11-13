@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OfflinePlayer : MonoBehaviour, IPlayer
 {
@@ -26,6 +27,9 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     private GameManager gameManager;
 
     private PuttableCellInfo[] puttablePosition;
+
+    private int currentStoneIndex = -1;
+    private GameObject prevSelectedStoneButton = null;
 
     async public Task<TurnInfo> DoTurn()
     {
@@ -100,9 +104,60 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         }
     }
 
+    public void SetStone(int index, GameObject button)
+    {
+        Debug.Log("!!!!->"+index);
+        currentStoneIndex = index;
+
+        if(prevSelectedStoneButton!=null)
+            prevSelectedStoneButton.transform.Find("Button/Stone_Select").gameObject.SetActive(false);
+
+        button.transform.Find("Button/Stone_Select").gameObject.SetActive(true);
+
+        prevSelectedStoneButton = button;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        Deck d = new Deck();
+        d.Stones = new List<OwnStone>
+        {
+            new OwnStone { Stone = EStone.X, Amount = 5 },
+            new OwnStone { Stone = EStone.CIRCLE, Amount = 5 },
+            new OwnStone { Stone = EStone.SUN, Amount = 5 },
+            new OwnStone { Stone = EStone.CRYSTAL, Amount = 5 },
+            new OwnStone { Stone = EStone.CROSS, Amount = 5 },
+            new OwnStone { Stone = EStone.SHIELD, Amount = 5 },
+            new OwnStone { Stone = EStone.ARROW, Amount = 5 }
+        };
+        MyDeck = d;
+
+        var ct = GameObject.Find("Canvas/StoneSelect/Scroll View/Viewport/Content").transform;
+
+        var srcObj = Resources.Load("Prefab/UI/StoneContent") as GameObject;
+
+        var ui_Default = Instantiate(srcObj);
+        ui_Default.transform.SetParent(ct, false);
+        var ui_Default_Button = ui_Default.transform.Find("Button");
+        ui_Default_Button.GetComponent<Button>().onClick.AddListener(() => { SetStone(-1,ui_Default); });
+        Destroy(ui_Default_Button.Find("Stone_Logo").gameObject);
+        ui_Default.transform.Find("Count").GetComponent<TextMeshProUGUI>().text = "";
+        ui_Default_Button.transform.Find("Stone_Select").gameObject.SetActive(true);
+        prevSelectedStoneButton = ui_Default;
+
+        var sManager = GameObject.Find("GameManager").GetComponent<StoneManager>();
+
+        for (int i = 0; i < MyDeck.Stones.Count; i++) 
+        {
+            var ui = Instantiate(srcObj);
+            ui.transform.SetParent(ct, false);
+            var ui_Button = ui.transform.Find("Button");
+            int _index = i;
+            ui_Button.GetComponent<Button>().onClick.AddListener(() => { SetStone(_index,ui); });
+            ui_Button.Find("Stone_Logo").GetComponent<Image>().sprite = sManager.GetSprite(MyDeck.Stones[i].Stone);
+            ui.transform.Find("Count").GetComponent<TextMeshProUGUI>().text = "x"+ MyDeck.Stones[i].Amount;
+        }
     }
 
     // Update is called once per frame
@@ -161,7 +216,27 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
                     turnInfo.X = x;
                     turnInfo.Y = y;
 
-                    turnInfo.PutStone = gameManager.StoneManagerRef.SelectStone((EStone)gameManager.StoneManagerRef.StoneOption.value + 1);
+                    Debug.Log(currentStoneIndex);
+                    int kind = currentStoneIndex;
+                    if (kind == -1)
+                        kind = (int)EStone.DEFAULT;
+                    else 
+                    {
+                        var st = MyDeck.Stones[kind];
+                        st.Amount--;
+                        MyDeck.Stones[kind] = st;
+                        prevSelectedStoneButton.transform.Find("Count").GetComponent<TextMeshProUGUI>().text = "x" + st.Amount;
+                        if (st.Amount <= 0) 
+                        {
+                            Destroy(prevSelectedStoneButton);
+                            currentStoneIndex = -1;
+                        }
+
+                        kind = (int)MyDeck.Stones[kind].Stone;
+                    }
+
+
+                    turnInfo.PutStone = gameManager.StoneManagerRef.SelectStone((EStone)kind);
                     turnInfo.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
                     turnInfo.PutStone.SetTeam(Team);
 
