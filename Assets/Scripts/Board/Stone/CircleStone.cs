@@ -14,7 +14,9 @@ public class CircleStone : SkillStoneBase
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
         Debug.Log("Circle Skill Start!");
-        yield return new WaitForSeconds(0.1f);
+        var col = new ExEnumerator(ShowCutIn(baseTeam == ETeam.WHITE));
+        StartCoroutine(col);
+        yield return new WaitWhile(() => { return !col.IsEnd; });
 
         SetHighLight(stoneManager, position, GetColor() * 2);
         foreach (var dir in stoneManager.directions)

@@ -165,8 +165,12 @@ public class SkillStoneBase : MonoBehaviour, IStone
         var c = GameObject.Instantiate(Resources.Load("Models/StoneLight"), gameObject.transform)
             .GetComponent<StoneLight>();
 
-        if (Team == ETeam.BLACK)
+        if (isSkill)
             c.InitS();
+        else if (Team == ETeam.BLACK)
+            c.InitB();
+        else
+            c.InitW();
 
         yield return new WaitForSeconds(0.1f);
 
@@ -200,5 +204,29 @@ public class SkillStoneBase : MonoBehaviour, IStone
     protected virtual Color GetColor()
     {
         return Color.white;
+    }
+
+    protected virtual IEnumerator ShowCutIn(bool isEnemy)
+    {
+        Debug.Log("CutIn");
+        var t = GameObject.Find("Canvas").transform;
+        GameObject c;
+        if(isEnemy)
+        {
+            var o = Resources.Load<GameObject>("Pictures/Game/EnemySkillCut");
+            c = Instantiate(o);
+            c.transform.SetParent(t, false);
+        }
+        else
+        {
+            var o = Resources.Load<GameObject>("Pictures/Game/OwnSkillCut");
+            c = Instantiate(o);
+            c.transform.SetParent(t, false);
+        }
+
+        yield return new WaitForSeconds(2);
+        Destroy(c);
+        Debug.Log("CutIn-Out");
+        yield break;
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StoneLight : MonoBehaviour
 {
@@ -58,8 +59,12 @@ public class StoneLight : MonoBehaviour
 
         cl = Color.white;
 
-        r = transform.Find("StoneFire").GetComponent<Renderer>().material;
+        var rt = transform.Find("StoneFire");
+        r = rt.GetComponent<Renderer>().material;
         r.color = Color.black * 0;
+        var ob = Instantiate(Resources.Load<GameObject>("Models/StoneFlip"));
+        ob.transform.SetParent(transform, true);
+        ob.transform.localPosition = rt.transform.localPosition;
 
         f = 2;
 
@@ -72,8 +77,12 @@ public class StoneLight : MonoBehaviour
         cl = new Color(0.529f, 0, 0.875f);
         m.color = cl * 2;
 
-        r = transform.Find("StoneFire").GetComponent<Renderer>().material;
+        var rt = transform.Find("StoneFire");
+        r = rt.GetComponent<Renderer>().material;
         r.color = Color.black * 0;
+        var ob = Instantiate(Resources.Load<GameObject>("Models/StoneFlip"));
+        ob.transform.SetParent(transform, true);
+        ob.transform.localPosition = rt.transform.localPosition;
 
         f = 4;
 

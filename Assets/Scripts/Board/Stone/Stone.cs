@@ -81,7 +81,9 @@ public class Stone : MonoBehaviour , IStone
         var c = GameObject.Instantiate(Resources.Load("Models/StoneLight"), gameObject.transform)
             .GetComponent<StoneLight>();
 
-        if (Team == ETeam.BLACK)
+        if (isSkill)
+            c.InitS();
+        else if (Team == ETeam.BLACK)
             c.InitB();
         else
             c.InitW();

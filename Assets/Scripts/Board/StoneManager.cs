@@ -266,6 +266,7 @@ public class StoneManager : MonoBehaviour
         {
             if(s.Team != team)
             {
+                Debug.Log(isSkill);
                 s.SetTeam(team, this, x, y);
                 var e = s.OnFlip(isSkill);
                 StartCoroutine(e);
