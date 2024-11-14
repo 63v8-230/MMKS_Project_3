@@ -33,6 +33,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     private TextMeshProUGUI tmPro;
 
     [SerializeField]
+    private TextMeshProUGUI stoneCountBlack;
+
+    [SerializeField]
+    private TextMeshProUGUI stoneCountWhite;
+
+    [SerializeField]
     public GameObject SelectedCellPrefab;
 
     [SerializeField]
@@ -106,8 +112,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         int b, w;
         StoneManagerRef.GetStoneCounts(out b, out w);
-        tmPro.text =
-            $"{players[currentPlayerIndex].Team.ToString()}\nB:{b} W:{w}";
+        tmPro.text = "";
+        stoneCountBlack.text = "0";
+        stoneCountWhite.text = "0";
     }
 
     // Update is called once per frame
@@ -172,8 +179,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                             int b, w;
                             StoneManagerRef.GetStoneCounts(out b, out w);
-                            tmPro.text =
-                                $"{players[currentPlayerIndex].Team.ToString()}\nB:{b} W:{w}";
+                            stoneCountBlack.text = b.ToString();
+                            stoneCountWhite.text = w.ToString();
 
                             turnTask = players[currentPlayerIndex].DoTurn();
                             currentGameState = EGameState.PUT;
