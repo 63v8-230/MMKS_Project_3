@@ -280,7 +280,7 @@ public class StoneManager : MonoBehaviour
                 }
             }
 
-            var cti = new ExEnumerator(ShowCutIn(cTeam == ETeam.BLACK));
+            var cti = new ExEnumerator(ShowCutIn(cTeam == ETeam.WHITE));
             StartCoroutine(cti);
             while (!cti.IsEnd) { await Task.Delay(1); }
 
