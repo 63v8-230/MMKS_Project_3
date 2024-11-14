@@ -13,9 +13,6 @@ public class XStone : SkillStoneBase
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
         Debug.Log("X Skill Start!");
-        var col = new ExEnumerator(ShowCutIn(baseTeam == ETeam.WHITE));
-        StartCoroutine(col);
-        yield return new WaitWhile(() => { return !col.IsEnd; });
 
         SetHighLight(stoneManager, position, GetColor() * 2);
         for (int i = 1; i < stoneManager.directions.Length; i += 2)

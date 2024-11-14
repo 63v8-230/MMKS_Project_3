@@ -19,9 +19,6 @@ public class ArrowStone : SkillStoneBase
             StoneDirection = EDirection.DOWN;
 
         Debug.Log("Arrow Skill Start!");
-        var col = new ExEnumerator(ShowCutIn(baseTeam == ETeam.WHITE));
-        StartCoroutine(col);
-        yield return new WaitWhile(() => { return !col.IsEnd; });
 
         SetHighLight(stoneManager, position, GetColor() * 2);
         var dir = stoneManager.directions[(int)StoneDirection];

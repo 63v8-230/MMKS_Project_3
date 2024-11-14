@@ -98,6 +98,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
             action.Action = this.OnSKill;
             action.Position = new Vector2(x, y);
             action.Name = GetStone().ToString() + "-" + Random.Range(0, 100);
+            action.Team = baseTeam;
             stoneManager.AddSkillMethod(action);
             prevSkillTurn = stoneManager.CurrentTurn;
         }
@@ -204,29 +205,5 @@ public class SkillStoneBase : MonoBehaviour, IStone
     protected virtual Color GetColor()
     {
         return Color.white;
-    }
-
-    protected virtual IEnumerator ShowCutIn(bool isEnemy)
-    {
-        Debug.Log("CutIn");
-        var t = GameObject.Find("Canvas").transform;
-        GameObject c;
-        if(isEnemy)
-        {
-            var o = Resources.Load<GameObject>("Pictures/Game/EnemySkillCut");
-            c = Instantiate(o);
-            c.transform.SetParent(t, false);
-        }
-        else
-        {
-            var o = Resources.Load<GameObject>("Pictures/Game/OwnSkillCut");
-            c = Instantiate(o);
-            c.transform.SetParent(t, false);
-        }
-
-        yield return new WaitForSeconds(2);
-        Destroy(c);
-        Debug.Log("CutIn-Out");
-        yield break;
     }
 }
