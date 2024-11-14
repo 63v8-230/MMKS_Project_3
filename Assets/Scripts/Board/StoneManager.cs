@@ -42,6 +42,7 @@ public struct SkillAction
     public System.Func<StoneManager, Vector2, IEnumerator> Action;
     public Vector2 Position;
     public String Name;
+    public ETeam Team;
 }
 
 
@@ -245,18 +246,82 @@ public class StoneManager : MonoBehaviour
 
         Debug.Log("Skill Count: "+skillMethod.Count);
 
+        if (skillMethod.Count <= 0)
+            return;
+        int skillCount = -1;
+        var frame = Instantiate(Resources.Load<GameObject>("Movie/FireScreen"));
+        frame.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        var frameCom = frame.GetComponent<FireFrameUIController>();
+        frameCom.Init();
+        frameCom.SetColor(0);
+        Debug.Log("Fire Create");
+
         while(skillMethod.Count!=0)
         {
-            var skillCoroutine = new ExEnumerator(skillMethod[0].Action.Invoke(this, skillMethod[0].Position));
-            StartCoroutine(skillCoroutine);
+            var l = new List<ExEnumerator>();
+            var cTeam = ETeam.NONE;
+            int _index = -1;
+            while(true)
+            {
+                _index++;
+                if (_index >= skillMethod.Count)
+                    break;
 
-            while (!skillCoroutine.IsEnd)
+                if(cTeam==ETeam.NONE)
+                    cTeam = skillMethod[_index].Team;
+
+                if(cTeam== skillMethod[_index].Team)
+                {
+                    l.Add(new ExEnumerator(skillMethod[_index].Action.Invoke(this, skillMethod[_index].Position)));
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            var cti = new ExEnumerator(ShowCutIn(cTeam == ETeam.BLACK));
+            StartCoroutine(cti);
+            while (!cti.IsEnd) { await Task.Delay(1); }
+
+            foreach (var col in l)
+            {
+                StartCoroutine(col);
+            }
+
+            bool isEnd = false;
+
+            while (!isEnd)
             {
                 await Task.Delay(1);
+                foreach (var col in l)
+                {
+                    if (col.IsEnd)
+                    {
+                        isEnd = true;
+                        break;
+                    }
+                }
             }
-            skillMethod.RemoveAt(0);
+
+            skillCount++;
+            Debug.Log("==SkillTimes: " + skillCount);
+            if (skillCount < 4)
+                frameCom.SetColor(skillCount);
+
+
+
+            while (skillMethod[0].Team == cTeam)
+            {
+                skillMethod.RemoveAt(0);
+                if (skillMethod.Count <= 0)
+                    break;
+            }
         }
+        Debug.Log("Destroy Fire");
+        Destroy(frame);
         skillMethod.Clear();
+        
     }
 
     public void FlipStone(int x, int y, ETeam team, bool isSkill = false)
@@ -604,5 +669,29 @@ public class StoneManager : MonoBehaviour
             default:
                 return null;
         }
+    }
+
+    protected virtual IEnumerator ShowCutIn(bool isEnemy)
+    {
+        Debug.Log("CutIn");
+        var t = GameObject.Find("Canvas").transform;
+        GameObject c;
+        if (isEnemy)
+        {
+            var o = Resources.Load<GameObject>("Pictures/Game/EnemySkillCut");
+            c = Instantiate(o);
+            c.transform.SetParent(t, false);
+        }
+        else
+        {
+            var o = Resources.Load<GameObject>("Pictures/Game/OwnSkillCut");
+            c = Instantiate(o);
+            c.transform.SetParent(t, false);
+        }
+
+        yield return new WaitForSeconds(2);
+        Destroy(c);
+        Debug.Log("CutIn-Out");
+        yield break;
     }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8981718532010814823}
   - component: {fileID: 4779750561675673892}
   - component: {fileID: 1197498536857779954}
+  - component: {fileID: 8901409887759129277}
   m_Layer: 5
   m_Name: FireScreen
   m_TagString: Untagged
@@ -81,7 +82,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2522710488004408314}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: f66b74a84a6e8eb4b9cd0666176850ed, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 90d3ef9f1db276745aeda1e37ae89bcd, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -109,3 +110,15 @@ VideoPlayer:
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
+--- !u!114 &8901409887759129277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2522710488004408314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a923cac54469e204c8503f199cf0dd04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
