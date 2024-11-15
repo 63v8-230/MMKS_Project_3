@@ -19,6 +19,6 @@ public class UIController : MonoBehaviour
 
     public void OnExitButtonClick()
     {
-        SceneManager.LoadScene("Title proto");
+        SceneManager.LoadScene(Data.Instance.TITLE_SCENE_NAME);
     }
 }

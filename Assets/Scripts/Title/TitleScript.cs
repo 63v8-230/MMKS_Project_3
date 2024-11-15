@@ -12,6 +12,8 @@ public class Data
 {
     public readonly static Data Instance = new Data();
 
+    public string TITLE_SCENE_NAME = "Title";
+
     public int BOARD_X = 8;
     public int BOARD_Y = 8;
 
@@ -53,6 +55,8 @@ public class TitleScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        AiKindDropDown.value = (int)Data.Instance.AIKind;
+
         join.onClick.AddListener(() =>
         {
             Data.Instance.IsOnline = true;
@@ -97,6 +101,14 @@ public class TitleScript : MonoBehaviour
 
         Data.Instance.PadProcess = new Process();
 
+        string para;
+
+        using (StreamReader sr = new StreamReader(Path.Combine(Application.streamingAssetsPath, "para.txt")))
+        {
+            para = sr.ReadLine();
+        }
+        
+
 
         // プロセスを起動するときに使用する値のセットを指定
         Data.Instance.PadProcess.StartInfo = new ProcessStartInfo
@@ -104,6 +116,7 @@ public class TitleScript : MonoBehaviour
             FileName = Path.Combine(Application.streamingAssetsPath, "MouseControllerWithGamePad.exe"),
             UseShellExecute = false,
             CreateNoWindow = true,
+            ArgumentList = {para},
         };
 
         Data.Instance.PadProcess.Start();
