@@ -6,6 +6,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public enum EGameState
@@ -197,12 +198,99 @@ public class GameManager : MonoBehaviourPunCallbacks
         isPlay = false;
         int b, w;
         StoneManagerRef.GetStoneCounts(out b, out w);
-        string winTeam = "Draw...";
+
+        ETeam[] t =
+        {
+            ETeam.NONE,//win
+            ETeam.NONE,//lose
+        };
+
+        int[] sc = { 0, 0 };
+
+        AudioClip[] ad = 
+        { 
+            Resources.Load<AudioClip>("Sound/Game/BGM_clear"), 
+            Resources.Load<AudioClip>("Sound/Game/BGM_gameover"),
+        };
+
+        //string winTeam = "Draw...";
         if (b != w)
             if (b > w)
-                winTeam = "Black Win!";
+            {
+                //winTeam = "Black Win!";
+                t[0] = ETeam.BLACK;
+                t[1] = ETeam.WHITE;
+                sc[0] = b;
+                sc[1] = w;
+            }
             else
-                winTeam = "White Win!";
-        tmPro.text = $"{winTeam}\nBlack: {b}\nWhite: {w}\n{additionalMessage}";
+            {
+                //winTeam = "White Win!";
+                t[0] = ETeam.WHITE;
+                t[1] = ETeam.BLACK;
+                sc[0] = w;
+                sc[1] = b;
+            }
+
+        //tmPro.text = $"{winTeam}\nBlack: {b}\nWhite: {w}\n{additionalMessage}";
+
+        string[] s =
+        {
+            "Win",
+            "Lose",
+        };
+
+
+        Camera.main.transform.position = new Vector3(7, 18, -3);
+        var canvas = GameObject.Find("Canvas");
+        for (int i = 0; i < canvas.transform.childCount; i++) 
+        {
+            canvas.transform.GetChild(i).gameObject.SetActive(false);
+        }
+        var result = Instantiate(Resources.Load<GameObject>("Prefab/UI/Result")).transform;
+        result.SetParent(canvas.transform, false);
+
+        for (int i = 0; i < 2; i++) 
+        {
+            if (t[i] == ETeam.BLACK)
+            {
+                StoneManagerRef.Sound.Stop();
+                StoneManagerRef.Sound.PlayOneShot(ad[i]);
+            }
+                
+
+            result.Find(s[i]+"/Chara_Main").GetComponent<Image>().sprite = GetCharacterPicture(t[i]);
+            result.Find(s[i] + "/Count_Back").GetComponent<Image>().sprite = GetStoneCountSprite(t[i]);
+            result.Find(s[i] + "/Count_Text").GetComponent<TextMeshProUGUI>().text = sc[i].ToString();
+        }
+
+        result.Find("AdditionalMessage").GetComponent<TextMeshProUGUI>().text = additionalMessage;
+
+        result.Find("ReturnTitle").GetComponent<Button>().onClick.AddListener(() => { SceneManager.LoadScene(Data.Instance.TITLE_SCENE_NAME); });
+    }
+
+
+    private Sprite GetCharacterPicture(ETeam team)
+    {
+        if(team==ETeam.BLACK)
+        {
+            return Resources.Load<Sprite>("Pictures/Game/chara_white_n1");
+        }
+        else
+        {
+            return Resources.Load<Sprite>("Pictures/Game/chara_black_n1");
+        }
+    }
+
+    private Sprite GetStoneCountSprite(ETeam team)
+    {
+        if (team == ETeam.BLACK)
+        {
+            return Resources.Load<Sprite>("Pictures/Game/UI/UI_StoneCountB_High");
+        }
+        else
+        {
+            return Resources.Load<Sprite>("Pictures/Game/UI/UI_StoneCountW_High");
+        }
     }
 }
