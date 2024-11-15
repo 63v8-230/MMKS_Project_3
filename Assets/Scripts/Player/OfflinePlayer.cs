@@ -123,13 +123,13 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         Deck d = new Deck();
         d.Stones = new List<OwnStone>
         {
-            new OwnStone { Stone = EStone.X, Amount = 5 },
-            new OwnStone { Stone = EStone.CIRCLE, Amount = 5 },
-            new OwnStone { Stone = EStone.SUN, Amount = 5 },
-            new OwnStone { Stone = EStone.CRYSTAL, Amount = 5 },
-            new OwnStone { Stone = EStone.CROSS, Amount = 5 },
-            new OwnStone { Stone = EStone.SHIELD, Amount = 5 },
-            new OwnStone { Stone = EStone.ARROW, Amount = 5 }
+            new OwnStone { Stone = EStone.X, Amount = 1 },
+            new OwnStone { Stone = EStone.CIRCLE, Amount = 1 },
+            new OwnStone { Stone = EStone.SUN, Amount = 1 },
+            new OwnStone { Stone = EStone.CRYSTAL, Amount = 1 },
+            new OwnStone { Stone = EStone.CROSS, Amount = 1 },
+            new OwnStone { Stone = EStone.SHIELD, Amount = 1 },
+            new OwnStone { Stone = EStone.ARROW, Amount = 1 }
         };
         MyDeck = d;
 
