@@ -47,4 +47,9 @@ public class CircleStone : SkillStoneBase
     {
         return new Color(0.569f, 0.812f, 0.314f);
     }
+
+    public override AudioClip GetSkillSound()
+    {
+        return Resources.Load<AudioClip>("Sound/Game/Special_circle");
+    }
 }

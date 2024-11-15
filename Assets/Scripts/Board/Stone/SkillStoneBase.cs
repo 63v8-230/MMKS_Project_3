@@ -59,7 +59,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
         if(IsOwnerOnline)
             hideAlpha = 0;
         else
-            hideAlpha = 0.4f;
+            hideAlpha = 0.3f;
 
         //SetStoneLogo(true);
     }
@@ -99,6 +99,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
             action.Position = new Vector2(x, y);
             action.Name = GetStone().ToString() + "-" + Random.Range(0, 100);
             action.Team = baseTeam;
+            action.Sound = GetSkillSound();
             stoneManager.AddSkillMethod(action);
             prevSkillTurn = stoneManager.CurrentTurn;
         }
@@ -139,14 +140,14 @@ public class SkillStoneBase : MonoBehaviour, IStone
             var r = gameObject.transform.Find("Plane").GetComponent<Renderer>();
             var c = r.material.color;
             if(isOwnerOnline)
-                c.a = 0.6f;
+                c.a = 0.3f;
             else
                 c.a = 1;
             r.material.EnableKeyword("_EMISSION");
             r.material.color = c;
             if (!isOwnerOnline)
             {
-                r.material.SetColor("_EmissionColor", GetColor() * 1.5f);
+                r.material.SetColor("_EmissionColor", GetColor() * 3f);
             }
                 
         }
@@ -205,5 +206,10 @@ public class SkillStoneBase : MonoBehaviour, IStone
     protected virtual Color GetColor()
     {
         return Color.white;
+    }
+
+    public virtual AudioClip GetSkillSound()
+    {
+        return Resources.Load<AudioClip>("Sound/Game/Special_straight");
     }
 }

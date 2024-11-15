@@ -43,6 +43,7 @@ public struct SkillAction
     public Vector2 Position;
     public String Name;
     public ETeam Team;
+    public AudioClip Sound;
 }
 
 
@@ -112,6 +113,8 @@ public class StoneManager : MonoBehaviour
     /// </summary>
     private List<SkillAction> skillMethod = new List<SkillAction>();
 
+    public AudioSource Sound;
+
     [NonSerialized]
     public Vector2[] directions = new Vector2[]
         {
@@ -134,6 +137,7 @@ public class StoneManager : MonoBehaviour
 
     public void Start()
     {
+        Sound = GetComponent<AudioSource>();
     }
 
     public void AddSkillMethod(SkillAction action)
@@ -212,6 +216,8 @@ public class StoneManager : MonoBehaviour
         if (info.X == -1)
             return;
 
+        Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Put"));
+
         Stones[info.X,info.Y] = info.PutStone;
 
         var e = SetTransform(info.PutStone.GameObjectRef,
@@ -226,6 +232,8 @@ public class StoneManager : MonoBehaviour
 
         var checkTasks = directions.Select(dir => CheckLineAsync(info.X, info.Y, dir, info.PutStone.Team)).ToArray();
         var results = await Task.WhenAll(checkTasks);
+
+        await Task.Delay(500);
 
         var flipTasks = new List<Task>();
         for (int i = 0; i < directions.Length; i++)
@@ -259,6 +267,7 @@ public class StoneManager : MonoBehaviour
         while(skillMethod.Count!=0)
         {
             var l = new List<ExEnumerator>();
+            var la = new List<AudioClip>();
             var cTeam = ETeam.NONE;
             int _index = -1;
             while(true)
@@ -273,6 +282,7 @@ public class StoneManager : MonoBehaviour
                 if(cTeam== skillMethod[_index].Team)
                 {
                     l.Add(new ExEnumerator(skillMethod[_index].Action.Invoke(this, skillMethod[_index].Position)));
+                    la.Add(skillMethod[_index].Sound);
                 }
                 else
                 {
@@ -284,9 +294,10 @@ public class StoneManager : MonoBehaviour
             StartCoroutine(cti);
             while (!cti.IsEnd) { await Task.Delay(1); }
 
-            foreach (var col in l)
+            for (int i = 0; i < l.Count; i++) 
             {
-                StartCoroutine(col);
+                StartCoroutine(l[i]);
+                Sound.PlayOneShot(la[i]);
             }
 
             bool isEnd = false;
@@ -333,6 +344,8 @@ public class StoneManager : MonoBehaviour
             {
                 Debug.Log(isSkill);
                 s.SetTeam(team, this, x, y);
+                if(!isSkill)
+                    Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Turn"));
                 var e = s.OnFlip(isSkill);
                 StartCoroutine(e);
             }
@@ -554,6 +567,7 @@ public class StoneManager : MonoBehaviour
 
         while (true)
         {
+            Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Turn"));
             Stones[x, y].SetTeam(myTeam, this, x, y);
             var flipCoroutine = new ExEnumerator(Stones[x, y].OnFlip());
             StartCoroutine(flipCoroutine);
@@ -646,28 +660,59 @@ public class StoneManager : MonoBehaviour
         switch (stone)
         {
             case EStone.SUN:
-                return (Sprite)Resources.Load<Sprite>("Pictures/Sun");
+                return Resources.Load<Sprite>("Pictures/Sun");
 
             case EStone.CROSS:
-                return (Sprite)Resources.Load<Sprite>("Pictures/Cross");
+                return Resources.Load<Sprite>("Pictures/Cross");
 
             case EStone.X:
-                return (Sprite)Resources.Load<Sprite>("Pictures/X");
+                return Resources.Load<Sprite>("Pictures/X");
 
             case EStone.CIRCLE:
-                return (Sprite)Resources.Load<Sprite>("Pictures/Circle");
+                return Resources.Load<Sprite>("Pictures/Circle");
 
             case EStone.ARROW:
-                return (Sprite)Resources.Load<Sprite>("Pictures/Arrow");
+                return Resources.Load<Sprite>("Pictures/Arrow");
 
             case EStone.SHIELD:
-                return (Sprite)Resources.Load<Sprite>("Pictures/Shield");
+                return Resources.Load<Sprite>("Pictures/Shield");
 
             case EStone.CRYSTAL:
-                return (Sprite)Resources.Load<Sprite>("Pictures/Crystal");
+                return Resources.Load<Sprite>("Pictures/Crystal");
 
             default:
                 return null;
+        }
+    }
+
+    public Sprite GetDescription(EStone stone)
+    {
+        switch (stone)
+        {
+            case EStone.SUN:
+                return Resources.Load<Sprite>("Pictures/Description/Sun");
+
+            case EStone.CROSS:
+                return Resources.Load<Sprite>("Pictures/Description/Cross");
+
+            case EStone.X:
+                return Resources.Load<Sprite>("Pictures/Description/X");
+
+            case EStone.CIRCLE:
+                return Resources.Load<Sprite>("Pictures/Description/Circle");
+
+            case EStone.ARROW:
+                return Resources.Load<Sprite>("Pictures/Description/Arrow");
+
+            case EStone.SHIELD:
+                return Resources.Load<Sprite>("Pictures/Description/Shield");
+
+            case EStone.CRYSTAL:
+                return Resources.Load<Sprite>("Pictures/Description/Crystal");
+
+            default:
+                return null;
+
         }
     }
 
@@ -676,11 +721,13 @@ public class StoneManager : MonoBehaviour
         Debug.Log("CutIn");
         var t = GameObject.Find("Canvas").transform;
         GameObject c;
+        Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Cutin"));
         if (isEnemy)
         {
             var o = Resources.Load<GameObject>("Pictures/Game/EnemySkillCut");
             c = Instantiate(o);
             c.transform.SetParent(t, false);
+
         }
         else
         {
@@ -688,6 +735,7 @@ public class StoneManager : MonoBehaviour
             c = Instantiate(o);
             c.transform.SetParent(t, false);
         }
+        c.transform.SetSiblingIndex(c.transform.GetSiblingIndex()-1);
 
         yield return new WaitForSeconds(2);
         Destroy(c);

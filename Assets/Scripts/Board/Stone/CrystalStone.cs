@@ -59,5 +59,10 @@ public class CrystalStone : SkillStoneBase
     {
         return new Color(0.655f, 0.894f, 0.949f);
     }
+
+    public override AudioClip GetSkillSound()
+    {
+        return Resources.Load<AudioClip>("Sound/Game/Special_circle");
+    }
 }
 
