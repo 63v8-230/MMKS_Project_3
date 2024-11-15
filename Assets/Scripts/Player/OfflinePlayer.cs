@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -110,9 +111,9 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         currentStoneIndex = index;
 
         if(prevSelectedStoneButton!=null)
-            prevSelectedStoneButton.transform.Find("Button/Stone_Select").gameObject.SetActive(false);
+            prevSelectedStoneButton.transform.Find("Vert/Button/Stone_Select").gameObject.SetActive(false);
 
-        button.transform.Find("Button/Stone_Select").gameObject.SetActive(true);
+        button.transform.Find("Vert/Button/Stone_Select").gameObject.SetActive(true);
 
         prevSelectedStoneButton = button;
     }
@@ -139,11 +140,12 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
         var ui_Default = Instantiate(srcObj);
         ui_Default.transform.SetParent(ct, false);
-        var ui_Default_Button = ui_Default.transform.Find("Button");
+        var ui_Default_Button = ui_Default.transform.Find("Vert/Button");
         ui_Default_Button.GetComponent<Button>().onClick.AddListener(() => { SetStone(-1,ui_Default); });
         Destroy(ui_Default_Button.Find("Stone_Logo").gameObject);
-        ui_Default.transform.Find("Count").GetComponent<TextMeshProUGUI>().text = "";
+        ui_Default.transform.Find("Vert/Count").GetComponent<TextMeshProUGUI>().text = "";
         ui_Default_Button.transform.Find("Stone_Select").gameObject.SetActive(true);
+        ui_Default.transform.Find("Desc").GetComponent<Image>().color = new Color(0, 0, 0, 0);
         prevSelectedStoneButton = ui_Default;
 
         var sManager = GameObject.Find("GameManager").GetComponent<StoneManager>();
@@ -152,11 +154,12 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         {
             var ui = Instantiate(srcObj);
             ui.transform.SetParent(ct, false);
-            var ui_Button = ui.transform.Find("Button");
+            var ui_Button = ui.transform.Find("Vert/Button");
             int _index = i;
             ui_Button.GetComponent<Button>().onClick.AddListener(() => { SetStone(_index,ui); });
             ui_Button.Find("Stone_Logo").GetComponent<Image>().sprite = sManager.GetSprite(MyDeck.Stones[i].Stone);
-            ui.transform.Find("Count").GetComponent<TextMeshProUGUI>().text = "x"+ MyDeck.Stones[i].Amount;
+            ui.transform.Find("Vert/Count").GetComponent<TextMeshProUGUI>().text = "x"+ MyDeck.Stones[i].Amount;
+            ui.transform.Find("Desc").GetComponent<Image>().sprite = sManager.GetDescription(MyDeck.Stones[i].Stone);
         }
     }
 
@@ -225,7 +228,7 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
                         var st = MyDeck.Stones[kind];
                         st.Amount--;
                         MyDeck.Stones[kind] = st;
-                        prevSelectedStoneButton.transform.Find("Count").GetComponent<TextMeshProUGUI>().text = "x" + st.Amount;
+                        prevSelectedStoneButton.transform.Find("Vert/Count").GetComponent<TextMeshProUGUI>().text = "x" + st.Amount;
                         if (st.Amount <= 0) 
                         {
                             Destroy(prevSelectedStoneButton);
