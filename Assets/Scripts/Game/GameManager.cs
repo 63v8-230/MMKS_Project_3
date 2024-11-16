@@ -214,23 +214,22 @@ public class GameManager : MonoBehaviourPunCallbacks
         };
 
         //string winTeam = "Draw...";
-        if (b != w)
-            if (b > w)
-            {
-                //winTeam = "Black Win!";
-                t[0] = ETeam.BLACK;
-                t[1] = ETeam.WHITE;
-                sc[0] = b;
-                sc[1] = w;
-            }
-            else
-            {
-                //winTeam = "White Win!";
-                t[0] = ETeam.WHITE;
-                t[1] = ETeam.BLACK;
-                sc[0] = w;
-                sc[1] = b;
-            }
+        if (b >= w)
+        {
+            //winTeam = "Black Win!";
+            t[0] = ETeam.BLACK;
+            t[1] = ETeam.WHITE;
+            sc[0] = b;
+            sc[1] = w;
+        }
+        else
+        {
+            //winTeam = "White Win!";
+            t[0] = ETeam.WHITE;
+            t[1] = ETeam.BLACK;
+            sc[0] = w;
+            sc[1] = b;
+        }
 
         //tmPro.text = $"{winTeam}\nBlack: {b}\nWhite: {w}\n{additionalMessage}";
 
@@ -257,7 +256,11 @@ public class GameManager : MonoBehaviourPunCallbacks
                 StoneManagerRef.Sound.Stop();
                 StoneManagerRef.Sound.PlayOneShot(ad[i]);
             }
-                
+
+            if(b==w)
+            {
+                result.Find(s[i] + "/Text").GetComponent<TextMeshProUGUI>().text = "ˆø‚«•ª‚¯...";
+            }
 
             result.Find(s[i]+"/Chara_Main").GetComponent<Image>().sprite = GetCharacterPicture(t[i]);
             result.Find(s[i] + "/Count_Back").GetComponent<Image>().sprite = GetStoneCountSprite(t[i]);
