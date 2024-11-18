@@ -16,7 +16,7 @@ public class TitleScriptNew : MonoBehaviour
 
     private GameObject current;
 
-    private AudioSource audio;
+    private new AudioSource audio;
 
     // Start is called before the first frame update
     void Start()
@@ -110,6 +110,30 @@ public class TitleScriptNew : MonoBehaviour
             Data.Instance.IsOnline = false;
 
             Data.Instance.AIKind = EAIKind.M;
+
+            StartCoroutine(DelayChangeScene("Game"));
+        });
+
+        diffSelect.transform.Find("Claude1").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+            Data.Instance.BOARD_X = 8;
+            Data.Instance.BOARD_Y = 8;
+            Data.Instance.IsOnline = false;
+
+            Data.Instance.AIKind = EAIKind.CLAUDE1;
+
+            StartCoroutine(DelayChangeScene("Game"));
+        });
+
+        diffSelect.transform.Find("Claude2").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+            Data.Instance.BOARD_X = 8;
+            Data.Instance.BOARD_Y = 8;
+            Data.Instance.IsOnline = false;
+
+            Data.Instance.AIKind = EAIKind.CLAUDE2;
 
             StartCoroutine(DelayChangeScene("Game"));
         });
