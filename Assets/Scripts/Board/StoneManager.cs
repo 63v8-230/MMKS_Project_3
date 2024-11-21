@@ -1,7 +1,9 @@
+using Photon.Pun.Demo.Procedural;
 using Photon.Pun.Demo.PunBasics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
@@ -354,16 +356,62 @@ public class StoneManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 現在の石を数える。戻り値は合計。引数は色別。
+    /// 現在の石を数える。。
     /// </summary>
-    /// <param name="black"></param>
-    /// <param name="white"></param>
-    /// <returns></returns>
-    public int GetStoneCounts(out int black, out int white)
+    /// <returns>[0]:黒 [1]:白</returns>
+    public async Task<int[]> GetStoneCounts()
     {
-        black = 0;
-        white = 0;
-        for (int ix = 0; ix < Stones.GetLength(0); ix++)
+        int black = 0;
+        int white = 0;
+
+        int boardSizeX = Stones.GetLength(0);
+
+        List < Task<int[]>> t = new List<Task<int[]>>();
+
+        for (int i = 0; true; i += 3) 
+        {
+            if (i+3 < boardSizeX)
+            {
+                t.Add(CountStone(i, i+3));
+                Debug.Log($"async {i} - {i + 3}");
+            }
+            else
+            {
+                t.Add(CountStone(i, boardSizeX));
+                Debug.Log($"async {i} - {boardSizeX}");
+                break;
+            }
+            
+        }
+
+        await Task.WhenAll(t);
+
+
+
+        foreach (var item in t)
+        {
+            black += item.Result[0];
+            white += item.Result[1];
+        }
+
+        return new int[] { black, white };
+    }
+
+    /// <summary>
+    /// 非同期で指定した行範囲の石の数を数える
+    /// </summary>
+    /// <param name="startX"></param>
+    /// <param name="startY"></param>
+    /// <param name="endX"></param>
+    /// <param name="endY"></param>
+    /// <returns>[0]が黒、[1]が白</returns>
+    private async Task<int[]> CountStone(int startX, int endX)
+    {
+        await Task.Yield();
+
+        int[] count = new[] { 0, 0 };
+
+        for (int ix = startX; ix < endX; ix++)
         {
             for (int iy = 0; iy < Stones.GetLength(1); iy++)
             {
@@ -373,16 +421,16 @@ public class StoneManager : MonoBehaviour
                 switch (Stones[ix, iy].Team)
                 {
                     case ETeam.BLACK:
-                        black++;
+                        count[0]++;
                         break;
                     case ETeam.WHITE:
-                        white++;
+                        count[1]++;
                         break;
                 }
             }
         }
 
-        return black + white;
+        return count;
     }
 
     /// <summary>
@@ -421,16 +469,52 @@ public class StoneManager : MonoBehaviour
     /// 配置可能なマスを返す
     /// </summary>
     /// <returns></returns>
-    public PuttableCellInfo[] GetPuttablePosition(ETeam myTeam)
+    public async Task<PuttableCellInfo[]> GetPuttablePosition(ETeam myTeam)
+    {
+        List<Task<List<PuttableCellInfo>>> t = new List<Task<List<PuttableCellInfo>>>();
+
+        int boardSizeX = Stones.GetLength(0);
+
+        for (int i = 0; true; i += 3)
+        {
+            if (i + 3 < boardSizeX)
+            {
+                t.Add(SearchPuttableCells(myTeam,i, i + 3));
+                Debug.Log($"async {i} - {i + 3}");
+            }
+            else
+            {
+                t.Add(SearchPuttableCells(myTeam, i, boardSizeX));
+                Debug.Log($"async {i} - {boardSizeX}");
+                break;
+            }
+        }
+
+        await Task.WhenAll(t);
+
+        List<PuttableCellInfo> p = new List<PuttableCellInfo>();
+
+        foreach (var item in t)
+        {
+            p.AddRange(item.Result);
+        }
+
+        return p.ToArray();
+
+    }
+
+    private async Task<List<PuttableCellInfo>> SearchPuttableCells(ETeam myTeam, int startX, int endX)
     {
         List<PuttableCellInfo> returnList = new List<PuttableCellInfo>();
 
-        for (int ix = 0; ix < Stones.GetLength(0); ix++)
+        for (int ix = startX; ix < endX; ix++)
         {
             for (int iy = 0; iy < Stones.GetLength(1); iy++)
             {
                 if (Stones[ix, iy] != null)
                     continue;
+
+                List<Task<int>> t = new List<Task<int>>();
 
                 int pCount = 0;
                 foreach (var dir in directions)
@@ -445,14 +529,26 @@ public class StoneManager : MonoBehaviour
                     if (stone.Team == myTeam)
                         continue;
 
-                    int count;
-                    if (!CheckLine(ix, iy, dir, myTeam, out count))
-                        continue;
+                    t.Add(CheckLine(ix, iy, dir, myTeam));
 
-                    pCount += count;
+                    //int count = t.Result;
+                    //if (count == -1)
+                    //    continue;
+
+                    //pCount += count;
                 }
 
-                if (pCount > 0) 
+                await Task.WhenAll(t);
+
+                foreach (var task in t)
+                {
+                    if (task.Result == -1)
+                        continue;
+
+                    pCount += task.Result;
+                }
+
+                if (pCount > 0)
                 {
                     PuttableCellInfo p = new PuttableCellInfo();
                     p.X = ix;
@@ -463,8 +559,7 @@ public class StoneManager : MonoBehaviour
             }
         }
 
-                return returnList.ToArray();
-
+        return returnList;
     }
 
     /// <summary>
@@ -511,21 +606,31 @@ public class StoneManager : MonoBehaviour
         return canFlip;
     }
 
-    private bool CheckLine(int x, int y, Vector2 direction, ETeam myTeam, out int puttableCount)
+    /// <summary>
+    /// 指定した場所から指定した方向へ、ひっくり返せるかどうかを判定する。
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="direction"></param>
+    /// <param name="myTeam"></param>
+    /// <returns>ひっくり返せなければ-1、ひっくり返せる場合はその数を返す</returns>
+    private async Task<int> CheckLine(int x, int y, Vector2 direction, ETeam myTeam)
     {
+        await Task.Yield();
+
         bool canFlip = false;
 
         x += (int)direction.x;
         y += (int)direction.y;
 
-        puttableCount = 0;
+        int puttableCount = 0;
 
-        if (CheckOutOfBoard(x, y)) return false;
+        if (CheckOutOfBoard(x, y)) return -1;
 
         if (Stones[x, y] == null ||
             Stones[x, y].Team == myTeam)
         {
-            return false;
+            return -1;
         }
 
         puttableCount++;
@@ -550,9 +655,9 @@ public class StoneManager : MonoBehaviour
         }
 
         if (!canFlip)
-            puttableCount = 0;
+            return -1;
 
-        return canFlip;
+        return puttableCount;
     }
 
     private async Task FlipStones(int x, int y, Vector2 direction, ETeam myTeam)

@@ -23,11 +23,13 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
     {
         await Task.Delay(500);
         var puttablePosition = gameManager.StoneManagerRef.GetPuttablePosition(Team);
+        while (!puttablePosition.IsCompleted)
+            await Task.Delay(10);
 
         PuttableCellInfo p = new PuttableCellInfo();
         p.Count = 0;
 
-        foreach (var item in puttablePosition)
+        foreach (var item in puttablePosition.Result)
         {
             if (item.Count > p.Count)
             {

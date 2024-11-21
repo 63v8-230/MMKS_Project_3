@@ -110,9 +110,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         StoneManagerRef.Init(Data.Instance.BOARD_X, Data.Instance.BOARD_Y);
 
         GameStart(p1.GetComponent<IPlayer>(), p2.GetComponent<IPlayer>());
-
-        int b, w;
-        StoneManagerRef.GetStoneCounts(out b, out w);
         tmPro.text = "";
         stoneCountBlack.text = "0";
         stoneCountWhite.text = "0";
@@ -178,10 +175,9 @@ public class GameManager : MonoBehaviourPunCallbacks
                             if (currentPlayerIndex >= players.Length)
                                 currentPlayerIndex = 0;
 
-                            int b, w;
-                            StoneManagerRef.GetStoneCounts(out b, out w);
-                            stoneCountBlack.text = b.ToString();
-                            stoneCountWhite.text = w.ToString();
+                            var result = Task.Run(StoneManagerRef.GetStoneCounts);
+                            stoneCountBlack.text = result.Result[0].ToString();
+                            stoneCountWhite.text = result.Result[1].ToString();
 
                             turnTask = players[currentPlayerIndex].DoTurn();
                             currentGameState = EGameState.PUT;
@@ -196,8 +192,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void OnEndOfGame(string additionalMessage = "")
     {
         isPlay = false;
-        int b, w;
-        StoneManagerRef.GetStoneCounts(out b, out w);
+        var stoneCount = Task.Run(StoneManagerRef.GetStoneCounts);
 
         ETeam[] t =
         {
@@ -214,21 +209,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         };
 
         //string winTeam = "Draw...";
-        if (b >= w)
+        if (stoneCount.Result[0] >= stoneCount.Result[1])
         {
             //winTeam = "Black Win!";
             t[0] = ETeam.BLACK;
             t[1] = ETeam.WHITE;
-            sc[0] = b;
-            sc[1] = w;
+            sc[0] = stoneCount.Result[0];
+            sc[1] = stoneCount.Result[1];
         }
         else
         {
             //winTeam = "White Win!";
             t[0] = ETeam.WHITE;
             t[1] = ETeam.BLACK;
-            sc[0] = w;
-            sc[1] = b;
+            sc[0] = stoneCount.Result[0];
+            sc[1] = stoneCount.Result[1];
         }
 
         //tmPro.text = $"{winTeam}\nBlack: {b}\nWhite: {w}\n{additionalMessage}";
@@ -257,7 +252,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 StoneManagerRef.Sound.PlayOneShot(ad[i]);
             }
 
-            if(b==w)
+            if (stoneCount.Result[0] == stoneCount.Result[1]) 
             {
                 result.Find(s[i] + "/Text").GetComponent<TextMeshProUGUI>().text = "ˆø‚«•ª‚¯...";
             }

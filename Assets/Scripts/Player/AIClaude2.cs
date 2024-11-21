@@ -57,13 +57,16 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         await Task.Delay(100); // 思考時間演出
 
         var puttablePositions = gameManager.StoneManagerRef.GetPuttablePosition(Team);
-        if (puttablePositions.Length == 0)
+        while (!puttablePositions.IsCompleted)
+            await Task.Delay(10);
+
+        if (puttablePositions.Result.Length == 0)
         {
             return new TurnInfo { X = -1 };
         }
 
         // 最適な手を探す
-        TurnInfo bestMove = FindBestMove(puttablePositions);
+        TurnInfo bestMove = FindBestMove(puttablePositions.Result);
 
         // 石を配置して返す
         if (bestMove.PutStone != null)

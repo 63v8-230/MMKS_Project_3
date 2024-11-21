@@ -14,7 +14,10 @@ public class AIPlayerM : AIPlayerBase
         currentTurn++;
         await Task.Delay(500);
         var puttablePosition = gameManager.StoneManagerRef.GetPuttablePosition(Team);
-        Debug.Log("Puttable: " + puttablePosition.Length);
+        while (!puttablePosition.IsCompleted)
+            await Task.Delay(10);
+
+        Debug.Log("Puttable: " + puttablePosition.Result.Length);
         TurnInfo t = new TurnInfo();
         t.X = -1;
 
@@ -22,8 +25,8 @@ public class AIPlayerM : AIPlayerBase
         {
             Task<TurnInfo>[] checkTasks =
                 {
-                    Check(IsCorner,puttablePosition),
-                    Check(IsEdge,puttablePosition),
+                    Check(IsCorner,puttablePosition.Result),
+                    Check(IsEdge,puttablePosition.Result),
                 };
 
             var ts = Task.WhenAll(checkTasks);
@@ -53,15 +56,15 @@ public class AIPlayerM : AIPlayerBase
         {
             Task<TurnInfo>[] checkTasks =
                 {
-                    Check(IsCorner,puttablePosition),
-                    Check(IsArrow,puttablePosition),
-                    Check(IsEdge,puttablePosition),
-                    Check(IsShield,puttablePosition),
-                    Check(IsCircle,puttablePosition),
-                    Check(IsCrystal,puttablePosition),
-                    Check(IsX,puttablePosition),
-                    Check(IsCross,puttablePosition),
-                    Check(IsSun,puttablePosition),
+                    Check(IsCorner,puttablePosition.Result),
+                    Check(IsArrow,puttablePosition.Result),
+                    Check(IsEdge,puttablePosition.Result),
+                    Check(IsShield,puttablePosition.Result),
+                    Check(IsCircle,puttablePosition.Result),
+                    Check(IsCrystal,puttablePosition.Result),
+                    Check(IsX,puttablePosition.Result),
+                    Check(IsCross,puttablePosition.Result),
+                    Check(IsSun,puttablePosition.Result),
 
                 };
 
@@ -124,7 +127,7 @@ public class AIPlayerM : AIPlayerBase
                     MyDeck.Stones[i2] = d;
                     Debug.Log("Used");
 
-                    var pp = puttablePosition[UnityEngine.Random.Range(0, puttablePosition.Length)];
+                    var pp = puttablePosition.Result[UnityEngine.Random.Range(0, puttablePosition.Result.Length)];
                     t.X = pp.X;
                     t.Y = pp.Y;
                     t.PutStone = gameManager.StoneManagerRef.SelectStone(d.Stone);
@@ -141,15 +144,15 @@ public class AIPlayerM : AIPlayerBase
 
         Debug.Log("=X: " + t.X);
 
-        if (t.X == -1 && puttablePosition.Length > 0)
+        if (t.X == -1 && puttablePosition.Result.Length > 0)
         {
 
-            var pp = puttablePosition[UnityEngine.Random.Range(0, puttablePosition.Length)];
+            var pp = puttablePosition.Result[UnityEngine.Random.Range(0, puttablePosition.Result.Length)];
             t.X = pp.X;
             t.Y = pp.Y;
             t.PutStone = gameManager.StoneManagerRef.SelectStone(EStone.DEFAULT);
         }
-        else if (puttablePosition.Length == 0)
+        else if (puttablePosition.Result.Length == 0)
         {
             t.X = -1;
             return t;

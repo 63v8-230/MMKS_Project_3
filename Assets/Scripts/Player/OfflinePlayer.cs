@@ -17,6 +17,7 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     public Deck MyDeck { set; get; }
 
     [SerializeField]
+
     private GameObject stone;
 
     public OnlineScript OnlineScriptRef { set; get; }
@@ -38,7 +39,11 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         turnInfo = new TurnInfo();
         turnInfo.X = -1;
         isInTurn = true;
-        puttablePosition = gameManager.StoneManagerRef.GetPuttablePosition(Team);
+        var puttablePositionTask = gameManager.StoneManagerRef.GetPuttablePosition(Team);
+        while (!puttablePositionTask.IsCompleted)
+            await Task.Delay(10);
+
+        puttablePosition = puttablePositionTask.Result;
 
         List<GameObject> puttableCell = new List<GameObject>();
 

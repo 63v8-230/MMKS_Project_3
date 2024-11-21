@@ -61,13 +61,16 @@ public class AIClaude1 : MonoBehaviour, IPlayer
         await Task.Delay(500); // 思考時間の演出
 
         var puttablePositions = gameManager.StoneManagerRef.GetPuttablePosition(Team);
-        if (puttablePositions.Length == 0)
+        while (!puttablePositions.IsCompleted)
+            await Task.Delay(10);
+
+        if (puttablePositions.Result.Length == 0)
         {
             return new TurnInfo { X = -1 };
         }
 
         // 戦略の選択
-        return await SelectStrategy(puttablePositions);
+        return await SelectStrategy(puttablePositions.Result);
     }
 
     private async Task<TurnInfo> SelectStrategy(PuttableCellInfo[] puttablePositions)
