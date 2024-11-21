@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// AIÇ…çÏÇÁÇπÇƒÇ›ÇΩÇ®óVÇ—ÉvÉçÉOÉâÉÄ1
+/// </summary>
 public class AIClaude1 : MonoBehaviour, IPlayer
 {
     [SerializeField]
@@ -186,7 +189,6 @@ public class AIClaude1 : MonoBehaviour, IPlayer
     private TurnInfo CreateTurnInfo(TurnInfo position, EStone stoneType)
     {
         var stone = gameManager.StoneManagerRef.SelectStone(stoneType);
-        stone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
 
         if (stoneType != EStone.DEFAULT)
         {

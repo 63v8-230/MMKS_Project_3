@@ -589,70 +589,73 @@ public class StoneManager : MonoBehaviour
 
     public IStone SelectStone(EStone selectedStone)
     {
-        IStone s;
+        IStone stone;
 
         Debug.Log(selectedStone.ToString());
 
         switch (selectedStone)
         {
             case EStone.DEFAULT:
-                s =
+                stone =
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<Stone>();
                 break;
 
             case EStone.SUN:
-                s =
+                stone =
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<SunStone>();
                 break;
 
             case EStone.CROSS:
-                s =
+                stone =
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<CrossStone>();
                 break;
 
             case EStone.X:
-                s =
+                stone =
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<XStone>();
                 break;
 
             case EStone.CIRCLE:
-                s =
+                stone =
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<CircleStone>();
                 break;
             case EStone.ARROW:
-                s =
+                stone =
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<ArrowStone>();
                 break;
 
             case EStone.SHIELD:
-                s =
+                stone =
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<ShieldStone>();
                 break;
 
             case EStone.CRYSTAL:
-                s =
+                stone =
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<CrystalStone>();
                 break;
 
             default:
-                s =
+                stone =
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<CircleStone>();
                 Debug.LogError("EStone None");
                 break;
         }
 
-        Debug.Log(s);
+        Debug.Log(stone);
 
-        return s;
+        if(stone.GetStone() > EStone.DEFAULT)
+            stone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
+
+        return stone;
     }
 
     public Sprite GetSprite(EStone stone)

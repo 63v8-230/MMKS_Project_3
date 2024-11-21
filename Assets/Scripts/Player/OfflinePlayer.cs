@@ -240,7 +240,6 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
 
                     turnInfo.PutStone = gameManager.StoneManagerRef.SelectStone((EStone)kind);
-                    turnInfo.PutStone.GameObjectRef.transform.Find("Plane").localPosition = new Vector3(0, 0.086f, 0);
                     turnInfo.PutStone.SetTeam(Team);
 
                     isInTurn = false;

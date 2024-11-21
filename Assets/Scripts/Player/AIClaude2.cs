@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// AI‚Éì‚ç‚¹‚Ä‚İ‚½‚¨—V‚ÑƒvƒƒOƒ‰ƒ€2
+/// </summary>
 public class AIClaude2 : MonoBehaviour, IPlayer
 {
     [SerializeField]
