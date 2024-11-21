@@ -71,11 +71,11 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         // Î‚ğ”z’u‚µ‚Ä•Ô‚·
         if (bestMove.PutStone != null)
         {
-            bestMove.PutStone.SetTeam(Team);
             if (bestMove.PutStone is SkillStoneBase skillStone)
             {
                 skillStone.IsOwnerOnline = true;
             }
+            bestMove.PutStone.SetTeam(Team);
         }
 
         return bestMove;
