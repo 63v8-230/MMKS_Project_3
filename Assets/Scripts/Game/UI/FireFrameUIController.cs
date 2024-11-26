@@ -85,8 +85,7 @@ public class FireFrameUIController : MonoBehaviour
                 break;
 
             case 3:
-                colorDelta = 1;
-                index = -1;
+                ply.clip = Resources.Load<VideoClip>("Movie/FireRainbow");
                 break;
         }
         
