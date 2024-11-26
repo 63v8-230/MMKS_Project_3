@@ -213,6 +213,12 @@ public class StoneManager : MonoBehaviour
         yield break;
     }
 
+    private void OnSkill(FireFrameUIController frameCom)
+    {
+        Debug.Log("OnSKill Frame");
+        frameCom.SetColor();
+    }
+
     async public Task PutStone(TurnInfo info)
     {
         if (info.X == -1)
@@ -258,12 +264,12 @@ public class StoneManager : MonoBehaviour
 
         if (skillMethod.Count <= 0)
             return;
-        int skillCount = -1;
+
         var frame = Instantiate(Resources.Load<GameObject>("Movie/FireScreen"));
         frame.transform.SetParent(GameObject.Find("Canvas").transform, false);
         var frameCom = frame.GetComponent<FireFrameUIController>();
         frameCom.Init();
-        frameCom.SetColor(0);
+        //frameCom.SetColor();
         Debug.Log("Fire Create");
 
         while(skillMethod.Count!=0)
@@ -292,9 +298,12 @@ public class StoneManager : MonoBehaviour
                 }
             }
 
+            OnSkill(frameCom);
             var cti = new ExEnumerator(ShowCutIn(cTeam == ETeam.WHITE));
             StartCoroutine(cti);
             while (!cti.IsEnd) { await Task.Delay(1); }
+
+            
 
             for (int i = 0; i < l.Count; i++) 
             {
@@ -316,11 +325,6 @@ public class StoneManager : MonoBehaviour
                     }
                 }
             }
-
-            skillCount++;
-            Debug.Log("==SkillTimes: " + skillCount);
-            if (skillCount < 4)
-                frameCom.SetColor(skillCount);
 
 
 
@@ -845,7 +849,7 @@ public class StoneManager : MonoBehaviour
         }
         c.transform.SetSiblingIndex(c.transform.GetSiblingIndex()-1);
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1.7f);
         Destroy(c);
         Debug.Log("CutIn-Out");
         yield break;

@@ -11,6 +11,7 @@ public class FireFrameUIController : MonoBehaviour
 
     float colorDelta = 0;
 
+    int kind = -1;
     
 
     //(1,2,3) = (x, y, z); (-/+) = up/down value
@@ -64,9 +65,12 @@ public class FireFrameUIController : MonoBehaviour
     /// (0, 1, 2, 3)
     /// </summary>
     /// <param name="_index"></param>
-    public void SetColor(int _index)
+    public void SetColor()
     {
-        switch(_index)
+        kind++;
+        Debug.Log("Fire Kind : "+kind);
+
+        switch(kind)
         {
             case 0:
                 ply.clip = Resources.Load<VideoClip>("Movie/FireBlue");
