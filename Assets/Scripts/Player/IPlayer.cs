@@ -8,8 +8,8 @@ public enum EAIKind
     SIMPLE, // 1番多く取れる場所に通常石のみを置く
     S, // 特殊石も使う。よわい
     M, // 特殊石も使う。ふつう
-    CLAUDE1,//Claudeが作ったAI
-    CLAUDE2,//Claudeが作ったAI
+    CLAUDE1,//Claudeが作ったAI。まあ普通ぐらい？
+    CLAUDE2,//Claudeが作ったAI。ちょい強いかも
 }
 
 public struct Deck

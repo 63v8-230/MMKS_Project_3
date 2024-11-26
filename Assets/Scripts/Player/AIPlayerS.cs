@@ -81,7 +81,7 @@ public class AIPlayerS : AIPlayerBase
                     t = checkTasks[i].Result;
                     t.PutStone = gameManager.StoneManagerRef.SelectStone(kind);
                     if ((int)kind > 1)
-                        (t.PutStone as SkillStoneBase).IsOwnerOnline = true;
+                        (t.PutStone as SkillStoneBase).IsOwnerOnline = isEnemy;
 
                     break;
                 }

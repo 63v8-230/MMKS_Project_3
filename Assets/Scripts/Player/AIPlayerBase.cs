@@ -10,7 +10,7 @@ public class AIPlayerBase : MonoBehaviour, IPlayer //AIのベースクラス
     private ETeam _team;
 
     [SerializeField]
-    protected GameObject stone;
+    protected bool isEnemy = true;
 
     public Deck MyDeck { set; get; }
 

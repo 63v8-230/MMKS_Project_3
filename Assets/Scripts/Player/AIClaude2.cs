@@ -10,6 +10,10 @@ public class AIClaude2 : MonoBehaviour, IPlayer
 {
     [SerializeField]
     private ETeam _team;
+
+    [SerializeField]
+    private bool isEnemy = true;
+
     public ETeam Team { set => _team = value; get => _team; }
 
     public Deck MyDeck { set; get; }
@@ -73,7 +77,7 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         {
             if (bestMove.PutStone is SkillStoneBase skillStone)
             {
-                skillStone.IsOwnerOnline = true;
+                skillStone.IsOwnerOnline = isEnemy;
             }
             bestMove.PutStone.SetTeam(Team);
         }
