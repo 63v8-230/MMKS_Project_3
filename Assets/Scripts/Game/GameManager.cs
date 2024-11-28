@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -84,7 +85,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         turnTask = players[currentPlayerIndex].DoTurn();
         Debug.Log(players[currentPlayerIndex].Team + " is Start");
 
-        await Task.Delay(1);
+        await Task.Yield();
     }
 
     // Start is called before the first frame update
@@ -120,7 +121,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if(Input.GetKeyUp(KeyCode.Escape))
         {
-            SceneManager.LoadScene("Title");
+            SceneManager.LoadScene(Data.Instance.TITLE_SCENE_NAME);
         }
 
         if (isPlay)
@@ -153,9 +154,15 @@ public class GameManager : MonoBehaviourPunCallbacks
                             if(turnTask.Result.X == -1)
                             {
                                 if (isSkipped)
-                                    OnEndOfGame();
+                                {
+                                    StartCoroutine(DelayMethod(() => { OnEndOfGame(); }, 1));
+                                    
+                                } 
                                 else
+                                {
                                     isSkipped = true;
+                                }
+                                    
                             }
                             else
                             {
@@ -267,6 +274,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         result.Find("ReturnTitle").GetComponent<Button>().onClick.AddListener(() => { SceneManager.LoadScene(Data.Instance.TITLE_SCENE_NAME); });
     }
 
+    public IEnumerator DelayMethod(Action act, float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        act();
+        yield break;
+    }
 
     private Sprite GetCharacterPicture(ETeam team)
     {
