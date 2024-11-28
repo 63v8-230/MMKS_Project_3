@@ -11,45 +11,31 @@ public class FireFrameUIController : MonoBehaviour
 
     float colorDelta = 0;
 
-    int kind = -1;
-    
+    int kind = 0;
+    int count = 0;
 
-    //(1,2,3) = (x, y, z); (-/+) = up/down value
-    int index = 1;
+    Sprite[] Sprites;
+    Image comboImage;
+    int currentIndex = 0;
+
+    int[] comboCount = new int[]
+    {
+        1,//青になるコンボ回数
+        2,//緑になるコンボ回数
+        3,//赤になるコンボ回数
+        4,//虹になるコンボ回数
+    };
 
     // Start is called before the first frame update
     void Start()
     {
+        Sprites = Resources.LoadAll<Sprite>("Pictures/Game/UI/number_SS");
+        comboImage = transform.Find("Combo_Number_L").GetComponent<Image>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        var c = img.color;
-        float v = colorDelta*Time.deltaTime;
-        if (index < 0)
-            v *= -1;
-
-        switch(Mathf.Abs(index))
-        {
-            case 1:
-                c.r += v;
-                if (c.r >= 1)
-                    index = -2;
-                break;
-
-            case 2:
-                c.g += v;
-                if (c.g >= 1)
-                    index = -3;
-                break;
-
-            case 3:
-                c.b += v;
-                if (c.b >= 1)
-                    index = -1;
-                break;
-        }
     }
 
     public void Init()
@@ -58,36 +44,67 @@ public class FireFrameUIController : MonoBehaviour
         img.color = new Color(1, 1, 1);
 
         ply = GetComponent<VideoPlayer>();
+
+        ply.clip = Resources.Load<VideoClip>("Movie/FireBW");
     }
 
 
-    /// <summary>
-    /// (0, 1, 2, 3)
-    /// </summary>
-    /// <param name="_index"></param>
     public void SetColor()
     {
+        if (kind >= 4)
+            return;
+
+        count++;
+
+        if (count <= comboCount[kind])
+            return;
+
         kind++;
+
         Debug.Log("Fire Kind : "+kind);
 
         switch(kind)
         {
             case 0:
-                ply.clip = Resources.Load<VideoClip>("Movie/FireBlue");
+                ply.clip = Resources.Load<VideoClip>("Movie/FireBW");
                 break;
 
             case 1:
-                ply.clip = Resources.Load<VideoClip>("Movie/FireGreen");
+                ply.clip = Resources.Load<VideoClip>("Movie/FireBlue");
                 break;
 
             case 2:
-                ply.clip = Resources.Load<VideoClip>("Movie/FireRed");
+                ply.clip = Resources.Load<VideoClip>("Movie/FireGreen");
                 break;
 
             case 3:
+                ply.clip = Resources.Load<VideoClip>("Movie/FireRed");
+                break;
+
+            case 4:
                 ply.clip = Resources.Load<VideoClip>("Movie/FireRainbow");
                 break;
         }
         
     }
+
+    public void ComboCount()
+    {
+        currentIndex++;
+        if(currentIndex > 1)
+        {
+            comboImage.sprite = Sprites[currentIndex];
+        }
+    }
+
+    /// <summary>
+    /// 0, 1, 2, 3, 4, でW, B, G, R, Rainbow
+    /// </summary>
+    /// <returns></returns>
+    public int GetCurrentState()
+    {
+        return kind;
+    }
+
+
 }

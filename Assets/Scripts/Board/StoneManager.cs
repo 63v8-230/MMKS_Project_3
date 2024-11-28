@@ -217,6 +217,7 @@ public class StoneManager : MonoBehaviour
     {
         Debug.Log("OnSKill Frame");
         frameCom.SetColor();
+        frameCom.ComboCount();
     }
 
     async public Task PutStone(TurnInfo info)
