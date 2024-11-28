@@ -342,7 +342,7 @@ public class StoneManager : MonoBehaviour
         
     }
 
-    public void FlipStone(int x, int y, ETeam team, bool isSkill = false)
+    public void FlipStone(int x, int y, ETeam team, bool isSkill = false, bool isComboBonus = false)
     {
         var s = Stones[x, y];
         if(s != null)
@@ -350,8 +350,11 @@ public class StoneManager : MonoBehaviour
             if(s.Team != team)
             {
                 Debug.Log(isSkill);
-                s.SetTeam(team, this, x, y);
-                if(!isSkill)
+                if(isComboBonus)
+                    s.SetTeam(team, null, x, y);
+                else
+                    s.SetTeam(team, this, x, y);
+                if (!isSkill)
                     Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Turn"));
                 var e = s.OnFlip(isSkill);
                 StartCoroutine(e);
