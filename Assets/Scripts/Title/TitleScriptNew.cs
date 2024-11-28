@@ -83,7 +83,7 @@ public class TitleScriptNew : MonoBehaviour
             Data.Instance.BOARD_Y = 8;
             Data.Instance.IsOnline = false;
 
-            Data.Instance.AIKind = EAIKind.SIMPLE;
+            Data.Instance.AIKind = EAIKind.S;
 
             StartCoroutine(DelayChangeScene("Game"));
 
@@ -97,7 +97,7 @@ public class TitleScriptNew : MonoBehaviour
             Data.Instance.BOARD_Y = 8;
             Data.Instance.IsOnline = false;
 
-            Data.Instance.AIKind = EAIKind.S;
+            Data.Instance.AIKind = EAIKind.M;
 
             StartCoroutine(DelayChangeScene("Game"));
         });
@@ -109,33 +109,33 @@ public class TitleScriptNew : MonoBehaviour
             Data.Instance.BOARD_Y = 8;
             Data.Instance.IsOnline = false;
 
-            Data.Instance.AIKind = EAIKind.M;
-
-            StartCoroutine(DelayChangeScene("Game"));
-        });
-
-        diffSelect.transform.Find("Claude1").GetComponent<Button>().onClick.AddListener(() =>
-        {
-            audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
-            Data.Instance.BOARD_X = 8;
-            Data.Instance.BOARD_Y = 8;
-            Data.Instance.IsOnline = false;
-
-            Data.Instance.AIKind = EAIKind.CLAUDE1;
-
-            StartCoroutine(DelayChangeScene("Game"));
-        });
-
-        diffSelect.transform.Find("Claude2").GetComponent<Button>().onClick.AddListener(() =>
-        {
-            audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
-            Data.Instance.BOARD_X = 8;
-            Data.Instance.BOARD_Y = 8;
-            Data.Instance.IsOnline = false;
-
             Data.Instance.AIKind = EAIKind.CLAUDE2;
 
             StartCoroutine(DelayChangeScene("Game"));
         });
+
+        //diffSelect.transform.Find("Claude1").GetComponent<Button>().onClick.AddListener(() =>
+        //{
+        //    audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+        //    Data.Instance.BOARD_X = 8;
+        //    Data.Instance.BOARD_Y = 8;
+        //    Data.Instance.IsOnline = false;
+
+        //    Data.Instance.AIKind = EAIKind.CLAUDE1;
+
+        //    StartCoroutine(DelayChangeScene("Game"));
+        //});
+
+        //diffSelect.transform.Find("Claude2").GetComponent<Button>().onClick.AddListener(() =>
+        //{
+        //    audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+        //    Data.Instance.BOARD_X = 8;
+        //    Data.Instance.BOARD_Y = 8;
+        //    Data.Instance.IsOnline = false;
+
+        //    Data.Instance.AIKind = EAIKind.CLAUDE2;
+
+        //    StartCoroutine(DelayChangeScene("Game"));
+        //});
     }
 }
