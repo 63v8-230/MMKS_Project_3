@@ -142,9 +142,9 @@ public class AIPlayerS : AIPlayerBase
         d.Stones.Add(new OwnStone { Stone = EStone.SUN, Amount = 1 });
         d.Stones.Add(new OwnStone { Stone = EStone.CROSS, Amount = 1 });
         d.Stones.Add(new OwnStone { Stone = EStone.X, Amount = 1 });
-        d.Stones.Add(new OwnStone { Stone = EStone.CRYSTAL, Amount = 1 });
+        //d.Stones.Add(new OwnStone { Stone = EStone.CRYSTAL, Amount = 1 });
         d.Stones.Add(new OwnStone { Stone = EStone.CIRCLE, Amount = 1 });
-        d.Stones.Add(new OwnStone { Stone = EStone.SHIELD, Amount = 1 });
+        //d.Stones.Add(new OwnStone { Stone = EStone.SHIELD, Amount = 1 });
         d.Stones.Add(new OwnStone { Stone = EStone.ARROW, Amount = 1 });
 
         MyDeck = d;
