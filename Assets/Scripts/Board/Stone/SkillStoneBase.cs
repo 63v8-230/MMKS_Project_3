@@ -1,16 +1,20 @@
 using System.Collections;
-using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Android;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.SceneManagement;
+
 
 public class SkillStoneBase : MonoBehaviour, IStone
 {
     public ETeam Team { get; set; }
 
     public GameObject GameObjectRef { get => gameObject; }
+
+    protected bool isSkillDid = false;
+
+    /// <summary>
+    /// ‚à‚µƒXƒLƒ‹‚ªÀsÏ‚İ=“G‚ªƒƒS‚ğŒ©‚½‚È‚çTrue
+    /// </summary>
+    public bool IsSkillDid { get => isSkillDid; }
 
 
     private Animator animCom;
@@ -71,6 +75,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
 
     protected void SetHighLight(StoneManager stoneManager, Vector2 position, Color highlightColor)
     {
+        isSkillDid = true;
         var g = GameObject.Instantiate(
         stoneManager.HighlightCellObject,
         stoneManager.CellPosition2Vector3((int)(position.x), (int)(position.y)),
