@@ -73,6 +73,11 @@ public class AIClaude1 : MonoBehaviour, IPlayer
         return await SelectStrategy(puttablePositions.Result);
     }
 
+    async public Task<TurnInfo> DoComboBonus()
+    {
+        throw new System.NotImplementedException();
+    }
+
     private async Task<TurnInfo> SelectStrategy(PuttableCellInfo[] puttablePositions)
     {
         if (currentTurn <= 4)

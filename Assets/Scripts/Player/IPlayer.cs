@@ -54,4 +54,6 @@ public interface IPlayer
     /// </summary>
     /// <returns></returns>
     public Task<TurnInfo> DoTurn();
+
+    public Task<TurnInfo> DoComboBonus();
 }

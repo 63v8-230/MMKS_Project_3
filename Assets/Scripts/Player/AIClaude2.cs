@@ -85,6 +85,11 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         return bestMove;
     }
 
+    async public Task<TurnInfo> DoComboBonus()
+    {
+        throw new System.NotImplementedException();
+    }
+
     private TurnInfo FindBestMove(PuttableCellInfo[] puttablePositions)
     {
         TurnInfo bestMove = new TurnInfo { X = -1 };

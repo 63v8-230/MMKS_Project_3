@@ -94,6 +94,11 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         return turnInfo;
     }
 
+    async public Task<TurnInfo> DoComboBonus()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void Init(GameManager gManager)
     {
         gameManager = gManager;

@@ -60,6 +60,11 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
 
     }
 
+    async public Task<TurnInfo> DoComboBonus()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void Init(GameManager gManager)
     {
         gameManager = gManager;

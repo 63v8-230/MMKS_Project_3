@@ -134,6 +134,11 @@ public class AIPlayerS : AIPlayerBase
 
     }
 
+    async public Task<TurnInfo> DoComboBonus()
+    {
+        throw new System.NotImplementedException();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
