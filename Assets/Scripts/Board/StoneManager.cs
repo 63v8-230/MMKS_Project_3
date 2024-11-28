@@ -733,10 +733,22 @@ public class StoneManager : MonoBehaviour
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<CircleStone>();
                 break;
+
+            
             case EStone.ARROW:
                 stone =
                     GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
                     .AddComponent<ArrowStone>();
+                break;
+
+            case EStone.ARROW_U:
+            case EStone.ARROW_D:
+            case EStone.ARROW_R:
+            case EStone.ARROW_L:
+                stone =
+                    GameObject.Instantiate(basicStone, new Vector3(0, -10, 0), Quaternion.identity)
+                    .AddComponent<ArrowStone>();
+                (stone as ArrowStone).SetStoneKind(selectedStone);
                 break;
 
             case EStone.SHIELD:
@@ -783,6 +795,10 @@ public class StoneManager : MonoBehaviour
             case EStone.CIRCLE:
                 return Resources.Load<Sprite>("Pictures/Circle");
 
+            case EStone.ARROW_U:
+            case EStone.ARROW_D:
+            case EStone.ARROW_R:
+            case EStone.ARROW_L:
             case EStone.ARROW:
                 return Resources.Load<Sprite>("Pictures/Arrow");
 
@@ -813,6 +829,10 @@ public class StoneManager : MonoBehaviour
             case EStone.CIRCLE:
                 return Resources.Load<Sprite>("Pictures/Description/Circle");
 
+            case EStone.ARROW_U:
+            case EStone.ARROW_D:
+            case EStone.ARROW_R:
+            case EStone.ARROW_L:
             case EStone.ARROW:
                 return Resources.Load<Sprite>("Pictures/Description/Arrow");
 

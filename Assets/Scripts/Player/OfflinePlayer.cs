@@ -132,10 +132,13 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
             new OwnStone { Stone = EStone.X, Amount = 1 },
             new OwnStone { Stone = EStone.CIRCLE, Amount = 1 },
             new OwnStone { Stone = EStone.SUN, Amount = 1 },
-            new OwnStone { Stone = EStone.CRYSTAL, Amount = 1 },
+            //new OwnStone { Stone = EStone.CRYSTAL, Amount = 1 },
             new OwnStone { Stone = EStone.CROSS, Amount = 1 },
-            new OwnStone { Stone = EStone.SHIELD, Amount = 1 },
-            new OwnStone { Stone = EStone.ARROW, Amount = 1 }
+            //new OwnStone { Stone = EStone.SHIELD, Amount = 1 },
+            new OwnStone { Stone = EStone.ARROW_U, Amount = 1 },
+            new OwnStone { Stone = EStone.ARROW_D, Amount = 1 },
+            new OwnStone { Stone = EStone.ARROW_R, Amount = 1 },
+            new OwnStone { Stone = EStone.ARROW_L, Amount = 1 },
         };
         MyDeck = d;
 
@@ -162,7 +165,35 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
             var ui_Button = ui.transform.Find("Vert/Button");
             int _index = i;
             ui_Button.GetComponent<Button>().onClick.AddListener(() => { SetStone(_index,ui); });
-            ui_Button.Find("Stone_Logo").GetComponent<Image>().sprite = sManager.GetSprite(MyDeck.Stones[i].Stone);
+            var lg = ui_Button.Find("Stone_Logo");
+            lg.GetComponent<Image>().sprite = sManager.GetSprite(MyDeck.Stones[i].Stone);
+            if (MyDeck.Stones[i].Stone >= EStone.ARROW && MyDeck.Stones[i].Stone <= EStone.ARROW_L)
+            {
+                var r = lg.transform.rotation;
+                switch (MyDeck.Stones[i].Stone)
+                {
+                    case EStone.ARROW:
+                    case EStone.ARROW_U:
+                        r.eulerAngles = Vector3.forward * 0;
+                        lg.transform.rotation = r;
+                        break;
+
+                    case EStone.ARROW_D:
+                        r.eulerAngles = Vector3.forward * 180;
+                        lg.transform.rotation = r;
+                        break;
+
+                    case EStone.ARROW_L:
+                        r.eulerAngles = Vector3.forward * 90;
+                        lg.transform.rotation = r;
+                        break;
+
+                    case EStone.ARROW_R:
+                        r.eulerAngles = Vector3.forward * -90;
+                        lg.transform.rotation = r;
+                        break;
+                }
+            }
             ui.transform.Find("Vert/Count").GetComponent<TextMeshProUGUI>().text = "x"+ MyDeck.Stones[i].Amount;
             ui.transform.Find("Desc").GetComponent<Image>().sprite = sManager.GetDescription(MyDeck.Stones[i].Stone);
         }

@@ -1,22 +1,39 @@
 using Photon.Pun;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ArrowStone : SkillStoneBase
 {
     protected override int SetCost()
     {
-        stoneKind = EStone.ARROW;
         return 5;
     }
 
-    public EDirection StoneDirection = EDirection.TOP;
+    public EDirection StoneDirection;
+
+    public void SetStoneKind(EStone eStone)
+    {
+        stoneKind = eStone;
+
+        switch (stoneKind)
+        {
+            case EStone.ARROW_U:
+                StoneDirection = EDirection.DOWN;
+                break;
+            case EStone.ARROW_D:
+                StoneDirection = EDirection.TOP;
+                break;
+            case EStone.ARROW_R:
+                StoneDirection = EDirection.RIGHT;
+                break;
+            case EStone.ARROW_L:
+                StoneDirection = EDirection.LEFT;
+                break;
+        }
+    }
 
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
-        if (baseTeam == ETeam.BLACK)
-            StoneDirection = EDirection.DOWN;
 
         Debug.Log("Arrow Skill Start!");
 
@@ -42,15 +59,31 @@ public class ArrowStone : SkillStoneBase
 
     protected override Texture GetTexture()
     {
+        var ob = gameObject.transform.Find("Plane");
+
+        switch (stoneKind)
+        {
+            case EStone.ARROW_U:
+                break;
+            case EStone.ARROW_D:
+                ob.localEulerAngles -= (Vector3.up * 180);
+                break;
+            case EStone.ARROW_R:
+                ob.localEulerAngles += (Vector3.up * 90);
+                break;
+            case EStone.ARROW_L:
+                ob.localEulerAngles -= (Vector3.up * 90);
+                break;
+        }
+
         if (Team == ETeam.WHITE)
         {
-            var ob = gameObject.transform.Find("Plane");
+            
             ob.localEulerAngles -= (Vector3.up * 180);
         }
 
         if (Data.Instance.IsOnline && !PhotonNetwork.IsMasterClient)
         {
-            var ob = gameObject.transform.Find("Plane");
             ob.localEulerAngles -= (Vector3.up * 180);
         }
 
