@@ -620,7 +620,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Claude-2 (\u3061\u3087\u3044\u3064\u3088)"
+  m_text: "AI-2 \u3061\u3087\u3044\u3064\u3088"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 00fce8a748c4fdd45ab312c5bd308189, type: 2}
   m_sharedMaterial: {fileID: 1942749922811049071, guid: 00fce8a748c4fdd45ab312c5bd308189,
@@ -1129,7 +1129,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Claude-1 \u666E\u901A)"
+  m_text: "AI-1 \u666E\u901A"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 00fce8a748c4fdd45ab312c5bd308189, type: 2}
   m_sharedMaterial: {fileID: 1942749922811049071, guid: 00fce8a748c4fdd45ab312c5bd308189,
