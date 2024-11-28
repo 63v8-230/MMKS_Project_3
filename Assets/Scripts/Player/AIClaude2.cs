@@ -137,6 +137,18 @@ public class AIClaude2 : MonoBehaviour, IPlayer
 
     private IStone SelectBestStone(int x, int y)
     {
+        //もし終盤なら特殊コマを全部使う
+        if(currentTurn > 12)
+        {
+            foreach (var item in MyDeck.Stones)
+            {
+                if(HasSpecialStone(item.Stone))
+                {
+                    return CreateSpecialStone(item.Stone);
+                }
+            }
+        }
+
         // コーナーの場合
         if (IsCorner(x, y) && HasSpecialStone(EStone.SHIELD))
         {
@@ -144,7 +156,7 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         }
 
         // 中盤以降で盤面中央の場合
-        if (currentTurn > 30 && IsCenter(x, y))
+        if (currentTurn > 5 && IsCenter(x, y))
         {
             if (HasSpecialStone(EStone.SUN))
                 return CreateSpecialStone(EStone.SUN);
@@ -153,7 +165,7 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         }
 
         // 序盤で前線の場合
-        if (currentTurn < 20 && IsForwardPosition(x, y))
+        if (currentTurn < 5 && IsForwardPosition(x, y))
         {
             if (HasSpecialStone(EStone.ARROW))
                 return CreateSpecialStone(EStone.ARROW);
