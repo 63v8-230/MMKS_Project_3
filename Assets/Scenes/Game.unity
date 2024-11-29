@@ -310,8 +310,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1153684499}
   m_HandleRect: {fileID: 1153684498}
   m_Direction: 2
-  m_Value: 1.0000004
-  m_Size: 0.7548192
+  m_Value: 1
+  m_Size: 0.75481915
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1829,7 +1829,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IsGlobal: 1
-  priority: 0
+  priority: 100
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: a6560a915ef98420e9faacc1c7438823, type: 2}
@@ -3096,6 +3096,7 @@ MonoBehaviour:
     type: 3}
   LightStoneObject: {fileID: 105967316902566852, guid: 82b278fd372eee44e88d787ccc05642b,
     type: 3}
+  GameManagerRef: {fileID: 0}
   Sound: {fileID: 0}
   CurrentTurn: 0
 --- !u!4 &2052147944
