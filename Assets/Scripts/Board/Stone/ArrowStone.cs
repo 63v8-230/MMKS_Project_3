@@ -35,6 +35,25 @@ public class ArrowStone : SkillStoneBase
     public override IEnumerator OnSKill(StoneManager stoneManager, Vector2 position)
     {
 
+        if(baseTeam == ETeam.WHITE)
+        {
+            switch (stoneKind)
+            {
+                case EStone.ARROW_U:
+                    StoneDirection = EDirection.TOP;
+                    break;
+                case EStone.ARROW_D:
+                    StoneDirection = EDirection.DOWN;
+                    break;
+                case EStone.ARROW_R:
+                    StoneDirection = EDirection.LEFT;
+                    break;
+                case EStone.ARROW_L:
+                    StoneDirection = EDirection.RIGHT;
+                    break;
+            }
+        }
+
         Debug.Log("Arrow Skill Start!");
 
         SetHighLight(stoneManager, position, GetColor() * 2);

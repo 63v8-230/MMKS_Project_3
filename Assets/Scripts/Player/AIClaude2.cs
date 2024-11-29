@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// AIに作らせてみたお遊びプログラム2
-/// 一部加筆修正
+/// 一部加筆修正・・・どころでは無くなってきた。結構改造しちゃっている
 /// </summary>
 public class AIClaude2 : MonoBehaviour, IPlayer
 {
@@ -26,14 +26,14 @@ public class AIClaude2 : MonoBehaviour, IPlayer
     // 場所の価値評価用の重み付けマップ
     private readonly int[,] POSITION_WEIGHTS = new int[8, 8]
     {
-        {100, -20,  10,   5,   5,  10, -20, 100},
-        {-20, -30,   1,   1,   1,   1, -30, -20},
-        { 10,   1,   5,   2,   2,   5,   1,  10},
-        {  5,   1,   2,   1,   1,   2,   1,   5},
-        {  5,   1,   2,   1,   1,   2,   1,   5},
-        { 10,   1,   5,   2,   2,   5,   1,  10},
-        {-20, -30,   1,   1,   1,   1, -30, -20},
-        {100, -20,  10,   5,   5,  10, -20, 100}
+        {100,  80,  50,  35,  35,  50,  80, 100},
+        { 80,  90,  50,  35,  35,  50,  90,  80},
+        { 50,  10,  80,   2,   2,  80,  10,  50},
+        { 35,  35,   2,   1,   1,   2,  35,  35},
+        { 35,  35,   2,   1,   1,   2,  35,  35},
+        { 50,  10,  80,   2,   2,  80,  10,  50},
+        { 80,  90,  50,  35,  35,  50,  90,  80},
+        {100,  80,  50,  35,  35,  50,  80, 100}
     };
 
     public void Init(GameManager gManager)
@@ -48,7 +48,10 @@ public class AIClaude2 : MonoBehaviour, IPlayer
             new OwnStone { Stone = EStone.SUN, Amount = 1 },
             new OwnStone { Stone = EStone.CROSS, Amount = 1 },
             new OwnStone { Stone = EStone.X, Amount = 1 },
-            new OwnStone { Stone = EStone.ARROW, Amount = 1 },
+            new OwnStone { Stone = EStone.ARROW_U, Amount = 1 },
+            new OwnStone { Stone = EStone.ARROW_D, Amount = 1 },
+            new OwnStone { Stone = EStone.ARROW_R, Amount = 1 },
+            new OwnStone { Stone = EStone.ARROW_L, Amount = 1 },
             new OwnStone { Stone = EStone.CIRCLE, Amount = 1 },
             //new OwnStone { Stone = EStone.CRYSTAL, Amount = 1 }
         };
@@ -210,7 +213,7 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         }
         else if (IsNextToCorner(pos.X, pos.Y))
         {
-            score -= 500; // コーナーの隣は危険
+            score += 200; // コーナーの隣もそこそこ重要
         }
 
         // 敵の特殊石を返せる場合の評価
@@ -224,49 +227,118 @@ public class AIClaude2 : MonoBehaviour, IPlayer
 
     private IStone SelectBestStone(int x, int y)
     {
-        //もし終盤なら特殊コマを全部使う
-        if(currentTurn > 12)
-        {
-            foreach (var item in MyDeck.Stones)
-            {
-                if(HasSpecialStone(item.Stone))
-                {
-                    return CreateSpecialStone(item.Stone);
-                }
-            }
-        }
+        Debug.Log("================\nCurrent Turn - " + currentTurn);
 
+        Debug.Log("Corner");
         // コーナーの場合
         if (IsCorner(x, y) && HasSpecialStone(EStone.SHIELD))
         {
+            Debug.Log("ON");
             return CreateSpecialStone(EStone.SHIELD);
         }
 
-        // 中盤以降で盤面中央の場合
-        if (currentTurn > 5 && IsCenter(x, y))
+        Debug.Log("Diagonal");
+        // 対角線上の場合
+        if (IsDiagonal(x, y))
         {
+            Debug.Log("ON");
             if (HasSpecialStone(EStone.SUN))
+            {
+                Debug.Log("SUN");
                 return CreateSpecialStone(EStone.SUN);
-            if (HasSpecialStone(EStone.CROSS))
-                return CreateSpecialStone(EStone.CROSS);
+            }
+
+            if (HasSpecialStone(EStone.X))
+            {
+                Debug.Log("X");
+                return CreateSpecialStone(EStone.X);
+            }
         }
 
-        // 序盤で前線の場合
-        if (currentTurn < 5 && IsForwardPosition(x, y))
+        Debug.Log("Center");
+        //中央より
+        if(IsCenter(x, y))
         {
-            if (HasSpecialStone(EStone.ARROW))
-                return CreateSpecialStone(EStone.ARROW);
+            if (HasSpecialStone(EStone.CROSS))
+            {
+                Debug.Log("CROSS");
+                return CreateSpecialStone(EStone.CROSS);
+            }
         }
 
+        Debug.Log("Arrow-U");
+        //矢印
+        if (IsForwardPosition(x, y))
+        {
+            Debug.Log("U");
+            if (HasSpecialStone(EStone.ARROW_D))
+            {
+                Debug.Log("ON");
+                return CreateSpecialStone(EStone.ARROW_D);
+            }
+
+        }
+
+        Debug.Log("Arrow-D");
+        if (IsBackwardPosition(x, y))
+        {
+            Debug.Log("D");
+            if (HasSpecialStone(EStone.ARROW_U))
+            {
+                Debug.Log("ON");
+                return CreateSpecialStone(EStone.ARROW_U);
+            }
+        }
+
+        Debug.Log("Arrow-L");
+        if (IsLeftPosition(x, y))
+        {
+            Debug.Log("L");
+            if (HasSpecialStone(EStone.ARROW_L))
+            {
+                Debug.Log("ON");
+                return CreateSpecialStone(EStone.ARROW_L);
+            }
+        }
+
+        Debug.Log("Arrow-R");
+        if (IsRightPosition(x, y))
+        {
+            Debug.Log("R");
+            if (HasSpecialStone(EStone.ARROW_R))
+            {
+                Debug.Log("ON");
+                return CreateSpecialStone(EStone.ARROW_R);
+            }
+
+        }
+
+        Debug.Log("Near");
         // 敵の特殊石の近くの場合
         if (IsNextToEnemySpecialStone(x, y))
         {
+            Debug.Log("ON");
             if (HasSpecialStone(EStone.CIRCLE))
                 return CreateSpecialStone(EStone.CIRCLE);
             if (HasSpecialStone(EStone.CRYSTAL))
                 return CreateSpecialStone(EStone.CRYSTAL);
         }
 
+        Debug.Log("End");
+        //もし終盤なら特殊コマを全部使う
+        if (currentTurn > 10)
+        {
+            foreach (var item in MyDeck.Stones)
+            {
+                if (item.Amount > 0)
+                {
+                    Debug.Log(item.Stone.ToString()+" is used");
+                    return CreateSpecialStone(item.Stone);
+                }
+            }
+        }
+
+        Debug.Log("Default");
         // デフォルトの石を使用
         return gameManager.StoneManagerRef.SelectStone(EStone.DEFAULT);
     }
@@ -310,14 +382,34 @@ public class AIClaude2 : MonoBehaviour, IPlayer
                !IsCorner(x, y);
     }
 
+    private bool IsDiagonal(int x, int y)
+    {
+        return ((x - y) == 0) && (x != 0 && y != 0 && x != BOARD_SIZE - 1 && y != BOARD_SIZE - 1);
+    }
+
     private bool IsCenter(int x, int y)
     {
-        return x >= 2 && x <= 5 && y >= 2 && y <= 5;
+        return x > 2 && x < BOARD_SIZE-3 && y > 2 && y < BOARD_SIZE - 3;
     }
 
     private bool IsForwardPosition(int x, int y)
     {
-        return Team == ETeam.BLACK ? y < 3 : y > 4;
+        return Team == ETeam.BLACK ? y >BOARD_SIZE - 3 : y < 2;
+    }
+
+    private bool IsBackwardPosition(int x, int y)
+    {
+        return Team != ETeam.BLACK ? y > BOARD_SIZE - 3 : y < 2;
+    }
+
+    private bool IsLeftPosition(int x, int y)
+    {
+        return Team == ETeam.BLACK ? x > BOARD_SIZE - 3 : x < 2;
+    }
+
+    private bool IsRightPosition(int x, int y)
+    {
+        return Team != ETeam.BLACK ? x > BOARD_SIZE - 3 : x < 2;
     }
 
     private bool CanFlipEnemySpecialStone(int x, int y)
