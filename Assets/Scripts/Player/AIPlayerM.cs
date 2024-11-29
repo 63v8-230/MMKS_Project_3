@@ -87,7 +87,7 @@ public class AIPlayerM : AIPlayerBase
                 {
                     var kind = GetStone(i);
                     Debug.Log(kind.ToString());
-                    bool isEmpty = false;
+                    bool isEmpty = true;
                     for (int i2 = 0; i2 < MyDeck.Stones.Count; i2++)
                     {
                         if (MyDeck.Stones[i2].Stone == kind && kind != EStone.DEFAULT)
@@ -98,6 +98,7 @@ public class AIPlayerM : AIPlayerBase
                                 d.Amount--;
                                 MyDeck.Stones[i2] = d;
                                 Debug.Log("Used");
+                                isEmpty = false;
                                 break;
                             }
                             else
