@@ -46,6 +46,11 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
         List<GameObject> puttableCell = new List<GameObject>();
 
+        if(puttablePosition.Length <= 0)
+        {
+            return new TurnInfo() { X = -1 };
+        }
+
         if (puttablePosition.Length > 0)
         {
             foreach (var item in puttablePosition)

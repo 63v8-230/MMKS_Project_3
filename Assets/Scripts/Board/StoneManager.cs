@@ -266,7 +266,14 @@ public class StoneManager : MonoBehaviour
         Debug.Log("Skill Count: "+skillMethod.Count);
 
         if (skillMethod.Count <= 0)
+        {
+            skillMethod.Clear();
+
+            await Task.Delay(100);
+
             return;
+        }
+            
 
         IPlayer comboPlayer = null;
         if(skillMethod[0].Team == ETeam.BLACK)
@@ -292,6 +299,8 @@ public class StoneManager : MonoBehaviour
         frameCom.Init();
         //frameCom.SetColor();
         Debug.Log("Fire Create");
+
+        int count = 0;
 
         while(skillMethod.Count!=0)
         {
@@ -320,7 +329,8 @@ public class StoneManager : MonoBehaviour
             }
 
             OnSkill(frameCom);
-            var cti = new ExEnumerator(ShowCutIn(cTeam == ETeam.WHITE));
+            count++;
+            var cti = new ExEnumerator(ShowCutIn(cTeam == ETeam.WHITE, count));
             StartCoroutine(cti);
             while (!cti.IsEnd) { await Task.Delay(1); }
 
@@ -370,7 +380,7 @@ public class StoneManager : MonoBehaviour
         //コンボボーナス
         for (int i=0; i<BonusCount; i++)
         {
-            frameCom.SetText($"コンボボーナスにより、あと{BonusCount - i}回\r\n任意の敵の色自分の色に変更出来ます。");
+            frameCom.SetText($"コンボボーナスにより、あと{BonusCount - i}回\r\n任意の敵の色を自分の色に変更出来ます。");
             var comboTask = comboPlayer.DoComboBonus();
             while (!comboTask.IsCompleted) { await Task.Delay(10); }
             FlipStone(comboTask.Result.X, comboTask.Result.Y, comboPlayer.Team, true, true);
@@ -540,7 +550,8 @@ public class StoneManager : MonoBehaviour
             }
         }
 
-        await Task.WhenAll(t);
+        var wt = Task.WhenAll(t);
+        while (!wt.IsCompleted) { await Task.Delay(10); }
 
         List<PuttableCellInfo> p = new List<PuttableCellInfo>();
 
@@ -894,7 +905,8 @@ public class StoneManager : MonoBehaviour
         }
     }
 
-    protected virtual IEnumerator ShowCutIn(bool isEnemy)
+    //countでピッチ変えたい
+    protected virtual IEnumerator ShowCutIn(bool isEnemy, int count)
     {
         Debug.Log("CutIn");
         var t = GameObject.Find("Canvas").transform;

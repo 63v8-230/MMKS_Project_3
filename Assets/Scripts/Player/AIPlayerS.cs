@@ -17,6 +17,12 @@ public class AIPlayerS : AIPlayerBase
             await Task.Delay(10);
 
         Debug.Log("Puttable: " + puttablePosition.Result.Length);
+
+        if(puttablePosition.Result.Length <= 0)
+        {
+            return new TurnInfo() { X = -1 };
+        }
+
         TurnInfo t = new TurnInfo();
         t.X = -1;
 
@@ -94,7 +100,8 @@ public class AIPlayerS : AIPlayerBase
                     MyDeck.Stones[i2] = d;
                     Debug.Log("Used");
 
-                    var pp = puttablePosition.Result[UnityEngine.Random.Range(0, puttablePosition.Result.Length)];
+
+                    var pp = puttablePosition.Result[UnityEngine.Random.Range(0, puttablePosition.Result.Length-1)];
                     t.X = pp.X;
                     t.Y = pp.Y;
                     t.PutStone = gameManager.StoneManagerRef.SelectStone(d.Stone);

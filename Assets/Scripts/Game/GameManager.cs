@@ -157,7 +157,9 @@ public class GameManager : MonoBehaviourPunCallbacks
                             {
                                 if (isSkipped)
                                 {
-                                    StartCoroutine(DelayMethod(() => { OnEndOfGame(); }, 1));
+                                    Debug.Log("GameEnd");
+                                    var e = DelayMethod(() => { OnEndOfGame(); }, 1);
+                                    StartCoroutine(e);
                                     
                                 } 
                                 else
@@ -278,7 +280,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public IEnumerator DelayMethod(Action act, float seconds)
     {
+        Debug.Log("GameEnd-Start");
         yield return new WaitForSeconds(seconds);
+        Debug.Log("GameEnd-ACT");
         act();
         yield break;
     }

@@ -18,6 +18,12 @@ public class AIPlayerM : AIPlayerBase
             await Task.Delay(10);
 
         Debug.Log("Puttable: " + puttablePosition.Result.Length);
+
+        if (puttablePosition.Result.Length <= 0)
+        {
+            return new TurnInfo() { X = -1 };
+        }
+
         TurnInfo t = new TurnInfo();
         t.X = -1;
 

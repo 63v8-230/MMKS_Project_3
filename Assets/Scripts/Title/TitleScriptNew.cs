@@ -79,8 +79,8 @@ public class TitleScriptNew : MonoBehaviour
         diffSelect.transform.Find("AI_Simple").GetComponent<Button>().onClick.AddListener(() =>
         {
             audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
-            Data.Instance.BOARD_X = 8;
-            Data.Instance.BOARD_Y = 8;
+            Data.Instance.BOARD_X = 4;
+            Data.Instance.BOARD_Y = 4;
             Data.Instance.IsOnline = false;
 
             Data.Instance.AIKind = EAIKind.S;
