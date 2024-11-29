@@ -1,10 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
 /// AIに作らせてみたお遊びプログラム2
+/// 一部加筆修正
 /// </summary>
 public class AIClaude2 : MonoBehaviour, IPlayer
 {
@@ -44,13 +44,13 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         Deck d = new Deck();
         d.Stones = new List<OwnStone>
         {
-            new OwnStone { Stone = EStone.SHIELD, Amount = 1 },
+            //new OwnStone { Stone = EStone.SHIELD, Amount = 1 },
             new OwnStone { Stone = EStone.SUN, Amount = 1 },
             new OwnStone { Stone = EStone.CROSS, Amount = 1 },
             new OwnStone { Stone = EStone.X, Amount = 1 },
             new OwnStone { Stone = EStone.ARROW, Amount = 1 },
             new OwnStone { Stone = EStone.CIRCLE, Amount = 1 },
-            new OwnStone { Stone = EStone.CRYSTAL, Amount = 1 }
+            //new OwnStone { Stone = EStone.CRYSTAL, Amount = 1 }
         };
         MyDeck = d;
     }
@@ -87,7 +87,89 @@ public class AIClaude2 : MonoBehaviour, IPlayer
 
     async public Task<TurnInfo> DoComboBonus()
     {
-        throw new System.NotImplementedException();
+        List<Task<int>> cells = new List<Task<int>>();
+        var bSize = gameManager.StoneManagerRef.GetBoardSize();
+        for (int ix = 0; ix < bSize.x; ix++)
+        {
+            cells.Add(SelectCellFromColumn(ix));
+        }
+
+        var t = Task.WhenAll(cells);
+
+        while (!t.IsCompleted) {await Task.Delay(10); }
+
+        int xv = -1, yv = -1;
+
+        for (int i = 0; i < bSize.x; i++)
+        {
+            if (cells[i].Result != -1)
+            {
+                if (xv == -1)
+                {
+                    xv = i;
+                    yv = cells[i].Result;
+                }
+                else if (
+                    i == 0 ||//もしXの端なら
+                    i == bSize.x - 1 )//もしXの端なら
+                {
+                    xv = i;
+                    yv = cells[i].Result;
+
+                    break;
+                }
+                else if (
+                    cells[i].Result == 0 ||//もし端なら
+                    cells[i].Result == bSize.y-1)//もし端なら
+                {
+                    xv = i;
+                    yv = cells[i].Result;
+
+                    break;
+                }
+                else if(Random.value < 0.3f)//角や端が無ければランダム
+                {
+                    xv = i;
+                    yv = cells[i].Result;
+                }
+            }
+        }
+
+        return new TurnInfo() { X = xv, Y = yv };
+    }
+
+    async private Task<int> SelectCellFromColumn(int x)
+    {
+        await Task.Yield();
+
+        if (gameManager.StoneManagerRef.Stones[x, 0] != null)
+            if (gameManager.StoneManagerRef.Stones[x, 0].Team != Team)
+                return 0;
+
+        if (gameManager.StoneManagerRef.Stones[x, gameManager.StoneManagerRef.Stones.GetLength(1) - 1] != null)
+            if (gameManager.StoneManagerRef.Stones[x, gameManager.StoneManagerRef.Stones.GetLength(1) - 1].Team != Team)
+                return gameManager.StoneManagerRef.Stones.GetLength(1) - 1;
+
+        int v = -1;
+        for (int i = 0; i < gameManager.StoneManagerRef.Stones.GetLength(1); i++)
+        {
+            if (gameManager.StoneManagerRef.Stones[x, i] != null)
+            {
+                if (gameManager.StoneManagerRef.Stones[x, i].Team != Team)
+                {
+                    if (v == -1)
+                    {
+                        v = i;
+                    }
+                    else if (Random.value < 0.3f)
+                    {
+                        v = i;
+                    }
+                }
+            }
+        }
+
+        return v;
     }
 
     private TurnInfo FindBestMove(PuttableCellInfo[] puttablePositions)

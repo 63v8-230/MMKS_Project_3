@@ -166,6 +166,67 @@ public class AIPlayerM : AIPlayerBase
 
     }
 
+    async public override Task<TurnInfo> DoComboBonus()
+    {
+        List<Task<int>> cells = new List<Task<int>>();
+        var bSize = gameManager.StoneManagerRef.GetBoardSize();
+        for (int ix = 0; ix < bSize.x; ix++)
+        {
+            cells.Add(SelectCellFromColumn(ix));
+        }
+
+        var t = Task.WhenAll(cells);
+
+        while (!t.IsCompleted) { await Task.Delay(10); }
+
+        int xv = -1, yv = -1;
+
+        for (int i = 0; i < bSize.x; i++)
+        {
+            if (cells[i].Result != -1)
+            {
+                if (xv == -1)
+                {
+                    xv = i;
+                    yv = cells[i].Result;
+                }
+                else if (UnityEngine.Random.value < 0.3f)
+                {
+                    xv = i;
+                    yv = cells[i].Result;
+                }
+            }
+        }
+
+        return new TurnInfo() { X = xv, Y = yv };
+    }
+
+    async private Task<int> SelectCellFromColumn(int x)
+    {
+        await Task.Yield();
+
+        int v = -1;
+        for (int i = 0; i < gameManager.StoneManagerRef.Stones.GetLength(1); i++)
+        {
+            if (gameManager.StoneManagerRef.Stones[x, i] != null)
+            {
+                if (gameManager.StoneManagerRef.Stones[x, i].Team != Team)
+                {
+                    if (v == -1)
+                    {
+                        v = i;
+                    }
+                    else if (UnityEngine.Random.value < 0.3f)
+                    {
+                        v = i;
+                    }
+                }
+            }
+        }
+
+        return v;
+    }
+
     // Start is called before the first frame update
     void Start()
     {

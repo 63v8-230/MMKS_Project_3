@@ -81,7 +81,8 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
 
     async public Task<TurnInfo> DoComboBonus()
     {
-        throw new System.NotImplementedException();
+        await Task.Yield();
+        return new TurnInfo();
     }
 }
 
