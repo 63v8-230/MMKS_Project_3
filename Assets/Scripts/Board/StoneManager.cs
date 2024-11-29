@@ -104,6 +104,8 @@ public class StoneManager : MonoBehaviour
     [SerializeField]
     public GameObject LightStoneObject;
 
+    public GameManager GameManagerRef;
+
     /// <summary>
     /// 盤面上の石。何もないときはNullになる。
     /// </summary>
@@ -266,6 +268,24 @@ public class StoneManager : MonoBehaviour
         if (skillMethod.Count <= 0)
             return;
 
+        IPlayer comboPlayer = null;
+        if(skillMethod[0].Team == ETeam.BLACK)
+        {
+            var p1 = GameManagerRef.p1.GetComponent<IPlayer>();
+            if (p1.Team==ETeam.WHITE)
+                comboPlayer = p1;
+            else
+                comboPlayer = GameManagerRef.p2.GetComponent<IPlayer>();
+        }
+        else
+        {
+            var p1 = GameManagerRef.p1.GetComponent<IPlayer>();
+            if (p1.Team == ETeam.BLACK)
+                comboPlayer = p1;
+            else
+                comboPlayer = GameManagerRef.p2.GetComponent<IPlayer>();
+        }
+
         var frame = Instantiate(Resources.Load<GameObject>("Movie/FireScreen"));
         frame.transform.SetParent(GameObject.Find("Canvas").transform, false);
         var frameCom = frame.GetComponent<FireFrameUIController>();
@@ -336,9 +356,31 @@ public class StoneManager : MonoBehaviour
                     break;
             }
         }
+
+        int BonusCount = frameCom.GetCurrentState();
+
+        if (comboPlayer is OfflinePlayer && BonusCount > 0) 
+        {
+            frameCom.ShowComboEnter();
+            await Task.Delay(4500);
+        }
+
+        
+
+        //コンボボーナス
+        for (int i=0; i<BonusCount; i++)
+        {
+            frameCom.SetText($"コンボボーナスにより、あと{BonusCount - i}回\r\n任意の敵の色自分の色に変更出来ます。");
+            var comboTask = comboPlayer.DoComboBonus();
+            while (!comboTask.IsCompleted) { await Task.Delay(10); }
+            FlipStone(comboTask.Result.X, comboTask.Result.Y, comboPlayer.Team, true, true);
+        }
+        
         Debug.Log("Destroy Fire");
         Destroy(frame);
         skillMethod.Clear();
+
+        await Task.Delay(100);
         
     }
 

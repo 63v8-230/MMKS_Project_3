@@ -93,6 +93,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         StoneManagerRef = gameObject.GetComponent<StoneManager>();
 
+        StoneManagerRef.GameManagerRef = this;
+
         tmPro.text = "Waiting for Player";
 
         if (Data.Instance.IsOnline)
