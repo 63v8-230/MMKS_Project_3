@@ -17,11 +17,15 @@ public class TitleEnter : MonoBehaviour
     private VideoPlayer player;
     private RawImage img;
 
+    AudioSource bgmAudio;
+
     // Start is called before the first frame update
     void Start()
     {
         player = transform.Find("Demo").GetComponent<VideoPlayer>();
         img = player.gameObject.GetComponent<RawImage>();
+        bgmAudio = GameObject.Find("Scripts").GetComponent<AudioSource>();
+
     }
 
     // Update is called once per frame
@@ -49,6 +53,8 @@ public class TitleEnter : MonoBehaviour
             {
                 fade = 0;
                 isInFade = true;
+                player.SetDirectAudioMute(0, true);
+                bgmAudio.Play();
             }
         }
         else
@@ -56,7 +62,12 @@ public class TitleEnter : MonoBehaviour
             if(isInFade)
             {
                 if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0 || Input.anyKeyDown)
+                {
+                    player.SetDirectAudioMute(0, true);
+                    bgmAudio.Play();
                     isPlay = true;
+                }
+                    
 
                 fade += Time.deltaTime;
                 img.color = new Color( 1, 1, 1, fade / FADE_TIME);
@@ -80,6 +91,8 @@ public class TitleEnter : MonoBehaviour
                 player.time = 0;
                 fade = 0;
                 player.Play();
+                bgmAudio.Stop();
+                player.SetDirectAudioMute(0, false);
                 isInFade = true;
             }
                 
