@@ -8,7 +8,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public enum EGameState
 {
@@ -91,6 +92,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        //Bloom b;
+        //GameObject.Find("Global Volume").GetComponent<Volume>().profile.TryGet<Bloom>(out b);
+        //b.intensity.value = 3;
+
         StoneManagerRef = gameObject.GetComponent<StoneManager>();
 
         StoneManagerRef.GameManagerRef = this;
