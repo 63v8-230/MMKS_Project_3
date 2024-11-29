@@ -50,6 +50,6 @@ public class CircleStone : SkillStoneBase
 
     public override AudioClip GetSkillSound()
     {
-        return Resources.Load<AudioClip>("Sound/Game/Special_circle");
+        return Resources.Load<AudioClip>("Sound/Game/Circle");
     }
 }
