@@ -119,6 +119,8 @@ public class StoneManager : MonoBehaviour
 
     public AudioSource Sound;
 
+    private AudioSource pitchTunableAudio;
+
     [NonSerialized]
     public Vector2[] directions = new Vector2[]
         {
@@ -142,6 +144,8 @@ public class StoneManager : MonoBehaviour
     public void Start()
     {
         Sound = GetComponent<AudioSource>();
+        pitchTunableAudio = gameObject.AddComponent<AudioSource>();
+        pitchTunableAudio.volume = Sound.volume;
     }
 
     public void AddSkillMethod(SkillAction action)
@@ -244,7 +248,7 @@ public class StoneManager : MonoBehaviour
         var checkTasks = directions.Select(dir => CheckLineAsync(info.X, info.Y, dir, info.PutStone.Team)).ToArray();
         var results = await Task.WhenAll(checkTasks);
 
-        await Task.Delay(500);
+        await Task.Delay(300);
 
         var flipTasks = new List<Task>();
         for (int i = 0; i < directions.Length; i++)
@@ -369,10 +373,14 @@ public class StoneManager : MonoBehaviour
 
         int BonusCount = frameCom.GetCurrentState();
 
+        bool isPlayerOffline = false;
+
         if (comboPlayer is OfflinePlayer && BonusCount > 0) 
         {
             frameCom.ShowComboEnter();
-            await Task.Delay(4500);
+            Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/ComboBonus"), 0.8f);
+            await Task.Delay(5000);
+            isPlayerOffline = true;
         }
 
         
@@ -380,10 +388,17 @@ public class StoneManager : MonoBehaviour
         //コンボボーナス
         for (int i=0; i<BonusCount; i++)
         {
-            frameCom.SetText($"コンボボーナスにより、あと{BonusCount - i}回\r\n任意の敵の色を自分の色に変更出来ます。");
+            if(isPlayerOffline)
+                frameCom.SetText($"コンボボーナスにより、あと{BonusCount - i}回\r\n任意の敵の色を自分の色に変更出来ます。");
+
             var comboTask = comboPlayer.DoComboBonus();
             while (!comboTask.IsCompleted) { await Task.Delay(10); }
             FlipStone(comboTask.Result.X, comboTask.Result.Y, comboPlayer.Team, true, true);
+
+            var pt = GetPuttablePosition(comboPlayer.Team);
+            while (!pt.IsCompleted) { await Task.Delay(10); }
+            if (pt.Result.Length <= 0)
+                break;
         }
         
         Debug.Log("Destroy Fire");
@@ -408,6 +423,10 @@ public class StoneManager : MonoBehaviour
                     s.SetTeam(team, this, x, y);
                 if (!isSkill)
                     Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Turn"));
+
+                if(isComboBonus)
+                    Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/ComboFlip"));
+
                 var e = s.OnFlip(isSkill);
                 StartCoroutine(e);
             }
@@ -905,13 +924,13 @@ public class StoneManager : MonoBehaviour
         }
     }
 
-    //countでピッチ変えたい
     protected virtual IEnumerator ShowCutIn(bool isEnemy, int count)
     {
         Debug.Log("CutIn");
         var t = GameObject.Find("Canvas").transform;
         GameObject c;
-        Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Cutin"));
+        pitchTunableAudio.pitch = 1 + (count * 0.15f);
+        pitchTunableAudio.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Cutin"));
         if (isEnemy)
         {
             var o = Resources.Load<GameObject>("Pictures/Game/EnemySkillCut");
