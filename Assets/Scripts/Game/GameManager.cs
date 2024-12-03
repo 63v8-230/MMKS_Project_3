@@ -238,8 +238,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             //winTeam = "White Win!";
             t[0] = ETeam.WHITE;
             t[1] = ETeam.BLACK;
-            sc[0] = stoneCount.Result[0];
-            sc[1] = stoneCount.Result[1];
+            sc[0] = stoneCount.Result[1];
+            sc[1] = stoneCount.Result[0];
         }
 
         //tmPro.text = $"{winTeam}\nBlack: {b}\nWhite: {w}\n{additionalMessage}";
