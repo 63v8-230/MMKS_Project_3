@@ -393,7 +393,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0809eb0e179374f419f3df3e52981fa3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 67ea17cfa9e5cdc488e33e3187d8858f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2319,7 +2319,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 590947045}
   m_Direction: 2
   m_Value: 0.99999964
-  m_Size: 0.7548193
+  m_Size: 0.7548192
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2695,6 +2695,8 @@ MonoBehaviour:
     type: 3}
   LightStoneObject: {fileID: 105967316902566852, guid: 82b278fd372eee44e88d787ccc05642b,
     type: 3}
+  GameManagerRef: {fileID: 0}
+  Sound: {fileID: 0}
   CurrentTurn: 0
 --- !u!4 &2052147944
 Transform:
