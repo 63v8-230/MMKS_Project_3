@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
 /// <summary>
 /// TextFieldControllerの選択肢用
 /// </summary>
@@ -28,9 +27,7 @@ public class TextFieldController : MonoBehaviour
 
     bool isPressAnyKey = false;
 
-    bool isSelect = false;
     List<TextSelectItem> selects = new List<TextSelectItem>();
-    int currentSelectIndex = 0;
 
     List<Func<bool>> fWaits = new List<Func<bool>>();
     int fWaitID = -1;
@@ -45,10 +42,25 @@ public class TextFieldController : MonoBehaviour
 
         //テスト用
         fWaits.Add(() => { return (Input.GetKeyDown(KeyCode.Space)); });
+        fWaits.Add(() => { SceneManager.LoadScene("TextFieldTest"); return true; });
+
+        var s = SFB.StandaloneFileBrowser.OpenFilePanel("テキストを選択", Application.streamingAssetsPath, "txt", false);
 
 
-        //テスト用
-        Init(Path.Combine(Application.streamingAssetsPath, "TextTest.txt"));
+        if(s.Length>0)
+        {
+            Debug.Log(s[0]);
+            Init(s[0]);
+        }
+        else
+        {
+            Application.Quit();
+        }
+
+        
+
+
+        //Init(Path.Combine(Application.streamingAssetsPath, "TextTest.txt"));
     }
 
     // Update is called once per frame
@@ -101,6 +113,11 @@ public class TextFieldController : MonoBehaviour
             while(!sr.EndOfStream)
             {
                 string line = sr.ReadLine();
+                if (line == null || line.Length==0)
+                {
+                    actions.Add(() => { index++; });
+                    continue;
+                }
                 if (line[0] == '!')
                 {//コマンドの場合
                     var act = GetCommand(line.Split(' '));
@@ -164,7 +181,7 @@ public class TextFieldController : MonoBehaviour
                     {
                         var s = GameObject.Instantiate(obj);
                         s.transform.SetParent(selectTarget, false);
-                        var btn = s.transform.Find("B").GetComponent<Button>();
+                        var btn = s.transform.Find("B").GetComponent<UnityEngine.UI.Button>();
                         int idx = item.Index;
                         string str = item.Text;
                         s.transform.Find("B/TX").GetComponent<TextMeshProUGUI>().text = str;
@@ -177,12 +194,10 @@ public class TextFieldController : MonoBehaviour
                             }
                         });
                     }
-
-                    isSelect = true;
                 };
 
 
-
+            case "!memo":
             default:
                 return () => { index++; };
         }
