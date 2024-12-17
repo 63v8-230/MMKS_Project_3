@@ -26,7 +26,7 @@ public class AIPlayerBase : MonoBehaviour, IPlayer //AIのベースクラス
         return new TurnInfo();
     }
 
-    async public virtual Task<TurnInfo> DoComboBonus()
+    async public virtual Task<TurnInfo> DoComboBonus(int bonus)
     {
         await Task.Delay(500);
         return new TurnInfo();

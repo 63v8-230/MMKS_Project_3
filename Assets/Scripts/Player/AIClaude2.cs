@@ -88,7 +88,7 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         return bestMove;
     }
 
-    async public Task<TurnInfo> DoComboBonus()
+    async public Task<TurnInfo> DoComboBonus(int bonus)
     {
         List<Task<int>> cells = new List<Task<int>>();
         var bSize = gameManager.StoneManagerRef.GetBoardSize();

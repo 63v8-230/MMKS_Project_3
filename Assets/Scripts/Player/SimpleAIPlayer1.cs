@@ -60,7 +60,7 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
 
     }
 
-    async public Task<TurnInfo> DoComboBonus()
+    async public Task<TurnInfo> DoComboBonus(int bonus)
     {
         List<Task<int>> cells = new List<Task<int>>();
         var bSize = gameManager.StoneManagerRef.GetBoardSize();

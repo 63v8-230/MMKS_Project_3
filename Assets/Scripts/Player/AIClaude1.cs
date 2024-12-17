@@ -73,7 +73,7 @@ public class AIClaude1 : MonoBehaviour, IPlayer
         return await SelectStrategy(puttablePositions.Result);
     }
 
-    async public Task<TurnInfo> DoComboBonus()
+    async public Task<TurnInfo> DoComboBonus(int bonus)
     {
         List<Task<int>> cells = new List<Task<int>>();
         var bSize = gameManager.StoneManagerRef.GetBoardSize();

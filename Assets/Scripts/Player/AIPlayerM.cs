@@ -173,7 +173,7 @@ public class AIPlayerM : AIPlayerBase
 
     }
 
-    async public override Task<TurnInfo> DoComboBonus()
+    async public override Task<TurnInfo> DoComboBonus(int bonus)
     {
         List<Task<int>> cells = new List<Task<int>>();
         var bSize = gameManager.StoneManagerRef.GetBoardSize();

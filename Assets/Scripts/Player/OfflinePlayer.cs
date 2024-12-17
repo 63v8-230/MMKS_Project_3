@@ -98,9 +98,23 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         return turnInfo;
     }
 
-    async public Task<TurnInfo> DoComboBonus()
+    async public Task<TurnInfo> DoComboBonus(int bonus)
     {
         isInBonus = true;
+
+        //if(!SelectCell(out turnInfo, true, true))
+
+
+        List<GameObject> highLight = new List<GameObject>();//範囲プレビュー
+        foreach (var item in gameManager.StoneManagerRef.ComboBonus[bonus])
+        {
+            highLight.Add(
+                    GameObject.Instantiate(gameManager.SelectedCellPrefab,
+                    gameManager.StoneManagerRef.CellPosition2Vector3(0, 0),
+                    Quaternion.identity));
+
+            Destroy(highLight[highLight.Count - 1].transform.Find("tx").gameObject);
+        }
 
         while (isInBonus) { await Task.Delay(10); }
 
@@ -233,11 +247,7 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         {
             if(SelectCell(out turnInfo, true))
             {
-                if (gameManager.StoneManagerRef.Stones[turnInfo.X, turnInfo.Y]!=null)
-                {
-                    if (gameManager.StoneManagerRef.Stones[turnInfo.X, turnInfo.Y].Team != Team)
-                        isInBonus = false;
-                }
+                isInBonus = false;
             }
         }
     }
@@ -280,12 +290,13 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     /// </summary>
     /// <param name="info">XとYだけ入って出てくる</param>
     /// <param name="disableCellCheck">Trueで取りあえず選んだセルを無条件に返して来る</param>
+    /// <param name="withoutClick">クリックとか関係なし</param>
     /// <returns>もし取れたらTrue</returns>
-    private bool SelectCell(out TurnInfo info, bool disableCellCheck = false)
+    private bool SelectCell(out TurnInfo info, bool disableCellCheck = false, bool withoutClick = false)
     {
         info = new TurnInfo();
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || withoutClick)
         {
 
             Vector3 sPos;

@@ -113,19 +113,19 @@ public class FireFrameUIController : MonoBehaviour
         {
             default:
             case 0:
-                return 0;
+                return -1;
 
             case 1:
-                return 1;
+                return 0;
 
             case 2:
-                return 2;
+                return 1;
 
             case 3:
-                return 3;
+                return 2;
 
             case 4:
-                return 5;
+                return 3;
         }
     }
 
