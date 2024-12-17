@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -25,6 +26,8 @@ public class TitleEnter : MonoBehaviour
         player = transform.Find("Demo").GetComponent<VideoPlayer>();
         img = player.gameObject.GetComponent<RawImage>();
         bgmAudio = GameObject.Find("Scripts").GetComponent<AudioSource>();
+
+        transform.Find("ver").GetComponent<TextMeshProUGUI>().text = Application.version.ToString();
 
     }
 
