@@ -145,12 +145,14 @@ public class AIClaude2 : MonoBehaviour, IPlayer
     {
         await Task.Yield();
 
-        if (gameManager.StoneManagerRef.Stones[x, 0] != null)
-            if (gameManager.StoneManagerRef.Stones[x, 0].Team != Team)
+        //もし端の1つ隣が空いていたら、端を優先する
+        if (gameManager.StoneManagerRef.Stones[x, 1] != null)
+            if (gameManager.StoneManagerRef.Stones[x, 1].Team != Team)
                 return 0;
 
-        if (gameManager.StoneManagerRef.Stones[x, gameManager.StoneManagerRef.Stones.GetLength(1) - 1] != null)
-            if (gameManager.StoneManagerRef.Stones[x, gameManager.StoneManagerRef.Stones.GetLength(1) - 1].Team != Team)
+        //もし端の1つ隣が空いていたら、端を優先する
+        if (gameManager.StoneManagerRef.Stones[x, gameManager.StoneManagerRef.Stones.GetLength(1) - 2] != null)
+            if (gameManager.StoneManagerRef.Stones[x, gameManager.StoneManagerRef.Stones.GetLength(1) - 2].Team != Team)
                 return gameManager.StoneManagerRef.Stones.GetLength(1) - 1;
 
         int v = -1;
