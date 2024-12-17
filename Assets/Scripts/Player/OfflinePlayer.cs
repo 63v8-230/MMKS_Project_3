@@ -32,6 +32,9 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
     private bool isInBonus = false;
 
+    private int currentBonus;
+    private List<GameObject> highLight;
+
     async public Task<TurnInfo> DoTurn()
     {
 
@@ -101,16 +104,21 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     async public Task<TurnInfo> DoComboBonus(int bonus)
     {
         isInBonus = true;
+        currentBonus = bonus;
 
-        //if(!SelectCell(out turnInfo, true, true))
+        if(!SelectCell(out turnInfo, true, true))
+        {
+            turnInfo.X = 0;
+            turnInfo.Y = 0;
+        }
 
 
-        List<GameObject> highLight = new List<GameObject>();//範囲プレビュー
+        highLight = new List<GameObject>();//範囲プレビュー
         foreach (var item in gameManager.StoneManagerRef.ComboBonus[bonus])
         {
             highLight.Add(
                     GameObject.Instantiate(gameManager.SelectedCellPrefab,
-                    gameManager.StoneManagerRef.CellPosition2Vector3(0, 0),
+                    gameManager.StoneManagerRef.CellPosition2Vector3((int)item.x, (int)item.y),
                     Quaternion.identity));
 
             Destroy(highLight[highLight.Count - 1].transform.Find("tx").gameObject);
@@ -118,7 +126,25 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
         while (isInBonus) { await Task.Delay(10); }
 
+        foreach (var item in highLight)
+        {
+            Destroy(item);
+        }
+
+        highLight.Clear();
+
         return turnInfo;
+    }
+
+    private void UpdateComboHighlight(int x, int y)
+    {
+        for(int i=0; i<highLight.Count; i++)
+        {
+            highLight[i].transform.position =
+                gameManager.StoneManagerRef.CellPosition2Vector3
+                ((int)gameManager.StoneManagerRef.ComboBonus[currentBonus][i].x + x,
+                (int)gameManager.StoneManagerRef.ComboBonus[currentBonus][i].y + y);
+        }
     }
 
     public void Init(GameManager gManager)
@@ -245,9 +271,14 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
         if(isInBonus)
         {
-            if(SelectCell(out turnInfo, true))
+            if (SelectCell(out turnInfo, true, true)) 
             {
-                isInBonus = false;
+                if(Input.GetMouseButtonDown(0))
+                {
+                    isInBonus = false;
+                    return;
+                }
+                UpdateComboHighlight(turnInfo.X, turnInfo.Y);
             }
         }
     }
@@ -330,8 +361,8 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
                 if(disableCellCheck)
                 {
-                    turnInfo.X = x;
-                    turnInfo.Y = y;
+                    info.X = x;
+                    info.Y = y;
                     return true;
                 }
 
