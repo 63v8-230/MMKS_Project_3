@@ -17,29 +17,32 @@ public struct TextSelectItem
 public class TextFieldController : MonoBehaviour
 {
     [SerializeField]
-    TextMeshProUGUI TextObject;
+    protected TextMeshProUGUI TextObject;
 
-    Transform selectTarget;
+    protected Transform selectTarget;
 
-    List<Action> actions = new List<Action>();
-    int index = 0;
-    int prevIndex = 0;
+    protected List<Action> actions = new List<Action>();
+    protected int index = 0;
+    protected int prevIndex = 0;
 
-    bool isPressAnyKey = false;
+    protected bool isPressAnyKey = false;
 
-    List<TextSelectItem> selects = new List<TextSelectItem>();
+    protected List<TextSelectItem> selects = new List<TextSelectItem>();
 
-    List<Func<bool>> fWaits = new List<Func<bool>>();
-    int fWaitID = -1;
+    protected List<Func<bool>> fWaits = new List<Func<bool>>();
+    protected int fWaitID = -1;
 
-    List<Func<int>> fJumps= new List<Func<int>>();
-    int fJumpID = -1;
+    protected List<Func<int>> fJumps= new List<Func<int>>();
+    protected int fJumpID = -1;
 
-    // Start is called before the first frame update
-    void Start()
+    protected System.Text.Encoding encoding = System.Text.Encoding.UTF8;
+
+    /// <summary>
+    /// <para>初期化用メソッド</para>
+    /// <para></para>
+    /// </summary>
+    virtual protected void InitializeProcess()
     {
-
-
         //テスト用
         fWaits.Add(() => { return (Input.GetKeyDown(KeyCode.Space)); });
         fWaits.Add(() => { SceneManager.LoadScene("TextFieldTest"); return true; });
@@ -47,7 +50,7 @@ public class TextFieldController : MonoBehaviour
         var s = SFB.StandaloneFileBrowser.OpenFilePanel("テキストを選択", Application.streamingAssetsPath, "txt", false);
 
 
-        if(s.Length>0)
+        if (s.Length > 0)
         {
             Debug.Log(s[0]);
             Init(s[0]);
@@ -56,11 +59,12 @@ public class TextFieldController : MonoBehaviour
         {
             Application.Quit();
         }
+    }
 
-        
-
-
-        //Init(Path.Combine(Application.streamingAssetsPath, "TextTest.txt"));
+    // Start is called before the first frame update
+    void Start()
+    {
+        InitializeProcess();
     }
 
     // Update is called once per frame
@@ -108,14 +112,15 @@ public class TextFieldController : MonoBehaviour
 
         index = 0;
         actions.Clear();
-        using(System.IO.StreamReader sr = new System.IO.StreamReader(filePath))
+        Debug.Log($"文字コード: {encoding.EncodingName}");
+        using (System.IO.StreamReader sr = new System.IO.StreamReader(filePath, encoding)) 
         {
             while(!sr.EndOfStream)
             {
                 string line = sr.ReadLine();
                 if (line == null || line.Length==0)
                 {
-                    actions.Add(() => { index++; });
+                    actions.Add(NextIndex);
                     continue;
                 }
                 if (line[0] == '!')
@@ -133,6 +138,13 @@ public class TextFieldController : MonoBehaviour
 
         actions[index]();
 
+    }
+
+
+
+    private void NextIndex()
+    {
+        index++;
     }
 
     private IEnumerator DelayMethod(Action action, float seconds)
@@ -153,7 +165,7 @@ public class TextFieldController : MonoBehaviour
         {
             case "!wait":
                 int t = int.Parse(commands[1]);
-                return () => { var e = DelayMethod(() => { index++; }, t * 0.001f); StartCoroutine(e); };
+                return () => { var e = DelayMethod(NextIndex, t * 0.001f); StartCoroutine(e); };
 
             case "!key":
                 return () => { isPressAnyKey = true; };
