@@ -10,6 +10,8 @@ using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 
 public enum ETeam
@@ -133,6 +135,65 @@ public class StoneManager : MonoBehaviour
             new Vector2(-1, 0),  //L
             new Vector2(-1, -1), //LT
         };
+
+    /// <summary>
+    /// コンボボーナス用の形状
+    /// </summary>
+    [NonSerialized]
+    public Vector2[][] ComboBonus = new Vector2[][]
+    {
+        //0
+        new Vector2[]
+        {
+            new Vector2(0, 0),
+        },
+
+        //1
+        new Vector2[]
+        {
+            new Vector2(0, 0),
+            new Vector2(-1, 1),
+            new Vector2(-1, -1),
+            new Vector2(1, 1),
+            new Vector2(1, -1),
+        },
+
+        //2
+        new Vector2[]
+        {
+            new Vector2(0, 0),
+            new Vector2(-1, 1),
+            new Vector2(-1, 0),
+            new Vector2(-1, -1),
+            new Vector2(0, 1),
+            new Vector2(0, -1),
+            new Vector2(1, 1),
+            new Vector2(1, 0),
+            new Vector2(1, -1),
+        },
+
+        //3
+        new Vector2[]
+        {
+            new Vector2(0, 0),
+            new Vector2(-1, 1),
+            new Vector2(-1, 0),
+            new Vector2(-1, -1),
+            new Vector2(0, 1),
+            new Vector2(0, -1),
+            new Vector2(1, 1),
+            new Vector2(1, 0),
+            new Vector2(1, -1),
+            new Vector2(-2, 2),
+            new Vector2(-2, 0),
+            new Vector2(-2, -2),
+            new Vector2(0, 2),
+            new Vector2(0, -2),
+            new Vector2(2, 2),
+            new Vector2(2, 0),
+            new Vector2(2, -2),
+        },
+    };
 
     public int CurrentTurn = 0;
 
@@ -308,8 +369,8 @@ public class StoneManager : MonoBehaviour
 
         while(skillMethod.Count!=0)
         {
-            var l = new List<ExEnumerator>();
-            var la = new List<AudioClip>();
+            var skillMethodList = new List<ExEnumerator>();
+            var skillMethodSounds = new List<AudioClip>();
             var cTeam = ETeam.NONE;
             int _index = -1;
             while(true)
@@ -323,8 +384,8 @@ public class StoneManager : MonoBehaviour
 
                 if(cTeam== skillMethod[_index].Team)
                 {
-                    l.Add(new ExEnumerator(skillMethod[_index].Action.Invoke(this, skillMethod[_index].Position)));
-                    la.Add(skillMethod[_index].Sound);
+                    skillMethodList.Add(new ExEnumerator(skillMethod[_index].Action.Invoke(this, skillMethod[_index].Position)));
+                    skillMethodSounds.Add(skillMethod[_index].Sound);
                 }
                 else
                 {
@@ -340,10 +401,10 @@ public class StoneManager : MonoBehaviour
 
             
 
-            for (int i = 0; i < l.Count; i++) 
+            for (int i = 0; i < skillMethodList.Count; i++) 
             {
-                StartCoroutine(l[i]);
-                Sound.PlayOneShot(la[i]);
+                StartCoroutine(skillMethodList[i]);
+                Sound.PlayOneShot(skillMethodSounds[i]);
             }
 
             bool isEnd = false;
@@ -351,7 +412,7 @@ public class StoneManager : MonoBehaviour
             while (!isEnd)
             {
                 await Task.Delay(1);
-                foreach (var col in l)
+                foreach (var col in skillMethodList)
                 {
                     if (col.IsEnd)
                     {
@@ -371,11 +432,14 @@ public class StoneManager : MonoBehaviour
             }
         }
 
-        int BonusCount = frameCom.GetCurrentState();
+        int bonusCount = frameCom.GetCurrentState();
+
+        if (bonusCount < 0)
+            goto EndOfPutStone;
 
         bool isPlayerOffline = false;
 
-        if (comboPlayer is OfflinePlayer && BonusCount > 0) 
+        if (comboPlayer is OfflinePlayer && bonusCount >= 0) 
         {
             frameCom.ShowComboEnter();
             Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/ComboBonus"), 0.8f);
@@ -383,24 +447,21 @@ public class StoneManager : MonoBehaviour
             isPlayerOffline = true;
         }
 
-        
+
 
         //コンボボーナス
-        for (int i=0; i<BonusCount; i++)
+        if (isPlayerOffline)
+            frameCom.SetText($"コンボボーナス\r\n任意の範囲にある敵の色を自分の色に変更出来ます。");
+
+        var comboTask = comboPlayer.DoComboBonus(bonusCount);
+        while (!comboTask.IsCompleted) { await Task.Delay(10); }
+        foreach (var c in ComboBonus[bonusCount])
         {
-            if(isPlayerOffline)
-                frameCom.SetText($"コンボボーナスにより、あと{BonusCount - i}回\r\n任意の敵の色を自分の色に変更出来ます。");
-
-            var comboTask = comboPlayer.DoComboBonus();
-            while (!comboTask.IsCompleted) { await Task.Delay(10); }
-            FlipStone(comboTask.Result.X, comboTask.Result.Y, comboPlayer.Team, true, true);
-
-            var pt = GetPuttablePosition(comboPlayer.Team);
-            while (!pt.IsCompleted) { await Task.Delay(10); }
-            if (pt.Result.Length <= 0)
-                break;
+            FlipStone((int)(comboTask.Result.X + c.x), (int)(comboTask.Result.Y + c.y), comboPlayer.Team, true, true);
         }
-        
+
+        EndOfPutStone:
+
         Debug.Log("Destroy Fire");
         Destroy(frame);
         skillMethod.Clear();
@@ -411,6 +472,12 @@ public class StoneManager : MonoBehaviour
 
     public void FlipStone(int x, int y, ETeam team, bool isSkill = false, bool isComboBonus = false)
     {
+        if(isComboBonus)
+            SetHighLight(new Vector2(x, y), new Color(1, 0.843f, 0));
+
+        if (CheckOutOfBoard(x, y))
+            return;
+
         var s = Stones[x, y];
         if(s != null)
         {
@@ -425,13 +492,30 @@ public class StoneManager : MonoBehaviour
                     Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Turn"));
 
                 if(isComboBonus)
+                { 
                     Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/ComboFlip"));
+                    
+                }
 
                 var e = s.OnFlip(isSkill);
                 StartCoroutine(e);
             }
                 
         } 
+    }
+
+    public void SetHighLight(Vector2 position, Color highlightColor, bool isDisplayOutOfRange = false)
+    {
+        if (!isDisplayOutOfRange && CheckOutOfBoard((int)position.x, (int)position.y))
+            return;
+
+
+        var g = GameObject.Instantiate(
+        HighlightCellObject,
+        CellPosition2Vector3((int)(position.x), (int)(position.y)),
+            Quaternion.identity);
+        var m = g.transform.Find("Model").gameObject.GetComponent<Renderer>().material;
+        m.color = highlightColor;
     }
 
     /// <summary>
@@ -452,12 +536,12 @@ public class StoneManager : MonoBehaviour
             if (i+3 < boardSizeX)
             {
                 t.Add(CountStone(i, i+3));
-                Debug.Log($"async {i} - {i + 3}");
+                //Debug.Log($"async {i} - {i + 3}");
             }
             else
             {
                 t.Add(CountStone(i, boardSizeX));
-                Debug.Log($"async {i} - {boardSizeX}");
+                //Debug.Log($"async {i} - {boardSizeX}");
                 break;
             }
             
