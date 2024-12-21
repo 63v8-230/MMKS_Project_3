@@ -15,6 +15,10 @@ public class SelectedCell : MonoBehaviour
     void Start()
     {
         rend = model.GetComponent<Renderer>();
+
+        var c = rend.material.color;
+        c.a = 0;
+        rend.material.color = c;
     }
 
     // Update is called once per frame
@@ -22,13 +26,15 @@ public class SelectedCell : MonoBehaviour
     {
         var c = rend.material.color;
         c.a += changeValue * Time.deltaTime;
-        if(c.a >= 0.2f)
+        if(c.a >= 0.3f)
         {
             changeValue = -0.2922f;
-        }else if(c.a <= 0)
+        }else if(c.a <= 0.1)
         {
             changeValue = 0.2922f;
         }
         rend.material.color = c;
+
+        rend.material.SetColor("_EmissionColor", (c * c.a)*2f);
     }
 }
