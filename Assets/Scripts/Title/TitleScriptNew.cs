@@ -22,6 +22,8 @@ public class TitleScriptNew : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Data.Instance.isTutorial = false;
+
         audioSource = GetComponent<AudioSource>();
 
         canvas = GameObject.Find("Canvas");
