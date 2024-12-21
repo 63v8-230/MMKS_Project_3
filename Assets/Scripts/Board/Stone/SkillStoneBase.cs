@@ -45,10 +45,15 @@ public class SkillStoneBase : MonoBehaviour, IStone
     {
     }
 
+    private void Awake()
+    {
+        cost = SetCost();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        cost = SetCost();
+        
 
         animCom = GetComponent<Animator>();
 
@@ -88,7 +93,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
     public virtual void SetTeam(ETeam team, StoneManager stoneManager = null, int x = -1, int y = -1)
     {    
 
-        Debug.Log("fTeam: "+team.ToString());
+        Debug.Log("fTeam: "+team.ToString() + "\n"+stoneKind.ToString());
         if (baseTeam == ETeam.NONE)
         {
             baseTeam = team;
@@ -152,7 +157,9 @@ public class SkillStoneBase : MonoBehaviour, IStone
             r.material.color = c;
             if (!isOwnerOnline)
             {
-                r.material.SetColor("_EmissionColor", GetColor() * 3f);
+                var emColor = GetColor() * 3f;
+                r.material.SetColor("_EmissionColor", emColor);
+                DynamicGI.SetEmissive(r, emColor);
             }
                 
         }
@@ -164,6 +171,7 @@ public class SkillStoneBase : MonoBehaviour, IStone
             r.material.EnableKeyword("_EMISSION");
             r.material.color = c;
             r.material.SetColor("_EmissionColor", Color.black);
+            DynamicGI.SetEmissive(r, Color.black);
         }
     }
 
