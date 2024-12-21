@@ -131,7 +131,7 @@ public class TextFieldController : MonoBehaviour
                 else
                 {//•’Ê‚Ì•¶Žš‚Ìê‡
                     
-                    actions.Add(() => { TextObject.text = line; index++; });
+                    actions.Add(() => { TextObject.text = line; NextIndex(); });
                 }
             }
         }
@@ -142,7 +142,7 @@ public class TextFieldController : MonoBehaviour
 
 
 
-    private void NextIndex()
+    protected virtual void NextIndex()
     {
         index++;
     }

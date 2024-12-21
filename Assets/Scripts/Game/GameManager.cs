@@ -47,6 +47,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField]
     private List<GameObject> aiPrefabs = new List<GameObject>();
 
+    [SerializeField]
+    private bool isTutorial = false;
+
     [HideInInspector]
     public StoneManager StoneManagerRef;
 
@@ -89,6 +92,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         await Task.Yield();
     }
 
+    public void GameStart()
+    {
+        GameStart(p1.GetComponent<IPlayer>(), p2.GetComponent<IPlayer>());
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -105,7 +113,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (Data.Instance.IsOnline)
             return;
 
-        p2 = aiPrefabs[(int)Data.Instance.AIKind];
+        if(!isTutorial)
+            p2 = aiPrefabs[(int)Data.Instance.AIKind];
 
         LunchGame();
     }
@@ -117,10 +126,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         StoneManagerRef.Init(Data.Instance.BOARD_X, Data.Instance.BOARD_Y);
 
-        GameStart(p1.GetComponent<IPlayer>(), p2.GetComponent<IPlayer>());
+        if(!Data.Instance.isTutorial)
+            GameStart(p1.GetComponent<IPlayer>(), p2.GetComponent<IPlayer>());
+
         tmPro.text = "";
-        stoneCountBlack.text = "0";
-        stoneCountWhite.text = "0";
+        stoneCountBlack.text = "2";
+        stoneCountWhite.text = "2";
     }
 
     // Update is called once per frame

@@ -27,6 +27,8 @@ public class Data
     public bool IsPadMode = false;
 
     public Process PadProcess;
+
+    public bool isTutorial = false;
 }
 
 public class TitleScript : MonoBehaviour

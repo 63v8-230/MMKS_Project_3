@@ -1,17 +1,10 @@
-using Photon.Pun.Demo.Procedural;
-using Photon.Pun.Demo.PunBasics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 
 public enum ETeam
@@ -106,6 +99,10 @@ public class StoneManager : MonoBehaviour
     [SerializeField]
     public GameObject LightStoneObject;
 
+    [SerializeField]
+    TutorialActions tutorial;
+
+    [HideInInspector]
     public GameManager GameManagerRef;
 
     /// <summary>
@@ -336,7 +333,7 @@ public class StoneManager : MonoBehaviour
 
             await Task.Delay(100);
 
-            return;
+            goto EndOfPutStone;
         }
             
 
@@ -435,16 +432,23 @@ public class StoneManager : MonoBehaviour
         int bonusCount = frameCom.GetCurrentState();
 
         if (bonusCount < 0)
+        {
+            Debug.Log("Destroy Fire");
+            Destroy(frame);
+            skillMethod.Clear();
             goto EndOfPutStone;
+        }
+            
 
         bool isPlayerOffline = false;
 
-        if (comboPlayer is OfflinePlayer && bonusCount >= 0) 
+        isPlayerOffline = comboPlayer is OfflinePlayer || Data.Instance.isTutorial;
+
+        if (isPlayerOffline && bonusCount >= 0) 
         {
             frameCom.ShowComboEnter();
             Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/ComboBonus"), 0.8f);
             await Task.Delay(5000);
-            isPlayerOffline = true;
         }
 
 
@@ -460,14 +464,40 @@ public class StoneManager : MonoBehaviour
             FlipStone((int)(comboTask.Result.X + c.x), (int)(comboTask.Result.Y + c.y), comboPlayer.Team, true, true);
         }
 
-        EndOfPutStone:
-
         Debug.Log("Destroy Fire");
         Destroy(frame);
         skillMethod.Clear();
 
+    EndOfPutStone:
+
         await Task.Delay(100);
-        
+
+        if(Data.Instance.isTutorial)
+            tutorial.OnPutStoneEnd();
+    }
+
+    /// <summary>
+    /// 外部から石を配置する。
+    /// </summary>
+    /// <param name="stoneKind">石の種類</param>
+    /// <param name="x">x</param>
+    /// <param name="y">y</param>
+    /// <param name="team">色</param>
+    public void SetStone(EStone stoneKind, int x, int y, ETeam team, bool hideLogo = false)
+    {
+        var s = SelectStone(stoneKind);
+        if (s.StoneKind > EStone.DEFAULT) 
+        {
+            (s as SkillStoneBase).IsOwnerOnline = hideLogo;
+        }
+        s.SetTeam(team);
+
+        Stones[x, y] = s;
+
+        s.GameObjectRef.transform.position = CellPosition2Vector3(x, y);
+            new Vector3();
+
+        s.GameObjectRef.name = $"Stone {x}-{y}";
     }
 
     public void FlipStone(int x, int y, ETeam team, bool isSkill = false, bool isComboBonus = false)

@@ -16,12 +16,13 @@ public class TitleScriptNew : MonoBehaviour
 
     private GameObject current;
 
-    private new AudioSource audio;
+    [HideInInspector]
+    private AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
     {
-        audio = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
 
         canvas = GameObject.Find("Canvas");
 
@@ -70,15 +71,34 @@ public class TitleScriptNew : MonoBehaviour
 
     private void OnAddCPUMenu()
     {
-        audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"));
+        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"));
 
         Destroy(current);
         var diffSelect = Instantiate(ui[1]);
         diffSelect.transform.SetParent(canvas.transform, false);
 
+        diffSelect.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+
+            Destroy(current);
+            var title = Instantiate(ui[0]);
+            title.transform.SetParent(canvas.transform, false);
+            title.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnAddCPUMenu);
+            current = title;
+
+            
+        });
+
+        diffSelect.transform.Find("Tutorial").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+            StartCoroutine(DelayChangeScene("Tutorial"));
+        });
+
         diffSelect.transform.Find("AI_Simple").GetComponent<Button>().onClick.AddListener(() =>
         {
-            audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
             Data.Instance.BOARD_X = 8;
             Data.Instance.BOARD_Y = 8;
             Data.Instance.IsOnline = false;
@@ -92,7 +112,7 @@ public class TitleScriptNew : MonoBehaviour
 
         diffSelect.transform.Find("AI_S").GetComponent<Button>().onClick.AddListener(() =>
         {
-            audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
             Data.Instance.BOARD_X = 8;
             Data.Instance.BOARD_Y = 8;
             Data.Instance.IsOnline = false;
@@ -104,7 +124,7 @@ public class TitleScriptNew : MonoBehaviour
 
         diffSelect.transform.Find("AI_M").GetComponent<Button>().onClick.AddListener(() =>
         {
-            audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
             Data.Instance.BOARD_X = 8;
             Data.Instance.BOARD_Y = 8;
             Data.Instance.IsOnline = false;
