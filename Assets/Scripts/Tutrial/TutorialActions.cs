@@ -85,7 +85,7 @@ public class TutorialActions : TextFieldController
 
         var s = Path.Combine(Application.streamingAssetsPath, "Text\\Tutorial\\Text.txt");
 
-        encoding = System.Text.Encoding.GetEncoding("shift_jis");
+        //encoding = System.Text.Encoding.GetEncoding("shift_jis");
 
         stoneManager.SetStone(EStone.DEFAULT, 3, 2, ETeam.WHITE);
         stoneManager.Stones[3, 3].SetTeam(ETeam.WHITE);
@@ -94,10 +94,14 @@ public class TutorialActions : TextFieldController
         Init(s);
     }
 
-    protected override void NextIndex()
+    protected override bool PressAnyKey()
     {
-        //audioSource.PlayOneShot(nextTextSound);
-        base.NextIndex();
+        if (Input.anyKeyDown)
+        {
+            audioSource.PlayOneShot(nextTextSound);
+            return true;
+        }
+        return false;
     }
 
     public bool OnSelectStone(EStone stone)

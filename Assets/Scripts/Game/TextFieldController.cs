@@ -81,7 +81,7 @@ public class TextFieldController : MonoBehaviour
 
         if(isPressAnyKey)
         {
-            if(Input.anyKeyDown)
+            if(PressAnyKey())
             {
                 index++;
                 isPressAnyKey = false;
@@ -145,6 +145,11 @@ public class TextFieldController : MonoBehaviour
     protected virtual void NextIndex()
     {
         index++;
+    }
+
+    protected virtual bool PressAnyKey()
+    {
+        return Input.anyKeyDown;
     }
 
     private IEnumerator DelayMethod(Action action, float seconds)
