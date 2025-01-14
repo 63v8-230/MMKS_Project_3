@@ -112,7 +112,7 @@ public class ArrowStone : SkillStoneBase
 
     public override EStone GetStone()
     {
-        return EStone.ARROW;
+        return stoneKind;
     }
 
     protected override Color GetColor()
