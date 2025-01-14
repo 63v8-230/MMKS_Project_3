@@ -107,9 +107,11 @@ public class TitleScriptNew : MonoBehaviour
 
             Data.Instance.AIKind = EAIKind.S;
 
-            StartCoroutine(DelayChangeScene("Game"));
+            //StartCoroutine(DelayChangeScene("Game"));
+            Data.Instance.IsOnline = true;
+            StartCoroutine(DelayChangeScene("OnlineGame"));
 
-            
+
         });
 
         diffSelect.transform.Find("AI_S").GetComponent<Button>().onClick.AddListener(() =>
