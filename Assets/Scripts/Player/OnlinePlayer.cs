@@ -59,11 +59,23 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
         isTurned = true;
     }
 
+    private void OnComboAction(int x, int y)
+    {
+        turnInfo = new TurnInfo
+        {
+            X = x,
+            Y = y,
+        };
+
+        isTurned = true;
+    }
+
     public void Init(GameManager gManager)
     {
         gameManager = gManager;
 
         OnlineScriptRef.OnValueSet += OnAction;
+        OnlineScriptRef.OnCombo += OnComboAction;
     }
 
     // Start is called before the first frame update
@@ -81,8 +93,19 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
 
     async public Task<TurnInfo> DoComboBonus(int bonus)
     {
-        await Task.Yield();
-        return new TurnInfo();
+        isTurned = false;
+        while (true)
+        {
+            await Task.Delay(100);
+
+            if (isTurned)
+            {
+                isTurned = false;
+                break;
+            }
+        }
+
+        return turnInfo;
     }
 }
 

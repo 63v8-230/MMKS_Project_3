@@ -11,6 +11,7 @@ public class OnlineScript : MonoBehaviourPunCallbacks, IPunObservable
     public bool IsLoad = false;
 
     public Action<int,int,int> OnValueSet;
+    public Action<int, int> OnCombo;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,13 @@ public class OnlineScript : MonoBehaviourPunCallbacks, IPunObservable
     {
         if(OnValueSet != null)
             OnValueSet.Invoke(stoneKind, x, y);
+    }
+
+    [PunRPC]
+    public void SetCombo(int x,int y)
+    {
+        if (OnCombo!= null)
+            OnCombo.Invoke(x, y);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

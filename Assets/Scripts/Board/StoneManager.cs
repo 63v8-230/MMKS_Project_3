@@ -456,6 +456,8 @@ public class StoneManager : MonoBehaviour
         //コンボボーナス
         if (isPlayerOffline)
             frameCom.SetText($"コンボボーナス\r\n任意の範囲にある敵の色を自分の色に変更出来ます。");
+        else if(Data.Instance.IsOnline)
+            frameCom.SetText($"相手のコンボボーナスが実行中です・・・");
 
         var comboTask = comboPlayer.DoComboBonus(bonusCount);
         while (!comboTask.IsCompleted) { await Task.Delay(10); }

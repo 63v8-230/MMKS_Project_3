@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class OnlinePlayerManager : MonoBehaviourPunCallbacks
 {
@@ -22,7 +23,7 @@ public class OnlinePlayerManager : MonoBehaviourPunCallbacks
 
     private bool isStarted = false;
 
-    private float t = 0;
+    private bool isChecked = false;
 
     private bool isReadyToStart = false;
 
@@ -89,11 +90,16 @@ public class OnlinePlayerManager : MonoBehaviourPunCallbacks
         if (isStarted || PhotonNetwork.CurrentRoom == null) 
             return;
 
-        t += Time.deltaTime;
-        if(t>5)
-        {
-            t = 0;
+        var isJust2 = DateTime.Now.Second % 2 == 0;
 
+        Debug.Log($"Sec: {DateTime.Now.Second}");
+
+        if (!isJust2)
+            isChecked = false;
+
+        if (isJust2 && !isChecked)
+        {
+            isChecked = true;
 
             if (isReadyToStart)
             {
@@ -121,13 +127,13 @@ public class OnlinePlayerManager : MonoBehaviourPunCallbacks
                     Debug.Log("Host");
                     var hashTable1 = new ExitGames.Client.Photon.Hashtable();
 
-                    hashTable1[$"{ETeam.BLACK.ToString()}_IsPutted"] = 0;
-                    hashTable1[$"{ETeam.BLACK.ToString()}_TurnInfo_X"] = 0;
-                    hashTable1[$"{ETeam.BLACK.ToString()}_TurnInfo_Y"] = 0;
+                    //hashTable1[$"{ETeam.BLACK.ToString()}_IsPutted"] = 0;
+                    //hashTable1[$"{ETeam.BLACK.ToString()}_TurnInfo_X"] = 0;
+                    //hashTable1[$"{ETeam.BLACK.ToString()}_TurnInfo_Y"] = 0;
 
-                    hashTable1[$"{ETeam.WHITE.ToString()}_IsPutted"] = 0;
-                    hashTable1[$"{ETeam.WHITE.ToString()}_TurnInfo_X"] = 0;
-                    hashTable1[$"{ETeam.WHITE.ToString()}_TurnInfo_Y"] = 0;
+                    //hashTable1[$"{ETeam.WHITE.ToString()}_IsPutted"] = 0;
+                    //hashTable1[$"{ETeam.WHITE.ToString()}_TurnInfo_X"] = 0;
+                    //hashTable1[$"{ETeam.WHITE.ToString()}_TurnInfo_Y"] = 0;
 
                     PhotonNetwork.CurrentRoom.SetCustomProperties(hashTable1);
                 }
@@ -154,6 +160,18 @@ public class OnlinePlayerManager : MonoBehaviourPunCallbacks
                     gameManagerRef.p1 = GameObject.Instantiate(onlinePlayerPrefab, Vector3.zero, Quaternion.identity);
                     pRef2 = gameManagerRef.p1.GetComponent<IPlayer>();
                     pRef2.Team = ETeam.BLACK;
+
+                    var cvs = GameObject.Find("Canvas");
+
+                    RectTransform lu = cvs.transform.Find("StoneCountW").GetComponent<RectTransform>();
+                    RectTransform rd = cvs.transform.Find("StoneCountB").GetComponent<RectTransform>();
+                    lu.anchoredPosition = new Vector2 (-64, 64);
+                    lu.anchorMin = new Vector2 (1, 0);
+                    lu.anchorMax = new Vector2 (1, 0);
+
+                    rd.anchoredPosition = new Vector2(64, -64);
+                    rd.anchorMin = new Vector2(0, 1);
+                    rd.anchorMax = new Vector2(0, 1);
                 }
 
 

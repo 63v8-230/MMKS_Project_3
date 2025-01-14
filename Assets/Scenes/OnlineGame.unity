@@ -1022,8 +1022,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Waiting for Player
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 00fce8a748c4fdd45ab312c5bd308189, type: 2}
+  m_sharedMaterial: {fileID: 1942749922811049071, guid: 00fce8a748c4fdd45ab312c5bd308189,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1047,8 +1048,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64
-  m_fontSizeBase: 64
+  m_fontSize: 64.1
+  m_fontSizeBase: 64.1
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2318,8 +2319,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 590947046}
   m_HandleRect: {fileID: 590947045}
   m_Direction: 2
-  m_Value: 0.99999964
-  m_Size: 0.7548192
+  m_Value: 1.0000007
+  m_Size: 0.75481915
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2666,6 +2667,7 @@ GameObject:
   - component: {fileID: 2052147943}
   - component: {fileID: 2052147946}
   - component: {fileID: 2052147947}
+  - component: {fileID: 2052147948}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2695,6 +2697,7 @@ MonoBehaviour:
     type: 3}
   LightStoneObject: {fileID: 105967316902566852, guid: 82b278fd372eee44e88d787ccc05642b,
     type: 3}
+  tutorial: {fileID: 0}
   GameManagerRef: {fileID: 0}
   Sound: {fileID: 0}
   CurrentTurn: 0
@@ -2733,6 +2736,7 @@ MonoBehaviour:
   SelectedCellPrefab: {fileID: 155860953808322523, guid: 731af7e98816a8a489d2c1b95c7622b7,
     type: 3}
   aiPrefabs: []
+  isTutorial: 0
   StoneManagerRef: {fileID: 0}
 --- !u!114 &2052147946
 MonoBehaviour:
@@ -2764,6 +2768,102 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21472b818197a794c85dfdc8b630a861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!82 &2052147948
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2052147942}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 54cccbd2f916bdb4fa06f9b7ca790e58, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 0.541
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

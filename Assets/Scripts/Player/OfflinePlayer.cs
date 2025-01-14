@@ -133,6 +133,16 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
 
         highLight.Clear();
 
+        if (Data.Instance.IsOnline)
+        {
+            OnlineScriptRef.gameObject.GetComponent<PhotonView>().RPC(
+                nameof(OnlineScriptRef.SetCombo),
+                RpcTarget.AllViaServer,
+                turnInfo.X, turnInfo.Y);
+
+            OnlineScriptRef.SetCombo(turnInfo.X, turnInfo.Y);
+        }
+
         return turnInfo;
     }
 
