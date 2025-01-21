@@ -96,7 +96,16 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
                 (int)turnInfo.PutStone.GetStone(), turnInfo.X, turnInfo.Y);
 
             OnlineScriptRef.SetTurn((int)turnInfo.PutStone.GetStone(), turnInfo.X, turnInfo.Y);
+
+            if(Team == ETeam.WHITE)
+            {
+                turnInfo.PutStone.GameObjectRef.transform.Find("Plane").
+                    GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+            }
         }
+
+        if (turnInfo.X == -1)
+            Debug.Log("Online Skipped");
 
         return turnInfo;
     }
@@ -201,6 +210,8 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         ui_Default.transform.Find("Vert/Count").GetComponent<TextMeshProUGUI>().text = "";
         ui_Default_Button.transform.Find("Stone_Select").gameObject.SetActive(true);
         ui_Default.transform.Find("Desc").GetComponent<Image>().color = new Color(0, 0, 0, 0);
+        if (Team == ETeam.WHITE)
+            ui_Default.transform.Find("Vert/Button/Stone_BG").GetComponent<Image>().sprite = Resources.Load<Sprite>("Pictures/Game/UI/StoneSelect_Button_BG_W");
         prevSelectedStoneButton = ui_Default;
 
         var sManager = GameObject.Find("GameManager").GetComponent<StoneManager>();
@@ -246,6 +257,8 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
             }
             ui.transform.Find("Vert/Count").GetComponent<TextMeshProUGUI>().text = "x" + MyDeck.Stones[i].Amount;
             ui.transform.Find("Desc").GetComponent<Image>().sprite = sManager.GetDescription(MyDeck.Stones[i].Stone);
+            if(Team == ETeam.WHITE)
+                ui.transform.Find("Vert/Button/Stone_BG").GetComponent<Image>().sprite = Resources.Load<Sprite>("Pictures/Game/UI/StoneSelect_Button_BG_W");
         }
     }
 

@@ -31,6 +31,7 @@ public class OnlinePlayerManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        Data.Instance.IsWhite = false;
         PhotonNetwork.ConnectUsingSettings();
     }
 

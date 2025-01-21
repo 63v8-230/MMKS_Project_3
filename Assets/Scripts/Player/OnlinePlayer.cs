@@ -43,12 +43,15 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
             }
         }
 
-
+        if (turnInfo.X == -1)
+            Debug.Log("Online Skipped");
         return turnInfo;
     }
 
     private void OnAction(int kind, int x, int y)
     {
+        Debug.Log("Online Received-Player");
+
         turnInfo = new TurnInfo();
         turnInfo.PutStone = gameManager.StoneManagerRef.SelectStone((EStone)kind);
         if(kind > 1)

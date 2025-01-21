@@ -4,12 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
 public enum EGameState
 {
@@ -202,18 +199,34 @@ public class GameManager : MonoBehaviourPunCallbacks
                             if (currentPlayerIndex >= players.Length)
                                 currentPlayerIndex = 0;
 
-                            var result = Task.Run(StoneManagerRef.GetStoneCounts);
-                            stoneCountBlack.text = result.Result[0].ToString();
-                            stoneCountWhite.text = result.Result[1].ToString();
+                            UpdateStoneCount();
 
                             turnTask = players[currentPlayerIndex].DoTurn();
                             currentGameState = EGameState.PUT;
                             StoneManagerRef.AddTurn();
                         }
                     }
+
+                    var w = Task.Run(() => StoneManagerRef.GetPuttablePosition(ETeam.WHITE));
+                    var b = Task.Run(() => StoneManagerRef.GetPuttablePosition(ETeam.BLACK));
+
+                    if (w.Result.Length == 0 && b.Result.Length == 0) 
+                    {
+                        Debug.Log("GameEnd");
+                        var e = DelayMethod(() => { OnEndOfGame(); }, 1);
+                        StartCoroutine(e);
+                    }
+
                     break;
             }
         }
+    }
+
+    public  void UpdateStoneCount()
+    {
+        var result = Task.Run(StoneManagerRef.GetStoneCounts);
+        stoneCountBlack.text = result.Result[0].ToString();
+        stoneCountWhite.text = result.Result[1].ToString();
     }
 
     private void OnEndOfGame(string additionalMessage = "")
@@ -261,8 +274,24 @@ public class GameManager : MonoBehaviourPunCallbacks
             "Lose",
         };
 
+        IPlayer _p = p1.GetComponent<IPlayer>();
 
-        Camera.main.transform.position = new Vector3(7, 18, -3);
+        if (!(_p is OfflinePlayer))
+        {
+            _p = p2.GetComponent<IPlayer>();
+        }
+
+        
+        if(_p.Team == ETeam.BLACK)
+        {
+            Camera.main.transform.position = new Vector3(7, 18, -3);
+        }
+        else
+        {
+            Camera.main.transform.position = new Vector3(-7, 18, 3);
+        }
+
+        
         var canvas = GameObject.Find("Canvas");
         for (int i = 0; i < canvas.transform.childCount; i++) 
         {

@@ -28,6 +28,7 @@ public class OnlineScript : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void SetTurn(int stoneKind, int x, int y)
     {
+        Debug.Log("Online - SetTurn");
         if(OnValueSet != null)
             OnValueSet.Invoke(stoneKind, x, y);
     }

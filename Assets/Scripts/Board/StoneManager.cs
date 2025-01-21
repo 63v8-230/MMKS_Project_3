@@ -396,6 +396,7 @@ public class StoneManager : MonoBehaviour
             StartCoroutine(cti);
             while (!cti.IsEnd) { await Task.Delay(1); }
 
+            GameManagerRef.UpdateStoneCount();
             
 
             for (int i = 0; i < skillMethodList.Count; i++) 
@@ -451,7 +452,7 @@ public class StoneManager : MonoBehaviour
             await Task.Delay(5000);
         }
 
-
+        GameManagerRef.UpdateStoneCount();
 
         //コンボボーナス
         if (isPlayerOffline)
