@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         StoneManagerRef.GameManagerRef = this;
 
-        tmPro.text = "Waiting for Player";
+        tmPro.text = $"RoomID: {Data.Instance.RoomName}\r\nプレイヤーを待っています...";
 
         if (Data.Instance.IsOnline)
             return;
@@ -129,6 +129,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         tmPro.text = "";
         stoneCountBlack.text = "2";
         stoneCountWhite.text = "2";
+
+        if(Data.Instance.IsOnline)
+        {
+            tmPro.text = $"RoomID: {Data.Instance.RoomName}";
+        }
     }
 
     // Update is called once per frame
@@ -150,7 +155,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                     if (PhotonNetwork.CurrentRoom.PlayerCount < 2)
                     {
-                        OnEndOfGame("Rival Player is leave.");
+                        OnEndOfGame("相手のプレイヤーが試合を放棄しました...");
                     }
                 }
             }

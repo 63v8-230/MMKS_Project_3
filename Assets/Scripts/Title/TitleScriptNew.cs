@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -30,7 +31,7 @@ public class TitleScriptNew : MonoBehaviour
 
         var title = Instantiate(ui[0]);
         title.transform.SetParent(canvas.transform, false);
-        title.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnAddCPUMenu);
+        title.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnAddBattleMenu);
         current = title;
 
 
@@ -71,6 +72,47 @@ public class TitleScriptNew : MonoBehaviour
         yield break;
     }
 
+    private void OnAddBattleMenu()
+    {
+        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"));
+        Destroy(current);
+        var cpu = Instantiate(ui[2]);
+        cpu.transform.SetParent(canvas.transform, false);
+        cpu.transform.Find("CPU").GetComponent<Button>().onClick.AddListener(OnAddCPUMenu);
+        cpu.transform.Find("Online").GetComponent<Button>().onClick.AddListener(OnAddOnlineMenu);
+
+        cpu.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+
+            Destroy(current);
+            var title = Instantiate(ui[0]);
+            title.transform.SetParent(canvas.transform, false);
+            title.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnAddBattleMenu);
+            current = title;
+        });
+    }
+
+    private void OnAddOnlineMenu()
+    {
+        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"));
+
+        Destroy(current);
+        var m = Instantiate(ui[3]);
+        m.transform.SetParent(canvas.transform, false);
+
+        m.transform.Find("RoomID").GetComponent<TMP_InputField>().text = $"Room{UnityEngine.Random.Range(0, 9999):0000}";
+
+        m.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(OnAddBattleMenu);
+
+        m.transform.Find("Start").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            Data.Instance.IsOnline = true;
+            Data.Instance.RoomName = m.transform.Find("RoomID").GetComponent<TMP_InputField>().text;
+            StartCoroutine(DelayChangeScene("OnlineGame"));
+        });
+    }
+
     private void OnAddCPUMenu()
     {
         audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"));
@@ -79,18 +121,7 @@ public class TitleScriptNew : MonoBehaviour
         var diffSelect = Instantiate(ui[1]);
         diffSelect.transform.SetParent(canvas.transform, false);
 
-        diffSelect.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() =>
-        {
-            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
-
-            Destroy(current);
-            var title = Instantiate(ui[0]);
-            title.transform.SetParent(canvas.transform, false);
-            title.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnAddCPUMenu);
-            current = title;
-
-            
-        });
+        diffSelect.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(OnAddBattleMenu);
 
         diffSelect.transform.Find("Tutorial").GetComponent<Button>().onClick.AddListener(() =>
         {
@@ -107,11 +138,7 @@ public class TitleScriptNew : MonoBehaviour
 
             Data.Instance.AIKind = EAIKind.S;
 
-            //StartCoroutine(DelayChangeScene("Game"));
-            Data.Instance.IsOnline = true;
-            StartCoroutine(DelayChangeScene("OnlineGame"));
-
-
+            StartCoroutine(DelayChangeScene("Game"));
         });
 
         diffSelect.transform.Find("AI_S").GetComponent<Button>().onClick.AddListener(() =>

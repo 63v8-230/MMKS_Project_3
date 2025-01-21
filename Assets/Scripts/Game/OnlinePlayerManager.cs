@@ -1,10 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
-using ExitGames.Client.Photon;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using System;
 
 public class OnlinePlayerManager : MonoBehaviourPunCallbacks
@@ -127,14 +123,6 @@ public class OnlinePlayerManager : MonoBehaviourPunCallbacks
                 {
                     Debug.Log("Host");
                     var hashTable1 = new ExitGames.Client.Photon.Hashtable();
-
-                    //hashTable1[$"{ETeam.BLACK.ToString()}_IsPutted"] = 0;
-                    //hashTable1[$"{ETeam.BLACK.ToString()}_TurnInfo_X"] = 0;
-                    //hashTable1[$"{ETeam.BLACK.ToString()}_TurnInfo_Y"] = 0;
-
-                    //hashTable1[$"{ETeam.WHITE.ToString()}_IsPutted"] = 0;
-                    //hashTable1[$"{ETeam.WHITE.ToString()}_TurnInfo_X"] = 0;
-                    //hashTable1[$"{ETeam.WHITE.ToString()}_TurnInfo_Y"] = 0;
 
                     PhotonNetwork.CurrentRoom.SetCustomProperties(hashTable1);
                 }
