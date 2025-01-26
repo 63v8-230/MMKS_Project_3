@@ -172,6 +172,9 @@ MonoBehaviour:
   - {fileID: 6427155723100919115, guid: 42b3d22c2e4457c4f97bdbc2056c842b, type: 3}
   - {fileID: 575682056227662499, guid: 59952f55933b2f84481374259281802c, type: 3}
   - {fileID: 5997098143540049217, guid: 2f2ccce8b1b950348b871bc409cdff14, type: 3}
+  - {fileID: 8761561677869147219, guid: ea0c963db1e681040a074cb4283fd125, type: 3}
+  optionMenu: {fileID: 7476372882477517219, guid: 4e503314a67aa7b4c9ccca88595022a0,
+    type: 3}
 --- !u!82 &134225143
 AudioSource:
   m_ObjectHideFlags: 0

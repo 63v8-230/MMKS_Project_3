@@ -67,6 +67,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     private float gameEndCheckCounter = 0;
     private const float GAME_END_CHECK_TIME = 5;
 
+    private bool isOption = false;
+    private GameObject optionMenu;
+
     public async void GameStart(IPlayer player1, IPlayer player2)
     {
         players = new IPlayer[2];
@@ -97,9 +100,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        //Bloom b;
-        //GameObject.Find("Global Volume").GetComponent<Volume>().profile.TryGet<Bloom>(out b);
-        //b.intensity.value = 3;
 
         StoneManagerRef = gameObject.GetComponent<StoneManager>();
 
@@ -113,6 +113,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         if(!isTutorial)
             p2 = aiPrefabs[(int)Data.Instance.AIKind];
 
+        if (Data.Instance.cChallengeState >= 0)
+        { 
+            p2 = aiPrefabs[(int)Data.Instance.cRivals[Data.Instance.cChallengeState]];
+            p2.GetComponent<IPlayer>().MyDeck = Data.Instance.cRivalDecks[Data.Instance.cChallengeState];
+        }
+
         LunchGame();
     }
 
@@ -121,6 +127,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void LunchGame()
     {
+        if(Data.Instance.cChallengeState>=0)
+        {
+            var img = GameObject.Find("Canvas").transform.Find("Chara-W/Image").GetComponent<Image>();
+            img.sprite = GetCharacterPicture(ETeam.WHITE);
+        }
+        
+
         StoneManagerRef.Init(Data.Instance.BOARD_X, Data.Instance.BOARD_Y);
 
         if(!Data.Instance.isTutorial)
@@ -141,7 +154,25 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if(Input.GetKeyUp(KeyCode.Escape))
         {
-            SceneManager.LoadScene(Data.Instance.TITLE_SCENE_NAME);
+            isOption = !isOption;
+
+            if(isOption)
+            {
+                Data.Instance.InOption = true;
+                optionMenu = Instantiate(Data.Instance.OptionMenu);
+                StoneManagerRef.Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"),Data.Instance.CalcSeVolume());
+            }
+            else
+            {
+                PlayerPrefs.SetFloat("Master", Data.Instance.MasterVolume);
+                PlayerPrefs.SetFloat("Music", Data.Instance.MusicVolume);
+                PlayerPrefs.SetFloat("Se", Data.Instance.SeVolume);
+                PlayerPrefs.Save();
+
+                Data.Instance.InOption = false;
+                Destroy(optionMenu);
+                StoneManagerRef.Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
+            }
         }
 
         if (isPlay)
@@ -206,20 +237,21 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                             UpdateStoneCount();
 
+                            var w = Task.Run(() => StoneManagerRef.GetPuttablePosition(ETeam.WHITE));
+                            var b = Task.Run(() => StoneManagerRef.GetPuttablePosition(ETeam.BLACK));
+
+                            if (w.Result.Length == 0 && b.Result.Length == 0)
+                            {
+                                Debug.Log("GameEnd");
+                                var e = DelayMethod(() => { OnEndOfGame(); }, 1);
+                                StartCoroutine(e);
+                                break;
+                            }
+
                             turnTask = players[currentPlayerIndex].DoTurn();
                             currentGameState = EGameState.PUT;
                             StoneManagerRef.AddTurn();
                         }
-                    }
-
-                    var w = Task.Run(() => StoneManagerRef.GetPuttablePosition(ETeam.WHITE));
-                    var b = Task.Run(() => StoneManagerRef.GetPuttablePosition(ETeam.BLACK));
-
-                    if (w.Result.Length == 0 && b.Result.Length == 0) 
-                    {
-                        Debug.Log("GameEnd");
-                        var e = DelayMethod(() => { OnEndOfGame(); }, 1);
-                        StartCoroutine(e);
                     }
 
                     break;
@@ -325,7 +357,23 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         result.Find("AdditionalMessage").GetComponent<TextMeshProUGUI>().text = additionalMessage;
 
-        result.Find("ReturnTitle").GetComponent<Button>().onClick.AddListener(() => { SceneManager.LoadScene(Data.Instance.TITLE_SCENE_NAME); });
+        if (Data.Instance.cChallengeState < 0 || Data.Instance.cChallengeState >= Data.Instance.cRivalIconPath.Length - 1) 
+        {
+            result.Find("ReturnTitle").GetComponent<Button>().onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene(Data.Instance.TITLE_SCENE_NAME);
+            });
+        }
+        else
+        {
+            result.Find("ReturnTitle").GetComponent<Button>().onClick.AddListener(() =>
+            {
+                Data.Instance.cChallengeState++;
+                SceneManager.LoadScene("Game");
+            });
+        }
+
+        
     }
 
     public IEnumerator DelayMethod(Action act, float seconds)
@@ -345,9 +393,19 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            return Resources.Load<Sprite>("Pictures/Game/chara_black_n1");
+            if(Data.Instance.cChallengeState<0)
+            {
+                return Resources.Load<Sprite>("Pictures/Game/chara_black_n1");
+            }
+            else
+            {
+                return Resources.Load<Sprite>(Data.Instance.cRivalIconPath[Data.Instance.cChallengeState]+"icon");
+            }
+
         }
     }
+
+    
 
     private Sprite GetStoneCountSprite(ETeam team)
     {

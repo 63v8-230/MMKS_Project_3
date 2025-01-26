@@ -8,10 +8,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class TitleScriptNew : MonoBehaviour
 {
     [SerializeField]
     private List<GameObject> ui = new List<GameObject>();
+
+    [SerializeField]
+    private GameObject optionMenu;
 
     private GameObject canvas;
 
@@ -25,14 +32,41 @@ public class TitleScriptNew : MonoBehaviour
     {
         Data.Instance.isTutorial = false;
 
+        Data.Instance.OptionMenu = optionMenu;
+
         audioSource = GetComponent<AudioSource>();
 
         canvas = GameObject.Find("Canvas");
 
         var title = Instantiate(ui[0]);
         title.transform.SetParent(canvas.transform, false);
-        title.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnAddBattleMenu);
+        title.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnAddModeMenu);
         current = title;
+
+        if (!PlayerPrefs.HasKey("Master"))
+            PlayerPrefs.SetFloat("Master", 1.0f);
+
+        if (!PlayerPrefs.HasKey("Music"))
+            PlayerPrefs.SetFloat("Music", 0.4f);
+
+        if (!PlayerPrefs.HasKey("Se"))
+            PlayerPrefs.SetFloat("Se", 0.8f);
+
+        PlayerPrefs.Save();
+
+
+        Data.Instance.MasterVolume = PlayerPrefs.GetFloat("Master");
+        Data.Instance.MusicVolume = PlayerPrefs.GetFloat("Music");
+        Data.Instance.SeVolume = PlayerPrefs.GetFloat("Se");
+
+
+        audioSource.volume = Data.Instance.MasterVolume * Data.Instance.MusicVolume;
+        if(audioSource.volume <= 0)
+        {
+            audioSource.volume = 1;
+            audioSource.playOnAwake = false;
+            audioSource.Stop();
+        }
 
 
         if (Data.Instance.IsPadMode)
@@ -62,40 +96,68 @@ public class TitleScriptNew : MonoBehaviour
         Data.Instance.PadProcess.Start();
         Data.Instance.IsPadMode = true;
 
-        Application.quitting += () => { if (Data.Instance.IsPadMode) Data.Instance.PadProcess.Kill(); };
+#if UNITY_EDITOR
+        EditorApplication.playModeStateChanged += (s) =>
+        {
+            if(s == PlayModeStateChange.ExitingPlayMode)
+            {
+                if (Data.Instance.IsPadMode) Data.Instance.PadProcess.Kill();
+            }
+        };
+#else
+    Application.quitting += () => { if (Data.Instance.IsPadMode) Data.Instance.PadProcess.Kill(); };
+#endif
     }
 
-    private IEnumerator DelayChangeScene(string sceneName)
+    private void OnAddModeMenu()
     {
-        yield return new WaitForSeconds(0.5f);
-        SceneManager.LoadScene(sceneName);
-        yield break;
+        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"),Data.Instance.CalcSeVolume());
+        Destroy(current);
+        var cpu = Instantiate(ui[4]);
+        cpu.transform.SetParent(canvas.transform, false);
+        cpu.transform.Find("Battle").GetComponent<Button>().onClick.AddListener(OnAddBattleMenu);
+        cpu.transform.Find("Tournament").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
+            Data.Instance.BOARD_X = 8;
+            Data.Instance.BOARD_Y = 8;
+            Data.Instance.IsOnline = false;
+
+            Data.Instance.cChallengeState = 0;
+
+            //Data.Instance.AIKind = EAIKind.S;
+
+            StartCoroutine(Data.Instance.DelayChangeScene("Game"));
+        });
+
+        cpu.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
+
+            Destroy(current);
+            var title = Instantiate(ui[0]);
+            title.transform.SetParent(canvas.transform, false);
+            title.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnAddModeMenu);
+            current = title;
+        });
     }
 
     private void OnAddBattleMenu()
     {
-        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"));
+        Data.Instance.cChallengeState = -1;
+        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"), Data.Instance.CalcSeVolume());
         Destroy(current);
         var cpu = Instantiate(ui[2]);
         cpu.transform.SetParent(canvas.transform, false);
         cpu.transform.Find("CPU").GetComponent<Button>().onClick.AddListener(OnAddCPUMenu);
         cpu.transform.Find("Online").GetComponent<Button>().onClick.AddListener(OnAddOnlineMenu);
 
-        cpu.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() =>
-        {
-            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
-
-            Destroy(current);
-            var title = Instantiate(ui[0]);
-            title.transform.SetParent(canvas.transform, false);
-            title.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnAddBattleMenu);
-            current = title;
-        });
+        cpu.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(OnAddModeMenu);
     }
 
     private void OnAddOnlineMenu()
     {
-        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"));
+        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"), Data.Instance.CalcSeVolume());
 
         Destroy(current);
         var m = Instantiate(ui[3]);
@@ -109,13 +171,13 @@ public class TitleScriptNew : MonoBehaviour
         {
             Data.Instance.IsOnline = true;
             Data.Instance.RoomName = m.transform.Find("RoomID").GetComponent<TMP_InputField>().text;
-            StartCoroutine(DelayChangeScene("OnlineGame"));
+            StartCoroutine(Data.Instance.DelayChangeScene("OnlineGame"));
         });
     }
 
     private void OnAddCPUMenu()
     {
-        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"));
+        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"), Data.Instance.CalcSeVolume());
 
         Destroy(current);
         var diffSelect = Instantiate(ui[1]);
@@ -125,49 +187,49 @@ public class TitleScriptNew : MonoBehaviour
 
         diffSelect.transform.Find("Tutorial").GetComponent<Button>().onClick.AddListener(() =>
         {
-            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
-            StartCoroutine(DelayChangeScene("Tutorial"));
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
+            StartCoroutine(Data.Instance.DelayChangeScene("Tutorial"));
         });
 
         diffSelect.transform.Find("AI_Simple").GetComponent<Button>().onClick.AddListener(() =>
         {
-            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
             Data.Instance.BOARD_X = 8;
             Data.Instance.BOARD_Y = 8;
             Data.Instance.IsOnline = false;
 
             Data.Instance.AIKind = EAIKind.S;
 
-            StartCoroutine(DelayChangeScene("Game"));
+            StartCoroutine(Data.Instance.DelayChangeScene("Game"));
         });
 
         diffSelect.transform.Find("AI_S").GetComponent<Button>().onClick.AddListener(() =>
         {
-            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
             Data.Instance.BOARD_X = 8;
             Data.Instance.BOARD_Y = 8;
             Data.Instance.IsOnline = false;
 
             Data.Instance.AIKind = EAIKind.M;
 
-            StartCoroutine(DelayChangeScene("Game"));
+            StartCoroutine(Data.Instance.DelayChangeScene("Game"));
         });
 
         diffSelect.transform.Find("AI_M").GetComponent<Button>().onClick.AddListener(() =>
         {
-            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
             Data.Instance.BOARD_X = 8;
             Data.Instance.BOARD_Y = 8;
             Data.Instance.IsOnline = false;
 
             Data.Instance.AIKind = EAIKind.CLAUDE2;
 
-            StartCoroutine(DelayChangeScene("Game"));
+            StartCoroutine(Data.Instance.DelayChangeScene("Game"));
         });
 
         //diffSelect.transform.Find("Claude1").GetComponent<Button>().onClick.AddListener(() =>
         //{
-        //    audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+        //    audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"),Data.Instance.CalcSeVolume());
         //    Data.Instance.BOARD_X = 8;
         //    Data.Instance.BOARD_Y = 8;
         //    Data.Instance.IsOnline = false;
@@ -179,7 +241,7 @@ public class TitleScriptNew : MonoBehaviour
 
         //diffSelect.transform.Find("Claude2").GetComponent<Button>().onClick.AddListener(() =>
         //{
-        //    audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"));
+        //    audio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"),Data.Instance.CalcSeVolume());
         //    Data.Instance.BOARD_X = 8;
         //    Data.Instance.BOARD_Y = 8;
         //    Data.Instance.IsOnline = false;

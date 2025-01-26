@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public enum ETeam
@@ -202,6 +203,13 @@ public class StoneManager : MonoBehaviour
     public void Start()
     {
         Sound = GetComponent<AudioSource>();
+        Sound.volume = Data.Instance.MasterVolume * Data.Instance.MusicVolume;
+        if(Sound.volume <= 0)
+        {
+            Sound.playOnAwake = false;
+            Sound.Stop();
+            Sound.volume = 1;
+        }
         pitchTunableAudio = gameObject.AddComponent<AudioSource>();
         pitchTunableAudio.volume = Sound.volume;
     }
@@ -289,7 +297,12 @@ public class StoneManager : MonoBehaviour
         if (info.X == -1)
             return;
 
-        Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Put"));
+        if(info.PutStone.GetStone() > EStone.DEFAULT)
+        {
+            Debug.Log("ì¡éÍêŒÅI");
+        }
+
+        Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Put"),Data.Instance.CalcSeVolume());
 
         Stones[info.X,info.Y] = info.PutStone;
 
@@ -402,7 +415,7 @@ public class StoneManager : MonoBehaviour
             for (int i = 0; i < skillMethodList.Count; i++) 
             {
                 StartCoroutine(skillMethodList[i]);
-                Sound.PlayOneShot(skillMethodSounds[i]);
+                Sound.PlayOneShot(skillMethodSounds[i], Data.Instance.CalcSeVolume());
             }
 
             bool isEnd = false;
@@ -448,7 +461,7 @@ public class StoneManager : MonoBehaviour
         if (isPlayerOffline && bonusCount >= 0) 
         {
             frameCom.ShowComboEnter();
-            Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/ComboBonus"), 0.8f);
+            Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/ComboBonus"), Data.Instance.CalcSeVolume());
             await Task.Delay(5000);
         }
 
@@ -522,11 +535,11 @@ public class StoneManager : MonoBehaviour
                 else
                     s.SetTeam(team, this, x, y);
                 if (!isSkill)
-                    Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Turn"));
+                    Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Turn"), Data.Instance.CalcSeVolume());
 
                 if(isComboBonus)
                 { 
-                    Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/ComboFlip"));
+                    Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/ComboFlip"), Data.Instance.CalcSeVolume());
                     
                 }
 
@@ -676,12 +689,12 @@ public class StoneManager : MonoBehaviour
             if (i + 3 < boardSizeX)
             {
                 t.Add(SearchPuttableCells(myTeam,i, i + 3));
-                Debug.Log($"async {i} - {i + 3}");
+                //Debug.Log($"async {i} - {i + 3}");
             }
             else
             {
                 t.Add(SearchPuttableCells(myTeam, i, boardSizeX));
-                Debug.Log($"async {i} - {boardSizeX}");
+                //Debug.Log($"async {i} - {boardSizeX}");
                 break;
             }
         }
@@ -869,7 +882,7 @@ public class StoneManager : MonoBehaviour
 
         while (true)
         {
-            Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Turn"));
+            Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Turn"), Data.Instance.CalcSeVolume());
             Stones[x, y].SetTeam(myTeam, this, x, y);
             var flipCoroutine = new ExEnumerator(Stones[x, y].OnFlip());
             StartCoroutine(flipCoroutine);
@@ -1047,12 +1060,18 @@ public class StoneManager : MonoBehaviour
         var t = GameObject.Find("Canvas").transform;
         GameObject c;
         pitchTunableAudio.pitch = 1 + (count * 0.15f);
-        pitchTunableAudio.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Cutin"));
+        pitchTunableAudio.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Cutin"), Data.Instance.CalcSeVolume()*0.9f);
         if (isEnemy)
         {
             var o = Resources.Load<GameObject>("Pictures/Game/EnemySkillCut");
             c = Instantiate(o);
             c.transform.SetParent(t, false);
+            if(Data.Instance.cChallengeState >= 0)
+            {
+                c.transform.Find("Image").GetComponent<Image>().sprite =
+                    Resources.Load<Sprite>(
+                        Data.Instance.cRivalIconPath[Data.Instance.cChallengeState] + "cut");
+            }
 
         }
         else

@@ -350,6 +350,9 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     {
         info = new TurnInfo();
 
+        if(Data.Instance.InOption)
+            return false;
+
         if (Input.GetMouseButtonDown(0) || withoutClick)
         {
 
