@@ -59,7 +59,11 @@ public class Data
         yield break;
     }
 
+    public string CheatCode = "";
+
     //====================================================
+
+    public int cUnlockRival = 0;
 
     public int cChallengeState = -1;
 
@@ -81,10 +85,36 @@ public class Data
         "Pictures/Game/rivals/9",
     };
 
+    public string[] cRivalNames = new string[]
+    {
+        "ライバル 1",
+        "ライバル 2",
+        "ライバル 3",
+        "ライバル 4",
+        "ライバル 5",
+        "ライバル 6",
+        "ライバル 7",
+        "ライバル 8",
+        "ライバル 9",
+    };
+
+    public string[] cRivalDesc = new string[]
+    {
+        "あなたと同じコマを使ってきます。\n落ち着いて頑張ってください！",
+        "丸コマを多く使ってきます。\nかたまりを作らないことがコツかもしれません！",
+        "Xコマを多く使ってきます。\n角を狙ってくるので注意しましょう！",
+        "十字コマを多く使ってきます。\n十字や矢印で対抗しましょう！",
+        "太陽コマを多く使ってきます！\n一瞬で制圧されるので危険です！",
+        "十字コマと矢印コマが多いです。\n数の多さを逆に利用してコンボを繋げましょう！",
+        "丸コマと矢印コマが多いです。\n外側からの猛攻に注意しましょう！",
+        "十字コマとXコマが多いです。\n効果の軌道を意識して戦いましょう！",
+        "全てのコマを２つずつ使ってきます。\nこれが最終戦です。全力で挑みましょう！",
+    };
+
     public EAIKind[] cRivals = new EAIKind[]
     {
-        EAIKind.M,//1
-        EAIKind.S,//2
+        EAIKind.S,//1
+        EAIKind.M,//2
         EAIKind.CLAUDE2,//3
         EAIKind.CLAUDE2,//4
         EAIKind.CLAUDE2,//5
@@ -231,6 +261,41 @@ public class Data
             }
         },
     };
+
+    public Sprite GetSprite(EStone stone)
+    {
+        switch (stone)
+        {
+            case EStone.SUN:
+                return Resources.Load<Sprite>("Pictures/Sun");
+
+            case EStone.CROSS:
+                return Resources.Load<Sprite>("Pictures/Cross");
+
+            case EStone.X:
+                return Resources.Load<Sprite>("Pictures/X");
+
+            case EStone.CIRCLE:
+                return Resources.Load<Sprite>("Pictures/Circle");
+
+            case EStone.ARROW_U:
+            case EStone.ARROW_D:
+            case EStone.ARROW_R:
+            case EStone.ARROW_L:
+            case EStone.ARROW:
+                return Resources.Load<Sprite>("Pictures/Arrow");
+
+            case EStone.SHIELD:
+                return Resources.Load<Sprite>("Pictures/Shield");
+
+            case EStone.CRYSTAL:
+                return Resources.Load<Sprite>("Pictures/Crystal");
+
+            default:
+                return null;
+        }
+    }
+
 }
 public class Util : MonoBehaviour
 {

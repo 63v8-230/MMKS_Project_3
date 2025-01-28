@@ -52,12 +52,20 @@ public class TitleScriptNew : MonoBehaviour
         if (!PlayerPrefs.HasKey("Se"))
             PlayerPrefs.SetFloat("Se", 0.8f);
 
+        if (!PlayerPrefs.HasKey("unlock"))
+            PlayerPrefs.SetInt("unlock", 0);
+
         PlayerPrefs.Save();
 
 
         Data.Instance.MasterVolume = PlayerPrefs.GetFloat("Master");
         Data.Instance.MusicVolume = PlayerPrefs.GetFloat("Music");
         Data.Instance.SeVolume = PlayerPrefs.GetFloat("Se");
+
+        if(Data.Instance.CheatCode == "")
+            Data.Instance.cUnlockRival = PlayerPrefs.GetInt("unlock");
+
+        Data.Instance.CheatCode = "";
 
 
         audioSource.volume = Data.Instance.MasterVolume * Data.Instance.MusicVolume;
@@ -116,19 +124,7 @@ public class TitleScriptNew : MonoBehaviour
         var cpu = Instantiate(ui[4]);
         cpu.transform.SetParent(canvas.transform, false);
         cpu.transform.Find("Battle").GetComponent<Button>().onClick.AddListener(OnAddBattleMenu);
-        cpu.transform.Find("Tournament").GetComponent<Button>().onClick.AddListener(() =>
-        {
-            audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
-            Data.Instance.BOARD_X = 8;
-            Data.Instance.BOARD_Y = 8;
-            Data.Instance.IsOnline = false;
-
-            Data.Instance.cChallengeState = 0;
-
-            //Data.Instance.AIKind = EAIKind.S;
-
-            StartCoroutine(Data.Instance.DelayChangeScene("Game"));
-        });
+        cpu.transform.Find("Tournament").GetComponent<Button>().onClick.AddListener(OnAddChallengeMenu);
 
         cpu.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() =>
         {
@@ -140,6 +136,16 @@ public class TitleScriptNew : MonoBehaviour
             title.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnAddModeMenu);
             current = title;
         });
+    }
+
+    private void OnAddChallengeMenu()
+    {
+        audioSource.PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"), Data.Instance.CalcSeVolume());
+        Destroy(current);
+        var cpu = Instantiate(ui[5]);
+        cpu.transform.SetParent(canvas.transform, false);
+
+        cpu.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(OnAddModeMenu);
     }
 
     private void OnAddBattleMenu()
@@ -171,6 +177,28 @@ public class TitleScriptNew : MonoBehaviour
         {
             Data.Instance.IsOnline = true;
             Data.Instance.RoomName = m.transform.Find("RoomID").GetComponent<TMP_InputField>().text;
+
+            if (Data.Instance.RoomName == "unlockall")
+            {
+                Data.Instance.cUnlockRival = 500000;
+            }
+
+            if(Data.Instance.RoomName == "baka")
+            {
+                Data.Instance.CheatCode = "baka";
+
+                Data.Instance.BOARD_X = 8;
+                Data.Instance.BOARD_Y = 8;
+                Data.Instance.IsOnline = false;
+
+                Data.Instance.cChallengeState = -1;
+
+                Data.Instance.AIKind = EAIKind.CLAUDE2;
+
+                StartCoroutine(Data.Instance.DelayChangeScene("Game"));
+                return;
+            }
+
             StartCoroutine(Data.Instance.DelayChangeScene("OnlineGame"));
         });
     }

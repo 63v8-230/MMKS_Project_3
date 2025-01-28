@@ -119,6 +119,17 @@ public class GameManager : MonoBehaviourPunCallbacks
             p2.GetComponent<IPlayer>().MyDeck = Data.Instance.cRivalDecks[Data.Instance.cChallengeState];
         }
 
+        if(Data.Instance.CheatCode == "baka")
+        {
+            p2.GetComponent<IPlayer>().MyDeck = new Deck
+            {
+                Stones = new List<OwnStone>
+                {
+                    new OwnStone { Stone = EStone.SUN, Amount = 9999999 },
+                }
+            };
+        }
+
         LunchGame();
     }
 
@@ -348,6 +359,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (stoneCount.Result[0] == stoneCount.Result[1]) 
             {
                 result.Find(s[i] + "/Text").GetComponent<TextMeshProUGUI>().text = "ˆø‚«•ª‚¯...";
+                ad[0] = Resources.Load<AudioClip>("Sound/Game/maou_game_jingle07");
             }
 
             result.Find(s[i]+"/Chara_Main").GetComponent<Image>().sprite = GetCharacterPicture(t[i]);
@@ -357,7 +369,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         result.Find("AdditionalMessage").GetComponent<TextMeshProUGUI>().text = additionalMessage;
 
-        if (Data.Instance.cChallengeState < 0 || Data.Instance.cChallengeState >= Data.Instance.cRivalIconPath.Length - 1) 
+        if (Data.Instance.cChallengeState < 0) 
         {
             result.Find("ReturnTitle").GetComponent<Button>().onClick.AddListener(() =>
             {
@@ -368,8 +380,39 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             result.Find("ReturnTitle").GetComponent<Button>().onClick.AddListener(() =>
             {
-                Data.Instance.cChallengeState++;
-                SceneManager.LoadScene("Game");
+                var rc = Instantiate(Resources.Load<GameObject>("Prefab/UI/Result_Challenge"));
+                rc.transform.SetParent(canvas.transform, false);
+
+                if(Data.Instance.cChallengeState >= Data.Instance.cRivalIconPath.Length-1 || t[0] == ETeam.WHITE || stoneCount.Result[0] == stoneCount.Result[1])
+                {
+                    Destroy(rc.transform.Find("Buttons/next").gameObject);
+                }
+                else
+                {
+                    rc.transform.Find("Buttons/next").GetComponent<Button>().onClick.AddListener(() =>
+                    {
+                        if (Data.Instance.cChallengeState <= Data.Instance.cUnlockRival)
+                            Data.Instance.cUnlockRival++;
+
+                        Data.Instance.cChallengeState++;
+
+                        PlayerPrefs.SetInt("unlock", Data.Instance.cUnlockRival);
+                        PlayerPrefs.Save();
+
+                        SceneManager.LoadScene("Game");
+                    });
+                }
+
+                rc.transform.Find("Buttons/retry").GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    SceneManager.LoadScene("Game");
+                });
+
+                rc.transform.Find("Buttons/toSelect").GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    Data.Instance.cChallengeState++;
+                    SceneManager.LoadScene("Title");
+                });
             });
         }
 

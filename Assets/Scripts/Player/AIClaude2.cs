@@ -39,7 +39,10 @@ public class AIClaude2 : MonoBehaviour, IPlayer
     public void Init(GameManager gManager)
     {
         gameManager = gManager;
+    }
 
+    void Start()
+    {
         // ƒfƒbƒL‚Ì‰Šú‰»
         Deck d = new Deck();
         d.Stones = new List<OwnStone>
