@@ -202,14 +202,11 @@ public class StoneManager : MonoBehaviour
 
     public void Start()
     {
-        Sound = GetComponent<AudioSource>();
-        Sound.volume = Data.Instance.MasterVolume * Data.Instance.MusicVolume;
-        if(Sound.volume <= 0)
-        {
-            Sound.playOnAwake = false;
-            Sound.Stop();
-            Sound.volume = 1;
-        }
+        var coms = GetComponents<AudioSource>();
+        coms[0].volume = Data.Instance.MasterVolume * Data.Instance.MusicVolume;
+        Sound = coms[1];
+        Sound.volume = Data.Instance.MasterVolume * Data.Instance.SeVolume;
+
         pitchTunableAudio = gameObject.AddComponent<AudioSource>();
         pitchTunableAudio.volume = Sound.volume;
     }

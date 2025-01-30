@@ -5,18 +5,32 @@ using UnityEngine.UI;
 
 public class OptionMenu : MonoBehaviour
 {
-    AudioSource audioSource;
+    AudioSource audioSource, seAudio;
     GameObject credit;
 
     bool isCredit = false;
 
+    [HideInInspector]
+    public bool SkipParentSet = false;
+
     // Start is called before the first frame update
     void Start()
     {
-        
-        audioSource = GameObject.Find("GameManager").GetComponent<AudioSource>();
-        var cvs = GameObject.Find("Canvas");
-        transform.SetParent(cvs.transform, false);
+        var gm = GameObject.Find("GameManager");
+        if(gm == null)
+        {
+            gm = GameObject.Find("Scripts");
+        }
+
+        var coms = gm.GetComponents<AudioSource>();
+        audioSource = coms[0];
+        seAudio = coms[1];
+
+        if(!SkipParentSet)
+        {
+            var cvs = GameObject.Find("Canvas");
+            transform.SetParent(cvs.transform, false);
+        }
 
         credit = transform.Find("CreditText").gameObject;
 
@@ -25,7 +39,8 @@ public class OptionMenu : MonoBehaviour
         s.onValueChanged.AddListener((v) =>
         {
             Data.Instance.MasterVolume = v;
-            SetVolume();
+            audioSource.volume = Data.Instance.MasterVolume * Data.Instance.MusicVolume;
+            seAudio.volume = Data.Instance.MasterVolume * Data.Instance.SeVolume;
         });
 
         s = transform.Find("BGM/Slider").GetComponent<Slider>();
@@ -33,7 +48,7 @@ public class OptionMenu : MonoBehaviour
         s.onValueChanged.AddListener((v) =>
         {
             Data.Instance.MusicVolume = v;
-            SetVolume();
+            audioSource.volume = Data.Instance.MasterVolume * Data.Instance.MusicVolume;
         });
 
         s = transform.Find("SE/Slider").GetComponent<Slider>();
@@ -41,6 +56,7 @@ public class OptionMenu : MonoBehaviour
         s.onValueChanged.AddListener((v) =>
         {
             Data.Instance.SeVolume = v;
+            seAudio.volume = Data.Instance.MasterVolume * Data.Instance.SeVolume;
         });
 
         transform.Find("Credit").GetComponent<Button>().onClick.AddListener(() =>
@@ -63,25 +79,5 @@ public class OptionMenu : MonoBehaviour
 
     void OnDestroy()
     {
-        if(Data.Instance.MasterVolume * Data.Instance.MusicVolume <= 0)
-        {
-            audioSource.Stop();
-        }
-    }
-
-    private void SetVolume()
-    {
-        var v = Data.Instance.MasterVolume * Data.Instance.MusicVolume;
-        if(v<=0)
-        {
-            v = 1;
-            audioSource.Pause();
-        }
-        else if(!audioSource.isPlaying)
-        {
-            audioSource.Play();
-        }
-
-        audioSource.volume = v;
     }
 }

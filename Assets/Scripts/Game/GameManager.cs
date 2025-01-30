@@ -100,6 +100,36 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        var cvs = GameObject.Find("Canvas").transform;
+        var settingButton = cvs.Find("Setting");
+
+        settingButton.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            isOption = !isOption;
+
+            if (isOption)
+            {
+                Data.Instance.InOption = true;
+                optionMenu = Instantiate(Data.Instance.OptionMenu);
+                StoneManagerRef.Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
+                settingButton.transform.SetAsLastSibling();
+            }
+            else
+            {
+                PlayerPrefs.SetFloat("Master", Data.Instance.MasterVolume);
+                PlayerPrefs.SetFloat("Music", Data.Instance.MusicVolume);
+                PlayerPrefs.SetFloat("Se", Data.Instance.SeVolume);
+                PlayerPrefs.Save();
+
+                Data.Instance.InOption = false;
+                Destroy(optionMenu);
+                StoneManagerRef.Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
+
+                Data.Instance.InOption = false;
+                Destroy(optionMenu);
+            }
+        });
+
 
         StoneManagerRef = gameObject.GetComponent<StoneManager>();
 
@@ -117,6 +147,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         { 
             p2 = aiPrefabs[(int)Data.Instance.cRivals[Data.Instance.cChallengeState]];
             p2.GetComponent<IPlayer>().MyDeck = Data.Instance.cRivalDecks[Data.Instance.cChallengeState];
+            cvs.Find("RivalName").GetComponent<TextMeshProUGUI>().text =
+                $"ステージ {Data.Instance.cChallengeState+1}\nvs {Data.Instance.cRivalNames[Data.Instance.cChallengeState]}";
         }
 
         if(Data.Instance.CheatCode == "baka")
@@ -213,25 +245,25 @@ public class GameManager : MonoBehaviourPunCallbacks
                         if(turnTask.IsCompleted)
                         {
                             flipTask = StoneManagerRef.PutStone(turnTask.Result);
-                            if(turnTask.Result.X == -1)
-                            {
-                                if (isSkipped)
-                                {
-                                    Debug.Log("GameEnd");
-                                    var e = DelayMethod(() => { OnEndOfGame(); }, 1);
-                                    StartCoroutine(e);
+                            //if(turnTask.Result.X == -1)
+                            //{
+                            //    if (isSkipped)
+                            //    {
+                            //        Debug.Log("GameEnd");
+                            //        var e = DelayMethod(() => { OnEndOfGame(); }, 1);
+                            //        StartCoroutine(e);
                                     
-                                } 
-                                else
-                                {
-                                    isSkipped = true;
-                                }
+                            //    } 
+                            //    else
+                            //    {
+                            //        isSkipped = true;
+                            //    }
                                     
-                            }
-                            else
-                            {
-                                isSkipped = false;
-                            }
+                            //}
+                            //else
+                            //{
+                            //    isSkipped = false;
+                            //}
                             currentGameState = EGameState.FLIP;
                         }
                     }
@@ -253,6 +285,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                             if (w.Result.Length == 0 && b.Result.Length == 0)
                             {
+                                isPlay = false;
                                 Debug.Log("GameEnd");
                                 var e = DelayMethod(() => { OnEndOfGame(); }, 1);
                                 StartCoroutine(e);
@@ -352,7 +385,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             if (t[i] == ETeam.BLACK)
             {
-                StoneManagerRef.Sound.Stop();
+                StoneManagerRef.GetComponent<AudioSource>().Stop();
                 StoneManagerRef.Sound.PlayOneShot(ad[i]);
             }
 
