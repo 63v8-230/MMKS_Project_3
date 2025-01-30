@@ -39,10 +39,7 @@ public class Data
 
     public float CalcSeVolume()
     {
-        float baseVolume = MasterVolume * MusicVolume;
-        if (baseVolume <= 0)
-            baseVolume = 1;
-        return (1/(baseVolume))*MasterVolume * SeVolume;
+        return MasterVolume * SeVolume;
     }
 
     public IEnumerator DelayChangeScene(string sceneName)
@@ -87,15 +84,15 @@ public class Data
 
     public string[] cRivalNames = new string[]
     {
-        "ƒ‰ƒCƒoƒ‹ 1",
-        "ƒ‰ƒCƒoƒ‹ 2",
-        "ƒ‰ƒCƒoƒ‹ 3",
-        "ƒ‰ƒCƒoƒ‹ 4",
-        "ƒ‰ƒCƒoƒ‹ 5",
-        "ƒ‰ƒCƒoƒ‹ 6",
-        "ƒ‰ƒCƒoƒ‹ 7",
-        "ƒ‰ƒCƒoƒ‹ 8",
-        "ƒ‰ƒCƒoƒ‹ 9",
+        "ŽÜ”M‚ÌŒ¶‰e",
+        "‰b’q‚ÌŽçŒìŽÒ",
+        "ŒÇ‚‚Ì’ÇÕŽÒ",
+        "•X–¶‚Ìí—ª‰Æ",
+        "¹Œ•‚Ì“±Žt",
+        "—ó‰Î‚Ì“¬Žu",
+        "_ŽZ‚Ì–À‹{Žt",
+        "”’‹â‚Ì•P",
+        "ˆÅ–é‚Ì‰¤Žq",
     };
 
     public string[] cRivalDesc = new string[]

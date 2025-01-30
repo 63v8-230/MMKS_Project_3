@@ -40,9 +40,12 @@ public class RivalElement : MonoBehaviour
             st.transform.Find("Desc/Text").GetComponent<TextMeshProUGUI>().text = Data.Instance.cRivalDesc[RivalState - 1];
             st.transform.Find("Start").GetComponent<Button>().onClick.AddListener(() =>
             {
-                GameObject.Find("Scripts").GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"), Data.Instance.CalcSeVolume());
+                GameObject.Find("Scripts").GetComponents<AudioSource>()[1].PlayOneShot(Resources.Load<AudioClip>("Sound/Title/Title_dicision"), Data.Instance.CalcSeVolume());
                 StartCoroutine(Data.Instance.DelayChangeScene("Game"));
             });
+
+            st.transform.Find("RivalName").GetComponent<TextMeshProUGUI>().text = 
+                "-- "+Data.Instance.cRivalNames[RivalState - 1]+" --";
 
             st.transform.Find("exit").GetComponent<Button>().onClick.AddListener(() =>
             {
