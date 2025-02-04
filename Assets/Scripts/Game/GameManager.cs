@@ -62,8 +62,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private EGameState currentGameState;
 
-    bool isSkipped = false;
-
     private float gameEndCheckCounter = 0;
     private const float GAME_END_CHECK_TIME = 5;
 
@@ -127,17 +125,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             p2.GetComponent<IPlayer>().MyDeck = Data.Instance.cRivalDecks[Data.Instance.cChallengeState];
             cvs.Find("RivalName").GetComponent<TextMeshProUGUI>().text =
                 $"ステージ {Data.Instance.cChallengeState+1}\nvs {Data.Instance.cRivalNames[Data.Instance.cChallengeState]}";
-        }
-
-        if(Data.Instance.CheatCode == "baka")
-        {
-            p2.GetComponent<IPlayer>().MyDeck = new Deck
-            {
-                Stones = new List<OwnStone>
-                {
-                    new OwnStone { Stone = EStone.SUN, Amount = 9999999 },
-                }
-            };
         }
 
         LunchGame();

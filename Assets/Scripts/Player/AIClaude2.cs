@@ -39,6 +39,27 @@ public class AIClaude2 : MonoBehaviour, IPlayer
     public void Init(GameManager gManager)
     {
         gameManager = gManager;
+
+        if(Data.Instance.CheatCode == "baka")
+        {
+            Deck d = new Deck();
+            d.Stones = new List<OwnStone>
+            {
+                new OwnStone { Stone = EStone.SHIELD, Amount = 10 },
+                new OwnStone { Stone = EStone.SUN, Amount = 10 },
+                new OwnStone { Stone = EStone.CROSS, Amount = 10 },
+                new OwnStone { Stone = EStone.X, Amount = 10 },
+                new OwnStone { Stone = EStone.ARROW_U, Amount = 10 },
+                new OwnStone { Stone = EStone.ARROW_D, Amount = 10 },
+                new OwnStone { Stone = EStone.ARROW_R, Amount = 10 },
+                new OwnStone { Stone = EStone.ARROW_L, Amount = 10 },
+                new OwnStone { Stone = EStone.CIRCLE, Amount = 10 },
+                new OwnStone { Stone = EStone.CRYSTAL, Amount = 10 }
+            };
+            MyDeck = d;
+
+            Data.Instance.CheatCode = "";
+        }
     }
 
     void Start()
