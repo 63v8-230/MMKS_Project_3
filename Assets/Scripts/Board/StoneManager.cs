@@ -323,7 +323,8 @@ public class StoneManager : MonoBehaviour
         {
             if (results[i])
             {
-                flipTasks.Add(FlipStones(info.X, info.Y, directions[i], info.PutStone.Team));
+                flipTasks.Add(FlipStones(info.X, info.Y, 
+                    directions[i], info.PutStone.Team));
             }
         }
 
@@ -579,12 +580,10 @@ public class StoneManager : MonoBehaviour
             if (i+3 < boardSizeX)
             {
                 t.Add(CountStone(i, i+3));
-                //Debug.Log($"async {i} - {i + 3}");
             }
             else
             {
                 t.Add(CountStone(i, boardSizeX));
-                //Debug.Log($"async {i} - {boardSizeX}");
                 break;
             }
             

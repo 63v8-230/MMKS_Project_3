@@ -10,9 +10,6 @@ public class OptionMenu : MonoBehaviour
 
     bool isCredit = false;
 
-    [HideInInspector]
-    public bool SkipParentSet = false;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -25,12 +22,6 @@ public class OptionMenu : MonoBehaviour
         var coms = gm.GetComponents<AudioSource>();
         audioSource = coms[0];
         seAudio = coms[1];
-
-        if(!SkipParentSet)
-        {
-            var cvs = GameObject.Find("Canvas");
-            transform.SetParent(cvs.transform, false);
-        }
 
         credit = transform.Find("CreditText").gameObject;
 
@@ -63,6 +54,11 @@ public class OptionMenu : MonoBehaviour
         {
             isCredit = true;
             credit.SetActive(true);
+        });
+
+        transform.Find("Feedback").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            Application.OpenURL("https://forms.office.com/r/Gg9e1i5s1c");
         });
 
     }

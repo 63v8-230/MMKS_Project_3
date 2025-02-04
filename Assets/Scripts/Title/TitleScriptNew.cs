@@ -146,7 +146,6 @@ public class TitleScriptNew : MonoBehaviour
                 Data.Instance.InOption = true;
                 optionMenu = Instantiate(Data.Instance.OptionMenu);
                 optionMenu.transform.SetParent(title.transform, false);
-                optionMenu.GetComponent<OptionMenu>().SkipParentSet = true;
                 seAudio.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
                 settingButton.transform.SetAsLastSibling();
             }

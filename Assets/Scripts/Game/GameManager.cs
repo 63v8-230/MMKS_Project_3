@@ -70,6 +70,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     private bool isOption = false;
     private GameObject optionMenu;
 
+    private Transform cvs;
+    private Transform settingButton;
+
     public async void GameStart(IPlayer player1, IPlayer player2)
     {
         players = new IPlayer[2];
@@ -100,35 +103,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        var cvs = GameObject.Find("Canvas").transform;
-        var settingButton = cvs.Find("Setting");
+        cvs = GameObject.Find("Canvas").transform;
+        settingButton = cvs.Find("Setting");
 
-        settingButton.GetComponent<Button>().onClick.AddListener(() =>
-        {
-            isOption = !isOption;
-
-            if (isOption)
-            {
-                Data.Instance.InOption = true;
-                optionMenu = Instantiate(Data.Instance.OptionMenu);
-                StoneManagerRef.Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
-                settingButton.transform.SetAsLastSibling();
-            }
-            else
-            {
-                PlayerPrefs.SetFloat("Master", Data.Instance.MasterVolume);
-                PlayerPrefs.SetFloat("Music", Data.Instance.MusicVolume);
-                PlayerPrefs.SetFloat("Se", Data.Instance.SeVolume);
-                PlayerPrefs.Save();
-
-                Data.Instance.InOption = false;
-                Destroy(optionMenu);
-                StoneManagerRef.Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
-
-                Data.Instance.InOption = false;
-                Destroy(optionMenu);
-            }
-        });
+        settingButton.GetComponent<Button>().onClick.AddListener(OnSettingMenu);
 
 
         StoneManagerRef = gameObject.GetComponent<StoneManager>();
@@ -165,6 +143,31 @@ public class GameManager : MonoBehaviourPunCallbacks
         LunchGame();
     }
 
+    private void OnSettingMenu()
+    {
+        isOption = !isOption;
+
+        if (isOption)
+        {
+            Data.Instance.InOption = true;
+            optionMenu = Instantiate(Data.Instance.OptionMenu);
+            StoneManagerRef.Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
+            optionMenu.transform.SetParent(cvs, false);
+            settingButton.transform.SetAsLastSibling();
+        }
+        else
+        {
+            PlayerPrefs.SetFloat("Master", Data.Instance.MasterVolume);
+            PlayerPrefs.SetFloat("Music", Data.Instance.MusicVolume);
+            PlayerPrefs.SetFloat("Se", Data.Instance.SeVolume);
+            PlayerPrefs.Save();
+
+            Data.Instance.InOption = false;
+            Destroy(optionMenu);
+            StoneManagerRef.Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
+        }
+    }
+
     /// <summary>
     /// ÉQÅ[ÉÄÇénÇﬂÇÈ
     /// </summary>
@@ -197,25 +200,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if(Input.GetKeyUp(KeyCode.Escape))
         {
-            isOption = !isOption;
-
-            if(isOption)
-            {
-                Data.Instance.InOption = true;
-                optionMenu = Instantiate(Data.Instance.OptionMenu);
-                StoneManagerRef.Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"),Data.Instance.CalcSeVolume());
-            }
-            else
-            {
-                PlayerPrefs.SetFloat("Master", Data.Instance.MasterVolume);
-                PlayerPrefs.SetFloat("Music", Data.Instance.MusicVolume);
-                PlayerPrefs.SetFloat("Se", Data.Instance.SeVolume);
-                PlayerPrefs.Save();
-
-                Data.Instance.InOption = false;
-                Destroy(optionMenu);
-                StoneManagerRef.Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Menu/decision"), Data.Instance.CalcSeVolume());
-            }
+            OnSettingMenu();
         }
 
         if (isPlay)
@@ -245,25 +230,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                         if(turnTask.IsCompleted)
                         {
                             flipTask = StoneManagerRef.PutStone(turnTask.Result);
-                            //if(turnTask.Result.X == -1)
-                            //{
-                            //    if (isSkipped)
-                            //    {
-                            //        Debug.Log("GameEnd");
-                            //        var e = DelayMethod(() => { OnEndOfGame(); }, 1);
-                            //        StartCoroutine(e);
-                                    
-                            //    } 
-                            //    else
-                            //    {
-                            //        isSkipped = true;
-                            //    }
-                                    
-                            //}
-                            //else
-                            //{
-                            //    isSkipped = false;
-                            //}
                             currentGameState = EGameState.FLIP;
                         }
                     }
