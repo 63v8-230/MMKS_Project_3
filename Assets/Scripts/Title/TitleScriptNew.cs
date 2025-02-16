@@ -32,7 +32,7 @@ public class TitleScriptNew : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Data.Instance.CheatCode = "baka";
+        Data.Instance.CheatCode = "";
 
         Data.Instance.isTutorial = false;
 
@@ -75,6 +75,7 @@ public class TitleScriptNew : MonoBehaviour
         audioSource.volume = Data.Instance.MasterVolume * Data.Instance.MusicVolume;
         seAudio.volume = Data.Instance.MasterVolume * Data.Instance.SeVolume;
 
+#if (UNITY_EDITOR || UNITY_STANDALONE_WIN)
 
         if (Data.Instance.IsPadMode)
             return;
@@ -113,6 +114,8 @@ public class TitleScriptNew : MonoBehaviour
         };
 #else
     Application.quitting += () => { if (Data.Instance.IsPadMode) Data.Instance.PadProcess.Kill(); };
+#endif
+
 #endif
     }
 
