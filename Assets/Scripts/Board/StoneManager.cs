@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 using Task = Cysharp.Threading.Tasks.UniTask;
+using UnityEngine.Video;
 
 public enum ETeam
 {
@@ -196,6 +197,11 @@ public class StoneManager : MonoBehaviour
 
     public int CurrentTurn = 0;
 
+    private GameObject enemyCutIn, ownCutIn;
+    VideoPlayer evp1, evp2, ovp1, ovp2;
+    private GameObject fireScreen;
+    FireFrameUIController fireScreenCtrl;
+
     public void AddTurn()
     {
         CurrentTurn++;
@@ -210,6 +216,8 @@ public class StoneManager : MonoBehaviour
 
         pitchTunableAudio = gameObject.AddComponent<AudioSource>();
         pitchTunableAudio.volume = Sound.volume;
+
+        InitCutIn();
     }
 
     public void AddSkillMethod(SkillAction action)
@@ -345,6 +353,8 @@ public class StoneManager : MonoBehaviour
 
             await Task.Delay(100);
 
+            Debug.Log("Fire no create");
+
             goto EndOfPutStone;
         }
             
@@ -367,12 +377,18 @@ public class StoneManager : MonoBehaviour
                 comboPlayer = GameManagerRef.p2.GetComponent<IPlayer>();
         }
 
-        var frame = Instantiate(Resources.Load<GameObject>("Movie/FireScreen"));
-        frame.transform.SetParent(GameObject.Find("Canvas").transform, false);
-        var frameCom = frame.GetComponent<FireFrameUIController>();
-        frameCom.Init();
+        //var frame = Instantiate(Resources.Load<GameObject>("Movie/FireScreen"));
+        //frame.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        //var frameCom = frame.GetComponent<FireFrameUIController>();
+        //frameCom.Init();
         //frameCom.SetColor();
-        Debug.Log("Fire Create");
+
+        Debug.Log("Fire Create Start");
+        fireScreen.SetActive(true);
+        fireScreenCtrl.Init();
+        fireScreen.transform.SetAsLastSibling();
+
+        Debug.Log("Fire Create End");
 
         int count = 0;
 
@@ -402,7 +418,7 @@ public class StoneManager : MonoBehaviour
                 }
             }
 
-            OnSkill(frameCom);
+            OnSkill(fireScreenCtrl);
             count++;
             var cti = new ExEnumerator(ShowCutIn(cTeam == ETeam.WHITE, count));
             StartCoroutine(cti);
@@ -442,12 +458,12 @@ public class StoneManager : MonoBehaviour
             }
         }
 
-        int bonusCount = frameCom.GetCurrentState();
+        int bonusCount = fireScreenCtrl.GetCurrentState();
 
         if (bonusCount < 0)
         {
             Debug.Log("Destroy Fire");
-            Destroy(frame);
+            fireScreen.SetActive(false);
             skillMethod.Clear();
             goto EndOfPutStone;
         }
@@ -459,18 +475,20 @@ public class StoneManager : MonoBehaviour
 
         if (isPlayerOffline && bonusCount >= 0) 
         {
-            frameCom.ShowComboEnter();
+            fireScreenCtrl.ShowComboEnter();
             Sound.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/ComboBonus"), Data.Instance.CalcSeVolume());
-            await Task.Delay(5000);
+
+            while (fireScreenCtrl.InComboBonus) { await Task.DelayFrame(1); }
+            Sound.Stop();
         }
 
         GameManagerRef.UpdateStoneCount();
 
         //コンボボーナス
         if (isPlayerOffline)
-            frameCom.SetText($"コンボボーナス\r\n任意の範囲にある敵の色を自分の色に変更出来ます。");
+            fireScreenCtrl.SetText($"コンボボーナス\r\n任意の範囲にある敵の色を自分の色に変更出来ます。");
         else if(Data.Instance.IsOnline)
-            frameCom.SetText($"相手のコンボボーナスが実行中です・・・");
+            fireScreenCtrl.SetText($"相手のコンボボーナスが実行中です・・・");
 
         var comboTask = comboPlayer.DoComboBonus(bonusCount).Preserve();
         while (!comboTask.GetAwaiter().IsCompleted) { await Task.Delay(10); }
@@ -480,7 +498,7 @@ public class StoneManager : MonoBehaviour
         }
 
         Debug.Log("Destroy Fire");
-        Destroy(frame);
+        fireScreen.SetActive(false);
         skillMethod.Clear();
 
     EndOfPutStone:
@@ -1173,28 +1191,93 @@ public class StoneManager : MonoBehaviour
         pitchTunableAudio.PlayOneShot(Resources.Load<AudioClip>("Sound/Game/Cutin"), Data.Instance.CalcSeVolume()*0.9f);
         if (isEnemy)
         {
+            //var o = Resources.Load<GameObject>("Pictures/Game/EnemySkillCut");
+            //c = Instantiate(o);
+            //c.transform.SetParent(t, false);
+            //if(Data.Instance.cChallengeState >= 0)
+            //{
+            //    c.transform.Find("Image").GetComponent<Image>().sprite =
+            //        Resources.Load<Sprite>(
+            //            Data.Instance.cRivalIconPath[Data.Instance.cChallengeState] + "cut");
+            //}
+            enemyCutIn.SetActive(true);
+
+            evp1.time = 0;
+            evp2.time = 0;
+            evp1.Play();
+            evp2.Play();
+            enemyCutIn.transform.Find("Image").GetComponent<Animator>().SetTrigger("Start");
+
+            c = enemyCutIn;
+        }
+        else
+        {
+            //var o = Resources.Load<GameObject>("Pictures/Game/OwnSkillCut");
+            //c = Instantiate(o);
+            //c.transform.SetParent(t, false);
+
+            ownCutIn.SetActive(true);
+
+            ovp1.time = 0;
+            ovp2.time = 0;
+            ovp1.Play();
+            ovp2.Play();
+            ownCutIn.transform.Find("Image").GetComponent<Animator>().SetTrigger("Start");
+
+            c = ownCutIn;
+        }
+        c.transform.SetAsLastSibling();
+        c.transform.SetSiblingIndex(c.transform.GetSiblingIndex()-1);
+
+        yield return new WaitForSeconds(1.7f);
+        //Destroy(c);
+        c.SetActive(false);
+        Debug.Log("CutIn-Out");
+        yield break;
+    }
+
+
+    private void InitCutIn()
+    {
+        var t = GameObject.Find("Canvas").transform;
+
+        {
             var o = Resources.Load<GameObject>("Pictures/Game/EnemySkillCut");
-            c = Instantiate(o);
-            c.transform.SetParent(t, false);
-            if(Data.Instance.cChallengeState >= 0)
+            enemyCutIn = Instantiate(o);
+            enemyCutIn.transform.SetParent(t, false);
+            if (Data.Instance.cChallengeState >= 0)
             {
-                c.transform.Find("Image").GetComponent<Image>().sprite =
+                enemyCutIn.transform.Find("Image").GetComponent<Image>().sprite =
                     Resources.Load<Sprite>(
                         Data.Instance.cRivalIconPath[Data.Instance.cChallengeState] + "cut");
             }
 
+            evp1 = enemyCutIn.GetComponent<VideoPlayer>();
+            evp2 = enemyCutIn.transform.Find("Add").GetComponent<VideoPlayer>();
+            evp1.Prepare();
+            evp2.Prepare();
+
+            enemyCutIn.SetActive(false);
         }
-        else
+
         {
             var o = Resources.Load<GameObject>("Pictures/Game/OwnSkillCut");
-            c = Instantiate(o);
-            c.transform.SetParent(t, false);
-        }
-        c.transform.SetSiblingIndex(c.transform.GetSiblingIndex()-1);
+            ownCutIn = Instantiate(o);
+            ownCutIn.transform.SetParent(t, false);
 
-        yield return new WaitForSeconds(1.7f);
-        Destroy(c);
-        Debug.Log("CutIn-Out");
-        yield break;
+            ovp1 = ownCutIn.GetComponent<VideoPlayer>();
+            ovp2 = ownCutIn.transform.Find("Add").GetComponent<VideoPlayer>();
+            ovp1.Prepare();
+            ovp2.Prepare();
+
+            ownCutIn.SetActive(false);
+        }
+
+        fireScreen = Instantiate(Resources.Load<GameObject>("Movie/FireScreen"));
+        fireScreen.transform.SetParent(t, false);
+        fireScreenCtrl = fireScreen.GetComponent<FireFrameUIController>();
+        fireScreenCtrl.spInit();
+
+        //fireScreen.SetActive(false);
     }
 }

@@ -120,8 +120,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3233894916106402532}
   m_HandleRect: {fileID: 4918958112335144303}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.5162182
+  m_Value: 1.0000002
+  m_Size: 0.29731187
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -336,7 +336,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4979641507573752918}
   m_HandleRect: {fileID: 6086301143639818637}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1176,7 +1176,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7331670398581010697}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.4837818}
+  m_AnchorMin: {x: 0, y: 0.7026881}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -1596,8 +1596,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000011920221}
-  m_SizeDelta: {x: 0, y: 839}
+  m_AnchoredPosition: {x: 0, y: -0.00026087573}
+  m_SizeDelta: {x: 0, y: 1457.1}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &4463856882856355948
 GameObject:
@@ -2721,7 +2721,7 @@ MonoBehaviour:
     (Suzuki.Daiki)\nYuya Ando \nkanon456\nsaka\n==\u30D7\u30ED\u30B0\u30E9\u30DE\u30FC==\n63v8-230\n==\u30C7\u30B6\u30A4\u30CA\u30FC==\n63v8-230\nkanon456\n\n\u30C1\u30E3\u30EC\u30F3\u30B8\u30E2\u30FC\u30C9
     \u65757\u53F7 \u8863\u88C5\r\n\u30ED\u30B1\u30C3\u30C8\u5DE5\u623F \u69D8 / \u3010\u7121\u6599\u3011\u6B8B\u5FF5\u533B\u7642\u7CFB\u767D\u8863\u3010VRoid\u5C02\u7528\u3011\r\nhttps://booth.pm/ja/items/3103804\r\n\n\u52B9\u679C\u97F3\nAudiostock
     \u3088\u308A\n\u9B54\u738B\u9B42 \u69D8\n\nBGM\n\u30BF\u30A4\u30C8\u30EB\n   
-    Always be Happy / shimtone\n\u30B2\u30FC\u30E0\n    \u96EA\u6708\u82B1 / shimtone\n\u30C1\u30E5\u30FC\u30C8\u30EA\u30A2\u30EB\r,
+    Always be Happy / shimtone\n\u30B2\u30FC\u30E0\n    \u96EA\u6708\u82B1 / shimtone\n\u30C1\u30E5\u30FC\u30C8\u30EA\u30A2\u30EB,
     \u30BF\u30A4\u30C8\u30EB\u653E\u7F6EPV,\n    Audiostock \u3088\u308A\n\nMIT License\r\n\r\nCopyright
     (c) 2019 kou_yeung\r\nCopyright (c) 2017 G\xF6khan G\xF6k\xE7e\r\n\r\nPermission
     is hereby granted, free of charge, to any person obtaining a copy of this software
@@ -2799,7 +2799,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: -543.74097}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

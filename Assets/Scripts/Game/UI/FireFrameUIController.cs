@@ -4,11 +4,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using static System.Net.WebRequestMethods;
 
 public class FireFrameUIController : MonoBehaviour
 {
     private RawImage img;
-    private VideoPlayer ply;
+    public VideoPlayer
+        bw, b, g, r, rbw;
 
     int kind = 0;
     int count = 0;
@@ -18,6 +20,8 @@ public class FireFrameUIController : MonoBehaviour
     int currentIndex = 0;
 
     TextMeshProUGUI tx;
+
+    public bool InComboBonus = false;
 
     int[] comboCount = new int[]
     {
@@ -30,8 +34,12 @@ public class FireFrameUIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Sprites = Resources.LoadAll<Sprite>("Pictures/Game/UI/number_SS");
         comboImage = transform.Find("Combo_Number_L").GetComponent<Image>();
+        Sprites = Resources.LoadAll<Sprite>("Pictures/Game/UI/number_SS");
+        var etr = transform.Find("ComboEnter").gameObject;
+        transform.Find("skip").GetComponent<Button>().onClick.AddListener(() => { etr.SetActive(false); InComboBonus = false; });
+
+        gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -41,14 +49,47 @@ public class FireFrameUIController : MonoBehaviour
 
     public void Init()
     {
+        currentIndex = 0;
+        count = 0;
+        kind = 0;
+
+        img.texture = bw.targetTexture;
+        comboImage.sprite = Sprites[currentIndex];
+
+        tx.text = "";
+
+        InComboBonus = false;
+    }
+
+    public void spInit()
+    {
         tx = transform.Find("Text").GetComponent<TextMeshProUGUI>();
 
         img = GetComponent<RawImage>();
         img.color = new Color(1, 1, 1);
 
-        ply = GetComponent<VideoPlayer>();
+        var coms = GetComponents<VideoPlayer>();
+        {
+            coms[0].url = "https://63v8-230.github.io/MMKS/mv/FireBW.mp4";
+            coms[0].Prepare();
+            bw = coms[0];
 
-        ply.clip = Resources.Load<VideoClip>("Movie/FireBW");
+            coms[1].url = "https://63v8-230.github.io/MMKS/mv/FireBlue.mp4";
+            coms[1].Prepare();
+            b = coms[1];
+
+            coms[2].url = "https://63v8-230.github.io/MMKS/mv/FireGreen.mp4";
+            coms[2].Prepare();
+            g = coms[2];
+
+            coms[3].url = "https://63v8-230.github.io/MMKS/mv/FireRed.mp4";
+            coms[3].Prepare();
+            r = coms[3];
+
+            coms[4].url = "https://63v8-230.github.io/MMKS/mv/FireRainbow.mp4";
+            coms[4].Prepare();
+            rbw = coms[4];
+        }
     }
 
 
@@ -69,23 +110,23 @@ public class FireFrameUIController : MonoBehaviour
         switch(kind)
         {
             case 0:
-                ply.clip = Resources.Load<VideoClip>("Movie/FireBW");
+                img.texture = bw.targetTexture;
                 break;
 
             case 1:
-                ply.clip = Resources.Load<VideoClip>("Movie/FireBlue");
+                img.texture = b.targetTexture;
                 break;
 
             case 2:
-                ply.clip = Resources.Load<VideoClip>("Movie/FireGreen");
+                img.texture = g.targetTexture;
                 break;
 
             case 3:
-                ply.clip = Resources.Load<VideoClip>("Movie/FireRed");
+                img.texture = r.targetTexture;
                 break;
 
             case 4:
-                ply.clip = Resources.Load<VideoClip>("Movie/FireRainbow");
+                img.texture = rbw.targetTexture;
                 break;
 
             default:
@@ -97,7 +138,7 @@ public class FireFrameUIController : MonoBehaviour
     public void ComboCount()
     {
         currentIndex++;
-        if(currentIndex > 1)
+        if(currentIndex > 0)
         {
             comboImage.sprite = Sprites[currentIndex];
         }
@@ -132,8 +173,9 @@ public class FireFrameUIController : MonoBehaviour
     public void ShowComboEnter()
     {
         transform.Find("ComboEnter").gameObject.SetActive(true);
+        InComboBonus = true;
 
-        var e = DelayMethod(() => { Destroy(transform.Find("ComboEnter").gameObject); }, 4.5f);
+        var e = DelayMethod(() => { transform.Find("ComboEnter").gameObject.SetActive(false); InComboBonus = false; }, 5);
         StartCoroutine(e);
     }
 
