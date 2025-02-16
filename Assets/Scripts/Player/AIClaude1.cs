@@ -1,7 +1,9 @@
 using UnityEngine;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
 
 /// <summary>
 /// AIに作らせてみたお遊びプログラム1
@@ -55,27 +57,27 @@ public class AIClaude1 : MonoBehaviour, IPlayer
         MyDeck = d;
     }
 
-    public async Task<TurnInfo> DoTurn()
+    public async UniTask<TurnInfo> DoTurn()
     {
         currentTurn++;
         await Task.Delay(500); // 思考時間の演出
 
-        var puttablePositions = gameManager.StoneManagerRef.GetPuttablePosition(Team);
-        while (!puttablePositions.IsCompleted)
+        var puttablePositions = gameManager.StoneManagerRef.GetPuttablePosition(Team).Preserve();
+        while (!puttablePositions.GetAwaiter().IsCompleted)
             await Task.Delay(10);
 
-        if (puttablePositions.Result.Length == 0)
+        if (puttablePositions.GetAwaiter().GetResult().Length == 0)
         {
             return new TurnInfo { X = -1 };
         }
 
         // 戦略の選択
-        return await SelectStrategy(puttablePositions.Result);
+        return await SelectStrategy(puttablePositions.GetAwaiter().GetResult());
     }
 
-    async public Task<TurnInfo> DoComboBonus(int bonus)
+    async public UniTask<TurnInfo> DoComboBonus(int bonus)
     {
-        List<Task<int>> cells = new List<Task<int>>();
+        List<UniTask<int>> cells = new List<UniTask<int>>();
         var bSize = gameManager.StoneManagerRef.GetBoardSize();
         for (int ix = 0; ix < bSize.x; ix++)
         {
@@ -84,23 +86,23 @@ public class AIClaude1 : MonoBehaviour, IPlayer
 
         var t = Task.WhenAll(cells);
 
-        while (!t.IsCompleted) { await Task.Delay(10); }
+        while (!t.GetAwaiter().IsCompleted) { await Task.Delay(10); }
 
         int xv = -1, yv = -1;
 
         for (int i = 0; i < bSize.x; i++)
         {
-            if (cells[i].Result != -1)
+            if (cells[i].GetAwaiter().GetResult() != -1)
             {
                 if (xv == -1)
                 {
                     xv = i;
-                    yv = cells[i].Result;
+                    yv = cells[i].GetAwaiter().GetResult();
                 }
                 else if (Random.value < 0.3f)
                 {
                     xv = i;
-                    yv = cells[i].Result;
+                    yv = cells[i].GetAwaiter().GetResult();
                 }
             }
         }
@@ -108,7 +110,7 @@ public class AIClaude1 : MonoBehaviour, IPlayer
         return new TurnInfo() { X = xv, Y = yv };
     }
 
-    async private Task<int> SelectCellFromColumn(int x)
+    async private UniTask<int> SelectCellFromColumn(int x)
     {
         await Task.Yield();
 
@@ -134,7 +136,7 @@ public class AIClaude1 : MonoBehaviour, IPlayer
         return v;
     }
 
-    private async Task<TurnInfo> SelectStrategy(PuttableCellInfo[] puttablePositions)
+    private async UniTask<TurnInfo> SelectStrategy(PuttableCellInfo[] puttablePositions)
     {
         if (currentTurn <= 4)
         {
@@ -150,7 +152,7 @@ public class AIClaude1 : MonoBehaviour, IPlayer
         }
     }
 
-    private async Task<TurnInfo> EarlyGameStrategy(PuttableCellInfo[] puttablePositions)
+    private async UniTask<TurnInfo> EarlyGameStrategy(PuttableCellInfo[] puttablePositions)
     {
         // 序盤は角と辺を重視
         var cornerMove = await FindBestMove(puttablePositions, IsCorner);
@@ -168,7 +170,7 @@ public class AIClaude1 : MonoBehaviour, IPlayer
         return CreateRandomMove(puttablePositions);
     }
 
-    private async Task<TurnInfo> MidGameStrategy(PuttableCellInfo[] puttablePositions)
+    private async UniTask<TurnInfo> MidGameStrategy(PuttableCellInfo[] puttablePositions)
     {
         // 中盤は特殊石を積極的に使用
         foreach (var stoneType in stoneValues.OrderByDescending(x => x.Value))
@@ -187,7 +189,7 @@ public class AIClaude1 : MonoBehaviour, IPlayer
         return CreateRandomMove(puttablePositions);
     }
 
-    private async Task<TurnInfo> LateGameStrategy(PuttableCellInfo[] puttablePositions)
+    private async UniTask<TurnInfo> LateGameStrategy(PuttableCellInfo[] puttablePositions)
     {
         // 終盤は残りの特殊石を使い切る
         foreach (var ownStone in MyDeck.Stones)
@@ -226,7 +228,7 @@ public class AIClaude1 : MonoBehaviour, IPlayer
         }
     }
 
-    private async Task<TurnInfo> FindBestMove(
+    private async UniTask<TurnInfo> FindBestMove(
         PuttableCellInfo[] positions,
         System.Func<int, int, Vector2, bool> evaluator)
     {

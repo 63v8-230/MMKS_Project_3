@@ -2,9 +2,11 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
 
 public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
 {
@@ -25,7 +27,7 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
 
     private bool isTurned = false;
 
-    async public Task<TurnInfo> DoTurn()
+    async public UniTask<TurnInfo> DoTurn()
     {
 
         turnInfo = new TurnInfo();
@@ -94,7 +96,7 @@ public class OnlinePlayer : MonoBehaviourPunCallbacks, IPlayer
     {
     }
 
-    async public Task<TurnInfo> DoComboBonus(int bonus)
+    async public UniTask<TurnInfo> DoComboBonus(int bonus)
     {
         isTurned = false;
         while (true)

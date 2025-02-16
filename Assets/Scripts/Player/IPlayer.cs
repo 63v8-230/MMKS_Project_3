@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public enum EAIKind
 {
@@ -53,7 +54,7 @@ public interface IPlayer
     /// ‚Ç‚±‚ÉÎ‚ğ’u‚­‚©‚ğŒˆ‚ß‚ÄA‚»‚Ìî•ñ‚ğ•Ô‚·B
     /// </summary>
     /// <returns></returns>
-    public Task<TurnInfo> DoTurn();
+    public UniTask<TurnInfo> DoTurn();
 
-    public Task<TurnInfo> DoComboBonus(int bonus);
+    public UniTask<TurnInfo> DoComboBonus(int bonus);
 }

@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
 
 public enum ETeam
 {
@@ -331,7 +332,7 @@ public class StoneManager : MonoBehaviour
         //flipTasksのタスクが全て完了するまで待つ
         var t = Task.WhenAll(flipTasks);
 
-        while (!t.IsCompleted)
+        while (!t.GetAwaiter().IsCompleted)
         {
             await Task.Delay(1);
         }
@@ -471,11 +472,11 @@ public class StoneManager : MonoBehaviour
         else if(Data.Instance.IsOnline)
             frameCom.SetText($"相手のコンボボーナスが実行中です・・・");
 
-        var comboTask = comboPlayer.DoComboBonus(bonusCount);
-        while (!comboTask.IsCompleted) { await Task.Delay(10); }
+        var comboTask = comboPlayer.DoComboBonus(bonusCount).Preserve();
+        while (!comboTask.GetAwaiter().IsCompleted) { await Task.Delay(10); }
         foreach (var c in ComboBonus[bonusCount])
         {
-            FlipStone((int)(comboTask.Result.X + c.x), (int)(comboTask.Result.Y + c.y), comboPlayer.Team, true, true);
+            FlipStone((int)(comboTask.GetAwaiter().GetResult().X + c.x), (int)(comboTask.GetAwaiter().GetResult().Y + c.y), comboPlayer.Team, true, true);
         }
 
         Debug.Log("Destroy Fire");
@@ -566,14 +567,14 @@ public class StoneManager : MonoBehaviour
     /// 現在の石を数える。。
     /// </summary>
     /// <returns>[0]:黒 [1]:白</returns>
-    public async Task<int[]> GetStoneCounts()
+    public async UniTask<int[]> GetStoneCounts()
     {
         int black = 0;
         int white = 0;
 
         int boardSizeX = Stones.GetLength(0);
 
-        List < Task<int[]>> t = new List<Task<int[]>>();
+        List <UniTask<int[]>> t = new List<UniTask<int[]>>();
 
         for (int i = 0; true; i += 3) 
         {
@@ -595,8 +596,32 @@ public class StoneManager : MonoBehaviour
 
         foreach (var item in t)
         {
-            black += item.Result[0];
-            white += item.Result[1];
+            black += item.GetAwaiter().GetResult()[0];
+            white += item.GetAwaiter().GetResult()[1];
+        }
+
+        return new int[] { black, white };
+    }
+
+    public int[] GetStoneCountSync()
+    {
+        int black = 0;
+        int white = 0;
+
+        int boardSizeX = Stones.GetLength(0);
+
+        for(int x=0; x<Stones.GetLength(0);x++)
+        {
+            for(int y=0; y<Stones.GetLength(1);y++)
+            {
+                if (Stones[x,y] != null)
+                {
+                    if (Stones[x, y].Team == ETeam.BLACK)
+                        black++;
+                    else
+                        white++;
+                }
+            }
         }
 
         return new int[] { black, white };
@@ -610,7 +635,7 @@ public class StoneManager : MonoBehaviour
     /// <param name="endX"></param>
     /// <param name="endY"></param>
     /// <returns>[0]が黒、[1]が白</returns>
-    private async Task<int[]> CountStone(int startX, int endX)
+    private async UniTask<int[]> CountStone(int startX, int endX)
     {
         await Task.Yield();
 
@@ -674,9 +699,9 @@ public class StoneManager : MonoBehaviour
     /// 配置可能なマスを返す
     /// </summary>
     /// <returns></returns>
-    public async Task<PuttableCellInfo[]> GetPuttablePosition(ETeam myTeam)
+    public async UniTask<PuttableCellInfo[]> GetPuttablePosition(ETeam myTeam)
     {
-        List<Task<List<PuttableCellInfo>>> t = new List<Task<List<PuttableCellInfo>>>();
+        List<UniTask<List<PuttableCellInfo>>> t = new List<UniTask<List<PuttableCellInfo>>>();
 
         int boardSizeX = Stones.GetLength(0);
 
@@ -684,43 +709,41 @@ public class StoneManager : MonoBehaviour
         {
             if (i + 3 < boardSizeX)
             {
-                t.Add(SearchPuttableCells(myTeam,i, i + 3));
+                t.Add(SearchPuttableCells(myTeam,i, i + 3).Preserve());
                 //Debug.Log($"async {i} - {i + 3}");
             }
             else
             {
-                t.Add(SearchPuttableCells(myTeam, i, boardSizeX));
+                t.Add(SearchPuttableCells(myTeam, i, boardSizeX).Preserve());
                 //Debug.Log($"async {i} - {boardSizeX}");
                 break;
             }
         }
 
         var wt = Task.WhenAll(t);
-        while (!wt.IsCompleted) { await Task.Delay(10); }
+        while (!wt.GetAwaiter().IsCompleted) { await Task.Delay(10); }
 
         List<PuttableCellInfo> p = new List<PuttableCellInfo>();
 
         foreach (var item in t)
         {
-            p.AddRange(item.Result);
+            p.AddRange(item.GetAwaiter().GetResult());
         }
 
         return p.ToArray();
 
     }
 
-    private async Task<List<PuttableCellInfo>> SearchPuttableCells(ETeam myTeam, int startX, int endX)
+    public PuttableCellInfo[] GetPuttablePositionSync(ETeam myTeam)
     {
         List<PuttableCellInfo> returnList = new List<PuttableCellInfo>();
 
-        for (int ix = startX; ix < endX; ix++)
+        for (int ix = 0; ix < Stones.GetLength(0); ix++)
         {
             for (int iy = 0; iy < Stones.GetLength(1); iy++)
             {
                 if (Stones[ix, iy] != null)
                     continue;
-
-                List<Task<int>> t = new List<Task<int>>();
 
                 int pCount = 0;
                 foreach (var dir in directions)
@@ -735,7 +758,52 @@ public class StoneManager : MonoBehaviour
                     if (stone.Team == myTeam)
                         continue;
 
-                    t.Add(CheckLine(ix, iy, dir, myTeam));
+                    var c = CheckLineSync(ix, iy, dir, myTeam);
+                    if (c != -1)
+                        pCount += c;
+                }
+
+                if (pCount > 0)
+                {
+                    PuttableCellInfo p = new PuttableCellInfo();
+                    p.X = ix;
+                    p.Y = iy;
+                    p.Count = pCount;
+                    returnList.Add(p);
+                }
+            }
+        }
+
+        return returnList.ToArray();
+    }
+
+    private async UniTask<List<PuttableCellInfo>> SearchPuttableCells(ETeam myTeam, int startX, int endX)
+    {
+        List<PuttableCellInfo> returnList = new List<PuttableCellInfo>();
+
+        for (int ix = startX; ix < endX; ix++)
+        {
+            for (int iy = 0; iy < Stones.GetLength(1); iy++)
+            {
+                if (Stones[ix, iy] != null)
+                    continue;
+
+                List<UniTask<int>> t = new List<UniTask<int>>();
+
+                int pCount = 0;
+                foreach (var dir in directions)
+                {
+                    if (CheckOutOfBoard(ix + (int)dir.x, iy + (int)dir.y))
+                        continue;
+
+                    var stone = Stones[ix + (int)dir.x, iy + (int)dir.y];
+                    if (stone == null)
+                        continue;
+
+                    if (stone.Team == myTeam)
+                        continue;
+
+                    t.Add(CheckLine(ix, iy, dir, myTeam).Preserve());
 
                     //int count = t.Result;
                     //if (count == -1)
@@ -748,10 +816,10 @@ public class StoneManager : MonoBehaviour
 
                 foreach (var task in t)
                 {
-                    if (task.Result == -1)
+                    if (task.GetAwaiter().GetResult() == -1)
                         continue;
 
-                    pCount += task.Result;
+                    pCount += task.GetAwaiter().GetResult();
                 }
 
                 if (pCount > 0)
@@ -774,7 +842,7 @@ public class StoneManager : MonoBehaviour
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <returns></returns>
-    async private Task<bool> CheckLineAsync(int x, int y, Vector2 direction, ETeam myTeam)
+    async private UniTask<bool> CheckLineAsync(int x, int y, Vector2 direction, ETeam myTeam)
     {
         await Task.Delay(1);
 
@@ -820,7 +888,7 @@ public class StoneManager : MonoBehaviour
     /// <param name="direction"></param>
     /// <param name="myTeam"></param>
     /// <returns>ひっくり返せなければ-1、ひっくり返せる場合はその数を返す</returns>
-    private async Task<int> CheckLine(int x, int y, Vector2 direction, ETeam myTeam)
+    private async UniTask<int> CheckLine(int x, int y, Vector2 direction, ETeam myTeam)
     {
         await Task.Yield();
 
@@ -865,6 +933,52 @@ public class StoneManager : MonoBehaviour
 
         return puttableCount;
     }
+
+    private int CheckLineSync(int x, int y, Vector2 direction, ETeam myTeam)
+    {
+
+        bool canFlip = false;
+
+        x += (int)direction.x;
+        y += (int)direction.y;
+
+        int puttableCount = 0;
+
+        if (CheckOutOfBoard(x, y)) return -1;
+
+        if (Stones[x, y] == null ||
+            Stones[x, y].Team == myTeam)
+        {
+            return -1;
+        }
+
+        puttableCount++;
+
+        while (true)
+        {
+            x += (int)direction.x;
+            y += (int)direction.y;
+            puttableCount++;
+
+
+            if (CheckOutOfBoard(x, y)) break;
+
+            if (Stones[x, y] == null) break;
+
+            if (Stones[x, y].Team == myTeam)
+            {
+                canFlip = true;
+                puttableCount--;
+                break;
+            }
+        }
+
+        if (!canFlip)
+            return -1;
+
+        return puttableCount;
+    }
+
 
     private async Task FlipStones(int x, int y, Vector2 direction, ETeam myTeam)
     {

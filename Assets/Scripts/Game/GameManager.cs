@@ -2,11 +2,13 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
 
 public enum EGameState
 {
@@ -56,7 +58,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private int currentPlayerIndex = 0;
 
-    private Task<TurnInfo> turnTask;
+    private UniTask<TurnInfo> turnTask;
+    private bool isNull = true;
 
     private Task flipTask;
 
@@ -87,7 +90,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         isPlay = true;
 
-        turnTask = players[currentPlayerIndex].DoTurn();
+        turnTask = players[currentPlayerIndex].DoTurn().Preserve();
+        isNull = false;
         Debug.Log(players[currentPlayerIndex].Team + " is Start");
 
         await Task.Yield();
@@ -211,12 +215,14 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 case EGameState.PUT:
                     {
-                        if (turnTask == null)
+                        if (isNull)
                             break;
 
-                        if(turnTask.IsCompleted)
+                        turnTask = turnTask.Preserve();
+
+                        if(turnTask.GetAwaiter().IsCompleted)
                         {
-                            flipTask = StoneManagerRef.PutStone(turnTask.Result);
+                            flipTask = StoneManagerRef.PutStone(turnTask.GetAwaiter().GetResult()).Preserve();
                             currentGameState = EGameState.FLIP;
                         }
                     }
@@ -224,7 +230,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                 case EGameState.FLIP:
                     {
-                        if(flipTask.IsCompleted)
+                        if(flipTask.GetAwaiter().IsCompleted)
                         {
 
                             currentPlayerIndex++;
@@ -233,10 +239,16 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                             UpdateStoneCount();
 
-                            var w = Task.Run(() => StoneManagerRef.GetPuttablePosition(ETeam.WHITE));
-                            var b = Task.Run(() => StoneManagerRef.GetPuttablePosition(ETeam.BLACK));
+                            //var w = Task.Create<PuttableCellInfo[]>(() => StoneManagerRef.GetPuttablePosition(ETeam.WHITE).Preserve()).Preserve();
+                            //var b = Task.Create<PuttableCellInfo[]>(() => StoneManagerRef.GetPuttablePosition(ETeam.BLACK).Preserve()).Preserve();
 
-                            if (w.Result.Length == 0 && b.Result.Length == 0)
+                            //while (!w.GetAwaiter().IsCompleted && !b.GetAwaiter().IsCompleted) { Task.Delay(10).Preserve(); }
+
+                            var w = StoneManagerRef.GetPuttablePositionSync(ETeam.WHITE);
+                            var b = StoneManagerRef.GetPuttablePositionSync(ETeam.BLACK);
+
+                            if (w.Length == 0 && b.Length == 0)
+                            //if (w.GetAwaiter().GetResult().Length == 0 && b.GetAwaiter().GetResult().Length == 0)
                             {
                                 isPlay = false;
                                 Debug.Log("GameEnd");
@@ -245,7 +257,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                                 break;
                             }
 
-                            turnTask = players[currentPlayerIndex].DoTurn();
+                            turnTask = players[currentPlayerIndex].DoTurn().Preserve();
                             currentGameState = EGameState.PUT;
                             StoneManagerRef.AddTurn();
                         }
@@ -256,17 +268,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public  void UpdateStoneCount()
+    public void UpdateStoneCount()
     {
-        var result = Task.Run(StoneManagerRef.GetStoneCounts);
-        stoneCountBlack.text = result.Result[0].ToString();
-        stoneCountWhite.text = result.Result[1].ToString();
+        //var result = Task.Create<int[]>(StoneManagerRef.GetStoneCounts().Preserve);
+
+        //while (!result.GetAwaiter().IsCompleted) { await Task.Delay(10).Preserve(); }
+
+        var r = StoneManagerRef.GetStoneCountSync();
+        stoneCountBlack.text = r[0].ToString();
+        stoneCountWhite.text = r[1].ToString();
     }
 
     private void OnEndOfGame(string additionalMessage = "")
     {
         isPlay = false;
-        var stoneCount = Task.Run(StoneManagerRef.GetStoneCounts);
+        var stoneCount = StoneManagerRef.GetStoneCountSync();
 
         ETeam[] t =
         {
@@ -283,21 +299,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         };
 
         //string winTeam = "Draw...";
-        if (stoneCount.Result[0] >= stoneCount.Result[1])
+        if (stoneCount[0] >= stoneCount[1])
         {
             //winTeam = "Black Win!";
             t[0] = ETeam.BLACK;
             t[1] = ETeam.WHITE;
-            sc[0] = stoneCount.Result[0];
-            sc[1] = stoneCount.Result[1];
+            sc[0] = stoneCount[0];
+            sc[1] = stoneCount[1];
         }
         else
         {
             //winTeam = "White Win!";
             t[0] = ETeam.WHITE;
             t[1] = ETeam.BLACK;
-            sc[0] = stoneCount.Result[1];
-            sc[1] = stoneCount.Result[0];
+            sc[0] = stoneCount[1];
+            sc[1] = stoneCount[0];
         }
 
         //tmPro.text = $"{winTeam}\nBlack: {b}\nWhite: {w}\n{additionalMessage}";
@@ -342,7 +358,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 StoneManagerRef.Sound.PlayOneShot(ad[i]);
             }
 
-            if (stoneCount.Result[0] == stoneCount.Result[1]) 
+            if (stoneCount[0] == stoneCount[1]) 
             {
                 result.Find(s[i] + "/Text").GetComponent<TextMeshProUGUI>().text = "ˆø‚«•ª‚¯...";
                 ad[0] = Resources.Load<AudioClip>("Sound/Game/maou_game_jingle07");
@@ -369,7 +385,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 var rc = Instantiate(Resources.Load<GameObject>("Prefab/UI/Result_Challenge"));
                 rc.transform.SetParent(canvas.transform, false);
 
-                if(Data.Instance.cChallengeState >= Data.Instance.cRivalIconPath.Length-1 || t[0] == ETeam.WHITE || stoneCount.Result[0] == stoneCount.Result[1])
+                if(Data.Instance.cChallengeState >= Data.Instance.cRivalIconPath.Length-1 || t[0] == ETeam.WHITE || stoneCount[0] == stoneCount[1])
                 {
                     Destroy(rc.transform.Find("Buttons/next").gameObject);
                 }

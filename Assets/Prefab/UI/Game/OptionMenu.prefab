@@ -121,7 +121,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 4918958112335144303}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.5158985
+  m_Size: 0.5162182
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -336,7 +336,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4979641507573752918}
   m_HandleRect: {fileID: 6086301143639818637}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1176,7 +1176,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7331670398581010697}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.48410147}
+  m_AnchorMin: {x: 0, y: 0.4837818}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -2716,10 +2716,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u53F3\u30AF\u30EA\u30C3\u30AF/B\u30DC\u30BF\u30F3\u3067\u9589\u3058\u308B\n\n\u30C1\u30E3\u30EC\u30F3\u30B8\u30E2\u30FC\u30C9
+  m_text: "\u53F3\u30AF\u30EA\u30C3\u30AF\u3067\u9589\u3058\u308B\n\n==\u30D7\u30ED\u30C7\u30E5\u30FC\u30B5\u30FC==\nMackerel.Necktie
+    (Suzuki.Daiki)\n==\u30D7\u30E9\u30F3\u30CA\u30FC(\u4F01\u753B)==\nMackerel.Necktie
+    (Suzuki.Daiki)\nYuya Ando \nkanon456\nsaka\n==\u30D7\u30ED\u30B0\u30E9\u30DE\u30FC==\n63v8-230\n==\u30C7\u30B6\u30A4\u30CA\u30FC==\n63v8-230\nkanon456\n\n\u30C1\u30E3\u30EC\u30F3\u30B8\u30E2\u30FC\u30C9
     \u65757\u53F7 \u8863\u88C5\r\n\u30ED\u30B1\u30C3\u30C8\u5DE5\u623F \u69D8 / \u3010\u7121\u6599\u3011\u6B8B\u5FF5\u533B\u7642\u7CFB\u767D\u8863\u3010VRoid\u5C02\u7528\u3011\r\nhttps://booth.pm/ja/items/3103804\r\n\n\u52B9\u679C\u97F3\nAudiostock
-    \u3088\u308A\n\u9B54\u738B\u9B42\r \u69D8\n\nBGM\nAudiostock \u3088\u308A\n\r\nMIT
-    License\r\n\r\nCopyright (c) 2019 kou_yeung\r\nCopyright (c) 2017 G\xF6khan G\xF6k\xE7e\r\n\r\nPermission
+    \u3088\u308A\n\u9B54\u738B\u9B42 \u69D8\n\nBGM\n\u30BF\u30A4\u30C8\u30EB\n   
+    Always be Happy / shimtone\n\u30B2\u30FC\u30E0\n    \u96EA\u6708\u82B1 / shimtone\n\u30C1\u30E5\u30FC\u30C8\u30EA\u30A2\u30EB\r,
+    \u30BF\u30A4\u30C8\u30EB\u653E\u7F6EPV,\n    Audiostock \u3088\u308A\n\nMIT License\r\n\r\nCopyright
+    (c) 2019 kou_yeung\r\nCopyright (c) 2017 G\xF6khan G\xF6k\xE7e\r\n\r\nPermission
     is hereby granted, free of charge, to any person obtaining a copy of this software
     and associated documentation files (the \u201CSoftware\u201D), to deal in the
     Software without restriction, including without limitation the rights to use,
@@ -2759,7 +2763,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.05
+  m_fontSize: 18
   m_fontSizeBase: 17.3
   m_fontWeight: 400
   m_enableAutoSizing: 1

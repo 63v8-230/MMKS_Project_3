@@ -83,7 +83,7 @@ public class TutorialActions : TextFieldController
 
         nextTextSound = Resources.Load<AudioClip>("Sound/Text/TextNext");
 
-        var s = Path.Combine(Application.streamingAssetsPath, "Text\\Tutorial\\Text.txt");
+        //var s = Path.Combine(Application.streamingAssetsPath, "Text\\Tutorial\\Text.txt");
 
         //encoding = System.Text.Encoding.GetEncoding("shift_jis");
 
@@ -91,12 +91,12 @@ public class TutorialActions : TextFieldController
         stoneManager.Stones[3, 3].SetTeam(ETeam.WHITE);
         stoneManager.SetStone(EStone.CIRCLE, 5, 4, ETeam.WHITE, true);
 
-        Init(s);
+        Init("");
     }
 
     protected override bool PressAnyKey()
     {
-        if (Input.anyKeyDown)
+        if ((Input.touches.Length > 0) || Input.GetMouseButtonDown(0))
         {
             audioSource.PlayOneShot(nextTextSound);
             return true;

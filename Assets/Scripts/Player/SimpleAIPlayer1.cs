@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
 
 public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
 {
@@ -19,17 +21,17 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
 
     private GameManager gameManager;
 
-    async public Task<TurnInfo> DoTurn()
+    async public UniTask<TurnInfo> DoTurn()
     {
         await Task.Delay(500);
-        var puttablePosition = gameManager.StoneManagerRef.GetPuttablePosition(Team);
-        while (!puttablePosition.IsCompleted)
+        var puttablePosition = gameManager.StoneManagerRef.GetPuttablePosition(Team).Preserve();
+        while (!puttablePosition.GetAwaiter().IsCompleted)
             await Task.Delay(10);
 
         PuttableCellInfo p = new PuttableCellInfo();
         p.Count = 0;
 
-        foreach (var item in puttablePosition.Result)
+        foreach (var item in puttablePosition.GetAwaiter().GetResult())
         {
             if (item.Count > p.Count)
             {
@@ -60,9 +62,9 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
 
     }
 
-    async public Task<TurnInfo> DoComboBonus(int bonus)
+    async public UniTask<TurnInfo> DoComboBonus(int bonus)
     {
-        List<Task<int>> cells = new List<Task<int>>();
+        List<UniTask<int>> cells = new List<UniTask<int>>();
         var bSize = gameManager.StoneManagerRef.GetBoardSize();
         for (int ix = 0; ix < bSize.x; ix++)
         {
@@ -71,23 +73,23 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
 
         var t = Task.WhenAll(cells);
 
-        while (!t.IsCompleted) { await Task.Delay(10); }
+        while (!t.GetAwaiter().IsCompleted) { await Task.Delay(10); }
 
         int xv = -1, yv = -1;
 
         for(int i=0; i<bSize.x; i++)
         {
-            if (cells[i].Result!=-1)
+            if (cells[i].GetAwaiter().GetResult()!=-1)
             {
                 if (xv == -1)
                 {
                     xv = i;
-                    yv = cells[i].Result;
+                    yv = cells[i].GetAwaiter().GetResult();
                 }
                 else if (Random.value < 0.3f) 
                 {
                     xv = i;
-                    yv = cells[i].Result;
+                    yv = cells[i].GetAwaiter().GetResult();
                 }
             }
         }
@@ -95,7 +97,7 @@ public class SimpleAIPlayer1 : MonoBehaviour , IPlayer
         return new TurnInfo() { X = xv, Y = yv };
     }
 
-    async private Task<int> SelectCellFromColumn(int x)
+    async private UniTask<int> SelectCellFromColumn(int x)
     {
         await Task.Yield();
 

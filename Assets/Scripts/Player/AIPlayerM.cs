@@ -1,25 +1,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
 
 public class AIPlayerM : AIPlayerBase
 {
 
     private int currentTurn = 0;
 
-    async public override Task<TurnInfo> DoTurn()
+    async public override UniTask<TurnInfo> DoTurn()
     {
         currentTurn++;
         await Task.Delay(500);
-        var puttablePosition = gameManager.StoneManagerRef.GetPuttablePosition(Team);
-        while (!puttablePosition.IsCompleted)
+        var puttablePosition = gameManager.StoneManagerRef.GetPuttablePosition(Team).Preserve();
+        while (!puttablePosition.GetAwaiter().IsCompleted)
             await Task.Delay(10);
 
-        Debug.Log("Puttable: " + puttablePosition.Result.Length);
+        Debug.Log("Puttable: " + puttablePosition.GetAwaiter().GetResult().Length);
 
-        if (puttablePosition.Result.Length <= 0)
+        if (puttablePosition.GetAwaiter().GetResult().Length <= 0)
         {
             return new TurnInfo() { X = -1 };
         }
@@ -29,27 +31,27 @@ public class AIPlayerM : AIPlayerBase
 
         if (currentTurn <= 5) 
         {
-            Task<TurnInfo>[] checkTasks =
+            UniTask<TurnInfo>[] checkTasks =
                 {
-                    Check(IsCorner,puttablePosition.Result),
-                    Check(IsEdge,puttablePosition.Result),
+                    Check(IsCorner,puttablePosition.GetAwaiter().GetResult()).Preserve(),
+                    Check(IsEdge,puttablePosition.GetAwaiter().GetResult()).Preserve(),
                 };
 
-            var ts = Task.WhenAll(checkTasks);
+            var ts = Task.WhenAll(checkTasks).Preserve();
 
-            while (!ts.IsCompleted)
+            while (!ts.GetAwaiter().IsCompleted)
             {
                 await Task.Delay(1);
             }
 
             for (int i = 0; i < checkTasks.Length; i++)
             {
-                if (checkTasks[i].Result.X != -1)
+                if (checkTasks[i].GetAwaiter().GetResult().X != -1)
                 {
                     var kind = EStone.DEFAULT;
                     Debug.Log(kind.ToString());
 
-                    t = checkTasks[i].Result;
+                    t = checkTasks[i].GetAwaiter().GetResult();
                     t.PutStone = gameManager.StoneManagerRef.SelectStone(GetStone(i));
                     if ((int)kind > 1)
                         (t.PutStone as SkillStoneBase).IsOwnerOnline = isEnemy;
@@ -60,30 +62,30 @@ public class AIPlayerM : AIPlayerBase
         }
         else if (currentTurn < 12)
         {
-            Task<TurnInfo>[] checkTasks =
+            UniTask<TurnInfo>[] checkTasks =
                 {
-                    Check(IsCorner,puttablePosition.Result),
-                    Check(IsArrow,puttablePosition.Result),
-                    Check(IsEdge,puttablePosition.Result),
-                    Check(IsShield,puttablePosition.Result),
-                    Check(IsCircle,puttablePosition.Result),
-                    Check(IsCrystal,puttablePosition.Result),
-                    Check(IsX,puttablePosition.Result),
-                    Check(IsCross,puttablePosition.Result),
-                    Check(IsSun,puttablePosition.Result),
+                    Check(IsCorner,puttablePosition.GetAwaiter().GetResult()).Preserve(),
+                    Check(IsArrow,puttablePosition.GetAwaiter().GetResult()).Preserve(),
+                    Check(IsEdge,puttablePosition.GetAwaiter().GetResult()).Preserve(),
+                    Check(IsShield,puttablePosition.GetAwaiter().GetResult()).Preserve(),
+                    Check(IsCircle,puttablePosition.GetAwaiter().GetResult()).Preserve(),
+                    Check(IsCrystal,puttablePosition.GetAwaiter().GetResult()).Preserve(),
+                    Check(IsX,puttablePosition.GetAwaiter().GetResult()).Preserve(),
+                    Check(IsCross,puttablePosition.GetAwaiter().GetResult()).Preserve(),
+                    Check(IsSun,puttablePosition.GetAwaiter().GetResult()).Preserve(),
 
                 };
 
             var ts = Task.WhenAll(checkTasks);
 
-            while (!ts.IsCompleted)
+            while (!ts.GetAwaiter().IsCompleted)
             {
                 await Task.Delay(1);
             }
 
             for (int i = 0; i < checkTasks.Length; i++)
             {
-                if (checkTasks[i].Result.X != -1)
+                if (checkTasks[i].GetAwaiter().GetResult().X != -1)
                 {
                     var kind = GetStone(i);
                     Debug.Log(kind.ToString());
@@ -113,7 +115,7 @@ public class AIPlayerM : AIPlayerBase
                     if (isEmpty)
                         continue;
 
-                    t = checkTasks[i].Result;
+                    t = checkTasks[i].GetAwaiter().GetResult();
                     t.PutStone = gameManager.StoneManagerRef.SelectStone(kind);
                     if ((int)kind > 1)
                         (t.PutStone as SkillStoneBase).IsOwnerOnline = true;
@@ -134,7 +136,7 @@ public class AIPlayerM : AIPlayerBase
                     MyDeck.Stones[i2] = d;
                     Debug.Log("Used");
 
-                    var pp = puttablePosition.Result[UnityEngine.Random.Range(0, puttablePosition.Result.Length)];
+                    var pp = puttablePosition.GetAwaiter().GetResult()[UnityEngine.Random.Range(0, puttablePosition.GetAwaiter().GetResult().Length)];
                     t.X = pp.X;
                     t.Y = pp.Y;
                     t.PutStone = gameManager.StoneManagerRef.SelectStone(d.Stone);
@@ -151,15 +153,15 @@ public class AIPlayerM : AIPlayerBase
 
         Debug.Log("=X: " + t.X);
 
-        if (t.X == -1 && puttablePosition.Result.Length > 0)
+        if (t.X == -1 && puttablePosition.GetAwaiter().GetResult().Length > 0)
         {
 
-            var pp = puttablePosition.Result[UnityEngine.Random.Range(0, puttablePosition.Result.Length)];
+            var pp = puttablePosition.GetAwaiter().GetResult()[UnityEngine.Random.Range(0, puttablePosition.GetAwaiter().GetResult().Length)];
             t.X = pp.X;
             t.Y = pp.Y;
             t.PutStone = gameManager.StoneManagerRef.SelectStone(EStone.DEFAULT);
         }
-        else if (puttablePosition.Result.Length == 0)
+        else if (puttablePosition.GetAwaiter().GetResult().Length == 0)
         {
             t.X = -1;
             return t;
@@ -173,9 +175,9 @@ public class AIPlayerM : AIPlayerBase
 
     }
 
-    async public override Task<TurnInfo> DoComboBonus(int bonus)
+    async public override UniTask<TurnInfo> DoComboBonus(int bonus)
     {
-        List<Task<int>> cells = new List<Task<int>>();
+        List<UniTask<int>> cells = new List<UniTask<int>>();
         var bSize = gameManager.StoneManagerRef.GetBoardSize();
         for (int ix = 0; ix < bSize.x; ix++)
         {
@@ -184,23 +186,23 @@ public class AIPlayerM : AIPlayerBase
 
         var t = Task.WhenAll(cells);
 
-        while (!t.IsCompleted) { await Task.Delay(10); }
+        while (!t.GetAwaiter().IsCompleted) { await Task.Delay(10); }
 
         int xv = -1, yv = -1;
 
         for (int i = 0; i < bSize.x; i++)
         {
-            if (cells[i].Result != -1)
+            if (cells[i].GetAwaiter().GetResult() != -1)
             {
                 if (xv == -1)
                 {
                     xv = i;
-                    yv = cells[i].Result;
+                    yv = cells[i].GetAwaiter().GetResult();
                 }
                 else if (UnityEngine.Random.value < 0.3f)
                 {
                     xv = i;
-                    yv = cells[i].Result;
+                    yv = cells[i].GetAwaiter().GetResult();
                 }
             }
         }
@@ -208,7 +210,7 @@ public class AIPlayerM : AIPlayerBase
         return new TurnInfo() { X = xv, Y = yv };
     }
 
-    async private Task<int> SelectCellFromColumn(int x)
+    async private UniTask<int> SelectCellFromColumn(int x)
     {
         await Task.Yield();
 
@@ -259,7 +261,7 @@ public class AIPlayerM : AIPlayerBase
     }
 
 
-    protected override async Task<TurnInfo> Check(Func<int, int, Vector2, bool> f, PuttableCellInfo[] p)
+    protected override async UniTask<TurnInfo> Check(Func<int, int, Vector2, bool> f, PuttableCellInfo[] p)
     {
         TurnInfo turn = new TurnInfo();
         await Task.Delay(1);

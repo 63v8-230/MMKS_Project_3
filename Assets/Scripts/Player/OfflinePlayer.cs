@@ -1,9 +1,12 @@
 using Photon.Pun;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
+
 
 public class OfflinePlayer : MonoBehaviour, IPlayer
 {
@@ -35,17 +38,17 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
     private int currentBonus;
     private List<GameObject> highLight;
 
-    async public Task<TurnInfo> DoTurn()
+    async public UniTask<TurnInfo> DoTurn()
     {
 
         turnInfo = new TurnInfo();
         turnInfo.X = -1;
         isInTurn = true;
-        var puttablePositionTask = gameManager.StoneManagerRef.GetPuttablePosition(Team);
-        while (!puttablePositionTask.IsCompleted)
+        var puttablePositionTask = gameManager.StoneManagerRef.GetPuttablePosition(Team).Preserve();
+        while (!puttablePositionTask.GetAwaiter().IsCompleted)
             await Task.Delay(10);
 
-        puttablePosition = puttablePositionTask.Result;
+        puttablePosition = puttablePositionTask.GetAwaiter().GetResult();
 
         List<GameObject> puttableCell = new List<GameObject>();
 
@@ -110,7 +113,7 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         return turnInfo;
     }
 
-    async public Task<TurnInfo> DoComboBonus(int bonus)
+    async public UniTask<TurnInfo> DoComboBonus(int bonus)
     {
         isInBonus = true;
         currentBonus = bonus;

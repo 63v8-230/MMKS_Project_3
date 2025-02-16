@@ -1,6 +1,9 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+
+using Task = Cysharp.Threading.Tasks.UniTask;
 
 /// <summary>
 /// AIに作らせてみたお遊びプログラム2
@@ -82,22 +85,22 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         MyDeck = d;
     }
 
-    public async Task<TurnInfo> DoTurn()
+    public async UniTask<TurnInfo> DoTurn()
     {
         currentTurn++;
         await Task.Delay(100); // 思考時間演出
 
-        var puttablePositions = gameManager.StoneManagerRef.GetPuttablePosition(Team);
-        while (!puttablePositions.IsCompleted)
+        var puttablePositions = gameManager.StoneManagerRef.GetPuttablePosition(Team).Preserve();
+        while (!puttablePositions.GetAwaiter().IsCompleted)
             await Task.Delay(10);
-
-        if (puttablePositions.Result.Length == 0)
+            
+        if (puttablePositions.GetAwaiter().GetResult().Length == 0)
         {
             return new TurnInfo { X = -1 };
         }
 
         // 最適な手を探す
-        TurnInfo bestMove = FindBestMove(puttablePositions.Result);
+        TurnInfo bestMove = FindBestMove(puttablePositions.GetAwaiter().GetResult());
 
         // 石を配置して返す
         if (bestMove.PutStone != null)
@@ -112,52 +115,52 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         return bestMove;
     }
 
-    async public Task<TurnInfo> DoComboBonus(int bonus)
+    async public UniTask<TurnInfo> DoComboBonus(int bonus)
     {
-        List<Task<int>> cells = new List<Task<int>>();
+        List<UniTask<int>> cells = new List<UniTask<int>>();
         var bSize = gameManager.StoneManagerRef.GetBoardSize();
         for (int ix = 0; ix < bSize.x; ix++)
         {
-            cells.Add(SelectCellFromColumn(ix));
+            cells.Add(SelectCellFromColumn(ix).Preserve());
         }
 
-        var t = Task.WhenAll(cells);
+        var t = Task.WhenAll(cells).Preserve();
 
-        while (!t.IsCompleted) {await Task.Delay(10); }
+        while (!t.GetAwaiter().IsCompleted) {await Task.Delay(10); }
 
         int xv = -1, yv = -1;
 
         for (int i = 0; i < bSize.x; i++)
         {
-            if (cells[i].Result != -1)
+            if (cells[i].GetAwaiter().GetResult() != -1)
             {
                 if (xv == -1)
                 {
                     xv = i;
-                    yv = cells[i].Result;
+                    yv = cells[i].GetAwaiter().GetResult();
                 }
                 else if (
                     i == 0 ||//もしXの端なら
                     i == bSize.x - 1 )//もしXの端なら
                 {
                     xv = i;
-                    yv = cells[i].Result;
+                    yv = cells[i].GetAwaiter().GetResult();
 
                     break;
                 }
                 else if (
-                    cells[i].Result == 0 ||//もし端なら
-                    cells[i].Result == bSize.y-1)//もし端なら
+                    cells[i].GetAwaiter().GetResult() == 0 ||//もし端なら
+                    cells[i].GetAwaiter().GetResult() == bSize.y-1)//もし端なら
                 {
                     xv = i;
-                    yv = cells[i].Result;
+                    yv = cells[i].GetAwaiter().GetResult();
 
                     break;
                 }
                 else if(Random.value < 0.3f)//角や端が無ければランダム
                 {
                     xv = i;
-                    yv = cells[i].Result;
+                    yv = cells[i].GetAwaiter().GetResult();
                 }
             }
         }
@@ -165,7 +168,7 @@ public class AIClaude2 : MonoBehaviour, IPlayer
         return new TurnInfo() { X = xv, Y = yv };
     }
 
-    async private Task<int> SelectCellFromColumn(int x)
+    async private UniTask<int> SelectCellFromColumn(int x)
     {
         await Task.Yield();
 

@@ -1,8 +1,10 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
 
 public class TutorialPlayerMe : MonoBehaviour, IPlayer
 {
@@ -43,7 +45,7 @@ public class TutorialPlayerMe : MonoBehaviour, IPlayer
 
     
 
-    async public Task<TurnInfo> DoTurn()
+    async public UniTask<TurnInfo> DoTurn()
     {
 
         turnInfo = new TurnInfo();
@@ -82,7 +84,7 @@ public class TutorialPlayerMe : MonoBehaviour, IPlayer
         return turnInfo;
     }
 
-    async public Task<TurnInfo> DoComboBonus(int bonus)
+    async public UniTask<TurnInfo> DoComboBonus(int bonus)
     {
         isInBonus = true;
         currentBonus = bonus;

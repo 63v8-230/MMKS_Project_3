@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
 
 public class AIPlayerBase : MonoBehaviour, IPlayer //AIのベースクラス
 {
@@ -20,13 +22,13 @@ public class AIPlayerBase : MonoBehaviour, IPlayer //AIのベースクラス
 
     protected GameManager gameManager;
 
-    async public virtual Task<TurnInfo> DoTurn()
+    async public virtual UniTask<TurnInfo> DoTurn()
     {
         await Task.Delay(500);
         return new TurnInfo();
     }
 
-    async public virtual Task<TurnInfo> DoComboBonus(int bonus)
+    async public virtual UniTask<TurnInfo> DoComboBonus(int bonus)
     {
         await Task.Delay(500);
         return new TurnInfo();
@@ -37,7 +39,7 @@ public class AIPlayerBase : MonoBehaviour, IPlayer //AIのベースクラス
         gameManager = gManager;
     }
 
-    protected virtual async Task<TurnInfo> Check(Func<int, int, Vector2, bool> f, PuttableCellInfo[] p)
+    protected virtual async UniTask<TurnInfo> Check(Func<int, int, Vector2, bool> f, PuttableCellInfo[] p)
     {
         TurnInfo turn = new TurnInfo();
         await Task.Delay(1);

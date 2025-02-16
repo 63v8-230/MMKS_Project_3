@@ -107,32 +107,32 @@ public class TextFieldController : MonoBehaviour
 
     public void Init(string filePath)
     {
+
         TextObject.text = "";
         selectTarget = GameObject.Find("Canvas").transform.Find("Select");
 
         index = 0;
         actions.Clear();
         Debug.Log($"文字コード: {encoding.EncodingName}");
-        using (System.IO.StreamReader sr = new System.IO.StreamReader(filePath, encoding)) 
+
+        var tx = Resources.Load<TextAsset>("Tutorial/Text").text.Split("\r\n");
+        for(int i=0; i<tx.Length; i++)
         {
-            while(!sr.EndOfStream)
+            string line = tx[i];
+            if (line == null || line.Length == 0)
             {
-                string line = sr.ReadLine();
-                if (line == null || line.Length==0)
-                {
-                    actions.Add(NextIndex);
-                    continue;
-                }
-                if (line[0] == '!')
-                {//コマンドの場合
-                    var act = GetCommand(line.Split(' '));
-                    actions.Add(act);
-                }
-                else
-                {//普通の文字の場合
-                    
-                    actions.Add(() => { TextObject.text = line; NextIndex(); });
-                }
+                actions.Add(NextIndex);
+                continue;
+            }
+            if (line[0] == '!')
+            {//コマンドの場合
+                var act = GetCommand(line.Split(' '));
+                actions.Add(act);
+            }
+            else
+            {//普通の文字の場合
+
+                actions.Add(() => { TextObject.text = line; NextIndex(); });
             }
         }
 
@@ -149,7 +149,7 @@ public class TextFieldController : MonoBehaviour
 
     protected virtual bool PressAnyKey()
     {
-        return Input.anyKeyDown;
+        return (Input.touches.Length > 0) || Input.GetMouseButtonDown(0);
     }
 
     private IEnumerator DelayMethod(Action action, float seconds)
