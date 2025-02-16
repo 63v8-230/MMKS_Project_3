@@ -296,7 +296,7 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         {
             if (SelectCell(out turnInfo, true, true)) 
             {
-                if(Input.GetMouseButtonDown(0))
+                if(IsClick())
                 {
                     isInBonus = false;
                     return;
@@ -353,7 +353,8 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         if(Data.Instance.InOption)
             return false;
 
-        if (Input.GetMouseButtonDown(0) || withoutClick)
+
+        if (IsClick() || withoutClick)
         {
 
             Vector3 sPos;
@@ -417,5 +418,10 @@ public class OfflinePlayer : MonoBehaviour, IPlayer
         }
 
         return false;
+    }
+
+    bool IsClick()
+    {
+        return (Input.touches.Length > 0) || Input.GetMouseButtonDown(0);
     }
 }
