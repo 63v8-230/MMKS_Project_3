@@ -9,7 +9,7 @@ using static System.Net.WebRequestMethods;
 public class FireFrameUIController : MonoBehaviour
 {
     private RawImage img;
-    public VideoPlayer
+    public GameObject
         bw, b, g, r, rbw;
 
     int kind = 0;
@@ -53,43 +53,24 @@ public class FireFrameUIController : MonoBehaviour
         count = 0;
         kind = 0;
 
-        img.texture = bw.targetTexture;
         comboImage.sprite = Sprites[currentIndex];
 
         tx.text = "";
 
         InComboBonus = false;
+
+        bw.SetActive(true);
+        b.SetActive(false);
+        g.SetActive(false);
+        r.SetActive(false);
+        rbw.SetActive(false);
     }
 
     public void spInit()
     {
         tx = transform.Find("Text").GetComponent<TextMeshProUGUI>();
 
-        img = GetComponent<RawImage>();
-        img.color = new Color(1, 1, 1);
-
-        var coms = GetComponents<VideoPlayer>();
-        {
-            coms[0].url = "https://63v8-230.github.io/MMKS/mv/FireBW.mp4";
-            coms[0].Prepare();
-            bw = coms[0];
-
-            coms[1].url = "https://63v8-230.github.io/MMKS/mv/FireBlue.mp4";
-            coms[1].Prepare();
-            b = coms[1];
-
-            coms[2].url = "https://63v8-230.github.io/MMKS/mv/FireGreen.mp4";
-            coms[2].Prepare();
-            g = coms[2];
-
-            coms[3].url = "https://63v8-230.github.io/MMKS/mv/FireRed.mp4";
-            coms[3].Prepare();
-            r = coms[3];
-
-            coms[4].url = "https://63v8-230.github.io/MMKS/mv/FireRainbow.mp4";
-            coms[4].Prepare();
-            rbw = coms[4];
-        }
+        
     }
 
 
@@ -107,26 +88,32 @@ public class FireFrameUIController : MonoBehaviour
 
         Debug.Log("Fire Kind : "+kind);
 
-        switch(kind)
+        bw.SetActive(false);
+        b.SetActive(false);
+        g.SetActive(false);
+        r.SetActive(false);
+        rbw.SetActive(false);
+
+        switch (kind)
         {
             case 0:
-                img.texture = bw.targetTexture;
+                bw.SetActive(true);
                 break;
 
             case 1:
-                img.texture = b.targetTexture;
+                b.SetActive(true);
                 break;
 
             case 2:
-                img.texture = g.targetTexture;
+                g.SetActive(true);
                 break;
 
             case 3:
-                img.texture = r.targetTexture;
+                r.SetActive(true);
                 break;
 
             case 4:
-                img.texture = rbw.targetTexture;
+                rbw.SetActive(true);
                 break;
 
             default:
@@ -172,8 +159,10 @@ public class FireFrameUIController : MonoBehaviour
 
     public void ShowComboEnter()
     {
-        transform.Find("ComboEnter").gameObject.SetActive(true);
+        var obj = transform.Find("ComboEnter").gameObject;
+        obj.SetActive(true);
         InComboBonus = true;
+        obj.GetComponent<Animator>().SetTrigger("Start");
 
         var e = DelayMethod(() => { transform.Find("ComboEnter").gameObject.SetActive(false); InComboBonus = false; }, 5);
         StartCoroutine(e);

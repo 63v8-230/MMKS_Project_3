@@ -198,7 +198,7 @@ public class StoneManager : MonoBehaviour
     public int CurrentTurn = 0;
 
     private GameObject enemyCutIn, ownCutIn;
-    VideoPlayer evp1, evp2, ovp1, ovp2;
+    Animator ea1, ea2, ea3, oa1, oa2, oa3;
     private GameObject fireScreen;
     FireFrameUIController fireScreenCtrl;
 
@@ -1202,11 +1202,9 @@ public class StoneManager : MonoBehaviour
             //}
             enemyCutIn.SetActive(true);
 
-            evp1.time = 0;
-            evp2.time = 0;
-            evp1.Play();
-            evp2.Play();
-            enemyCutIn.transform.Find("Image").GetComponent<Animator>().SetTrigger("Start");
+            ea1.SetTrigger("Start");
+            ea2.SetTrigger("Start");
+            ea3.SetTrigger("Start");
 
             c = enemyCutIn;
         }
@@ -1218,11 +1216,9 @@ public class StoneManager : MonoBehaviour
 
             ownCutIn.SetActive(true);
 
-            ovp1.time = 0;
-            ovp2.time = 0;
-            ovp1.Play();
-            ovp2.Play();
-            ownCutIn.transform.Find("Image").GetComponent<Animator>().SetTrigger("Start");
+            oa1.SetTrigger("Start");
+            oa2.SetTrigger("Start");
+            oa3.SetTrigger("Start");
 
             c = ownCutIn;
         }
@@ -1252,10 +1248,9 @@ public class StoneManager : MonoBehaviour
                         Data.Instance.cRivalIconPath[Data.Instance.cChallengeState] + "cut");
             }
 
-            evp1 = enemyCutIn.GetComponent<VideoPlayer>();
-            evp2 = enemyCutIn.transform.Find("Add").GetComponent<VideoPlayer>();
-            evp1.Prepare();
-            evp2.Prepare();
+            ea1 = enemyCutIn.transform.GetChild(0).GetComponent<Animator>();
+            ea2 = enemyCutIn.transform.GetChild(1).GetComponent<Animator>();
+            ea3 = enemyCutIn.transform.GetChild(2).GetComponent<Animator>();
 
             enemyCutIn.SetActive(false);
         }
@@ -1265,10 +1260,9 @@ public class StoneManager : MonoBehaviour
             ownCutIn = Instantiate(o);
             ownCutIn.transform.SetParent(t, false);
 
-            ovp1 = ownCutIn.GetComponent<VideoPlayer>();
-            ovp2 = ownCutIn.transform.Find("Add").GetComponent<VideoPlayer>();
-            ovp1.Prepare();
-            ovp2.Prepare();
+            oa1 = ownCutIn.transform.GetChild(0).GetComponent<Animator>();
+            oa2 = ownCutIn.transform.GetChild(1).GetComponent<Animator>();
+            oa3 = ownCutIn.transform.GetChild(2).GetComponent<Animator>();
 
             ownCutIn.SetActive(false);
         }

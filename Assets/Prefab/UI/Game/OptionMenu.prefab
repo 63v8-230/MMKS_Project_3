@@ -2723,20 +2723,21 @@ MonoBehaviour:
     \u3088\u308A\n\u9B54\u738B\u9B42 \u69D8\n\nBGM\n\u30BF\u30A4\u30C8\u30EB\n   
     Always be Happy / shimtone\n\u30B2\u30FC\u30E0\n    \u96EA\u6708\u82B1 / shimtone\n\u30C1\u30E5\u30FC\u30C8\u30EA\u30A2\u30EB,
     \u30BF\u30A4\u30C8\u30EB\u653E\u7F6EPV,\n    Audiostock \u3088\u308A\n\nMIT License\r\n\r\nCopyright
-    (c) 2019 kou_yeung\r\nCopyright (c) 2017 G\xF6khan G\xF6k\xE7e\r\n\r\nPermission
-    is hereby granted, free of charge, to any person obtaining a copy of this software
-    and associated documentation files (the \u201CSoftware\u201D), to deal in the
-    Software without restriction, including without limitation the rights to use,
-    copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
-    Software, and to permit persons to whom the Software is furnished to do so, subject
-    to the following conditions:\r\n\r\nThe above copyright notice and this permission
-    notice shall be included in all copies or substantial portions of the Software.\r\n\r\nTHE
-    SOFTWARE IS PROVIDED \u201CAS IS\u201D, WITHOUT WARRANTY OF ANY KIND, EXPRESS
-    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-    FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-    COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-    IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+    (c) 2019 kou_yeung\r\nCopyright (c) 2017 G\xF6khan G\xF6k\xE7e\r\n\rCopyright
+    (c) 2019 Yoshifumi Kawai / Cysharp, Inc.\n\nPermission is hereby granted, free
+    of charge, to any person obtaining a copy of this software and associated documentation
+    files (the \u201CSoftware\u201D), to deal in the Software without restriction,
+    including without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to permit persons
+    to whom the Software is furnished to do so, subject to the following conditions:\r\n\r\nThe
+    above copyright notice and this permission notice shall be included in all copies
+    or substantial portions of the Software.\r\n\r\nTHE SOFTWARE IS PROVIDED \u201CAS
+    IS\u201D, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+    LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+    AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+    FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+    THE USE OR OTHER DEALINGS IN THE SOFTWARE."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 00fce8a748c4fdd45ab312c5bd308189, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 8544681eb053f82448fe544ad065ffd4, type: 2}
