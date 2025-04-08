@@ -131,7 +131,7 @@ public class TextFieldController : MonoBehaviour
                 else
                 {//•’Ê‚Ì•¶Žš‚Ìê‡
                     
-                    actions.Add(() => { TextObject.text = line; NextIndex(); });
+                    actions.Add(() => { var e = DelayMethod(()=> { TextObject.text = line; NextIndex(); }, 0.2f); StartCoroutine(e); });
                 }
             }
         }
