@@ -61,6 +61,10 @@ public class OptionMenu : MonoBehaviour
             Application.OpenURL("https://forms.office.com/r/Gg9e1i5s1c");
         });
 
+        transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            
+        });
     }
 
     // Update is called once per frame
